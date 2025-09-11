@@ -1,0 +1,102 @@
+{
+  "timestamp": "2025-09-11T18:10:18.230807",
+  "health_checks": {
+    "system": {
+      "component": "system",
+      "status": "healthy",
+      "message": "System resources within normal range",
+      "details": {
+        "cpu_percent": 24.0,
+        "memory_percent": 67.4,
+        "memory_available_mb": 5344.125,
+        "disk_usage_percent": 16.0,
+        "disk_free_gb": 72.1340217590332,
+        "process_count": 658,
+        "timestamp": "2025-09-11T18:10:19.257596"
+      },
+      "timestamp": "2025-09-11T18:10:19.257688",
+      "response_time_ms": 1005.7070255279541
+    },
+    "ollama": {
+      "component": "ollama",
+      "status": "unhealthy",
+      "message": "Cannot connect to Ollama: 'name'",
+      "details": {
+        "host": "http://localhost:11434"
+      },
+      "timestamp": "2025-09-11T18:10:19.279808",
+      "response_time_ms": 22.124052047729492
+    },
+    "qdrant": {
+      "component": "qdrant",
+      "status": "unknown",
+      "message": "Qdrant client not installed",
+      "details": null,
+      "timestamp": "2025-09-11T18:10:19.279824",
+      "response_time_ms": 0.00476837158203125
+    },
+    "data_files": {
+      "component": "data_files",
+      "status": "healthy",
+      "message": "All required data files present",
+      "details": {
+        "data_dir": "/Users/vladbordei/Documents/Development/triz2/src/triz_tools/data",
+        "required_files": 2,
+        "missing_files": [],
+        "files": {
+          "triz_principles.txt": {
+            "size_kb": 10.7978515625,
+            "modified": "2025-09-11T19:09:52.657038"
+          },
+          "contradiction_matrix.json": {
+            "size_kb": 13.134765625,
+            "modified": "2025-09-11T21:02:20.902613"
+          }
+        }
+      },
+      "timestamp": "2025-09-11T18:10:19.279973",
+      "response_time_ms": 0.14781951904296875
+    },
+    "sessions": {
+      "component": "sessions",
+      "status": "unhealthy",
+      "message": "Session directory does not exist: /Users/vladbordei/.triz_copilot/sessions",
+      "details": null,
+      "timestamp": "2025-09-11T18:10:19.279990",
+      "response_time_ms": 0.01621246337890625
+    },
+    "cache": {
+      "component": "cache",
+      "status": "healthy",
+      "message": "Cache size: 0.0MB",
+      "details": {
+        "cache_dir": "/Users/vladbordei/.triz_copilot/cache",
+        "file_count": 0,
+        "total_size_mb": 0.0
+      },
+      "timestamp": "2025-09-11T18:10:19.280116",
+      "response_time_ms": 0.125885009765625
+    }
+  },
+  "system_info": {
+    "platform": "macOS-15.5-arm64-arm-64bit-Mach-O",
+    "python_version": "3.13.2",
+    "processor": "arm",
+    "cpu_count": 10,
+    "total_memory_gb": 16.0,
+    "total_disk_gb": 460.43
+  },
+  "configuration": {
+    "debug_mode": false,
+    "log_level": "INFO",
+    "offline_mode": true,
+    "caching_enabled": true,
+    "vector_search_enabled": true,
+    "ollama_model": "nomic-embed-text",
+    "qdrant_host": "localhost:6333"
+  },
+  "recommendations": [
+    "Start Ollama service: ollama serve"
+  ],
+  "overall_assessment": "System has critical issues with: ollama, sessions"
+}

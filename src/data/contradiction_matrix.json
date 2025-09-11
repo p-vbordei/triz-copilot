@@ -1,0 +1,777 @@
+{
+  "parameters": [
+    {
+      "id": 1,
+      "name": "Weight of moving object",
+      "description": "Mass of object in motion"
+    },
+    {
+      "id": 2,
+      "name": "Weight of stationary object",
+      "description": "Mass of object at rest"
+    },
+    {
+      "id": 3,
+      "name": "Length of moving object",
+      "description": "Linear dimension of moving object"
+    },
+    {
+      "id": 4,
+      "name": "Length of stationary object",
+      "description": "Linear dimension of stationary object"
+    },
+    {
+      "id": 5,
+      "name": "Area of moving object",
+      "description": "Surface area of moving object"
+    },
+    {
+      "id": 6,
+      "name": "Area of stationary object",
+      "description": "Surface area of stationary object"
+    },
+    {
+      "id": 7,
+      "name": "Volume of moving object",
+      "description": "3D space occupied by moving object"
+    },
+    {
+      "id": 8,
+      "name": "Volume of stationary object",
+      "description": "3D space occupied by stationary object"
+    },
+    {
+      "id": 9,
+      "name": "Speed",
+      "description": "Velocity of object or process"
+    },
+    {
+      "id": 10,
+      "name": "Force",
+      "description": "Interaction that changes motion"
+    },
+    {
+      "id": 11,
+      "name": "Stress or pressure",
+      "description": "Force per unit area"
+    },
+    {
+      "id": 12,
+      "name": "Shape",
+      "description": "External contour or appearance"
+    },
+    {
+      "id": 13,
+      "name": "Stability of object's composition",
+      "description": "Integrity of system"
+    },
+    {
+      "id": 14,
+      "name": "Strength",
+      "description": "Ability to resist force"
+    },
+    {
+      "id": 15,
+      "name": "Duration of action by moving object",
+      "description": "Time of motion"
+    },
+    {
+      "id": 16,
+      "name": "Duration of action by stationary object",
+      "description": "Time of static action"
+    },
+    {
+      "id": 17,
+      "name": "Temperature",
+      "description": "Thermal condition"
+    },
+    {
+      "id": 18,
+      "name": "Illumination intensity",
+      "description": "Brightness of light"
+    },
+    {
+      "id": 19,
+      "name": "Use of energy by moving object",
+      "description": "Energy consumption in motion"
+    },
+    {
+      "id": 20,
+      "name": "Use of energy by stationary object",
+      "description": "Energy consumption at rest"
+    },
+    {
+      "id": 21,
+      "name": "Power",
+      "description": "Rate of energy use"
+    },
+    {
+      "id": 22,
+      "name": "Loss of energy",
+      "description": "Waste of energy"
+    },
+    {
+      "id": 23,
+      "name": "Loss of substance",
+      "description": "Waste of material"
+    },
+    {
+      "id": 24,
+      "name": "Loss of information",
+      "description": "Loss of data"
+    },
+    {
+      "id": 25,
+      "name": "Loss of time",
+      "description": "Time waste"
+    },
+    {
+      "id": 26,
+      "name": "Quantity of substance/matter",
+      "description": "Amount of material"
+    },
+    {
+      "id": 27,
+      "name": "Reliability",
+      "description": "Ability to perform consistently"
+    },
+    {
+      "id": 28,
+      "name": "Measurement accuracy",
+      "description": "Precision of measurement"
+    },
+    {
+      "id": 29,
+      "name": "Manufacturing precision",
+      "description": "Accuracy of production"
+    },
+    {
+      "id": 30,
+      "name": "External harm affects object",
+      "description": "Susceptibility to external factors"
+    },
+    {
+      "id": 31,
+      "name": "Object-generated harmful factors",
+      "description": "Side effects produced"
+    },
+    {
+      "id": 32,
+      "name": "Ease of manufacture",
+      "description": "Simplicity of production"
+    },
+    {
+      "id": 33,
+      "name": "Ease of operation",
+      "description": "Simplicity of use"
+    },
+    {
+      "id": 34,
+      "name": "Ease of repair",
+      "description": "Simplicity of maintenance"
+    },
+    {
+      "id": 35,
+      "name": "Adaptability or versatility",
+      "description": "Flexibility"
+    },
+    {
+      "id": 36,
+      "name": "Device complexity",
+      "description": "Complexity of system"
+    },
+    {
+      "id": 37,
+      "name": "Difficulty of detecting/measuring",
+      "description": "Complexity of monitoring"
+    },
+    {
+      "id": 38,
+      "name": "Extent of automation",
+      "description": "Degree of automation"
+    },
+    {
+      "id": 39,
+      "name": "Productivity",
+      "description": "Rate of output"
+    }
+  ],
+  "matrix": [
+    {
+      "improving": 1,
+      "worsening": 2,
+      "principles": [
+        5,
+        8,
+        13,
+        30
+      ],
+      "confidence": 0.85,
+      "applications": 50
+    },
+    {
+      "improving": 1,
+      "worsening": 3,
+      "principles": [
+        1,
+        35,
+        19,
+        39
+      ],
+      "confidence": 0.8,
+      "applications": 45
+    },
+    {
+      "improving": 1,
+      "worsening": 9,
+      "principles": [
+        2,
+        14,
+        29,
+        30
+      ],
+      "confidence": 0.85,
+      "applications": 60
+    },
+    {
+      "improving": 1,
+      "worsening": 10,
+      "principles": [
+        8,
+        10,
+        18,
+        37
+      ],
+      "confidence": 0.75,
+      "applications": 40
+    },
+    {
+      "improving": 1,
+      "worsening": 11,
+      "principles": [
+        10,
+        36,
+        37,
+        40
+      ],
+      "confidence": 0.8,
+      "applications": 55
+    },
+    {
+      "improving": 1,
+      "worsening": 14,
+      "principles": [
+        1,
+        8,
+        15,
+        40
+      ],
+      "confidence": 0.9,
+      "applications": 100
+    },
+    {
+      "improving": 1,
+      "worsening": 27,
+      "principles": [
+        3,
+        11,
+        1,
+        27
+      ],
+      "confidence": 0.75,
+      "applications": 35
+    },
+    {
+      "improving": 1,
+      "worsening": 36,
+      "principles": [
+        26,
+        30,
+        34,
+        36
+      ],
+      "confidence": 0.7,
+      "applications": 30
+    },
+    {
+      "improving": 9,
+      "worsening": 1,
+      "principles": [
+        2,
+        14,
+        29,
+        30
+      ],
+      "confidence": 0.85,
+      "applications": 60
+    },
+    {
+      "improving": 9,
+      "worsening": 2,
+      "principles": [
+        14,
+        20,
+        35,
+        10
+      ],
+      "confidence": 0.8,
+      "applications": 50
+    },
+    {
+      "improving": 9,
+      "worsening": 11,
+      "principles": [
+        6,
+        18,
+        38,
+        40
+      ],
+      "confidence": 0.75,
+      "applications": 45
+    },
+    {
+      "improving": 9,
+      "worsening": 19,
+      "principles": [
+        35,
+        13,
+        2,
+        14
+      ],
+      "confidence": 0.8,
+      "applications": 55
+    },
+    {
+      "improving": 9,
+      "worsening": 28,
+      "principles": [
+        28,
+        32,
+        1,
+        24
+      ],
+      "confidence": 0.7,
+      "applications": 30
+    },
+    {
+      "improving": 14,
+      "worsening": 1,
+      "principles": [
+        1,
+        8,
+        40,
+        15
+      ],
+      "confidence": 0.9,
+      "applications": 100
+    },
+    {
+      "improving": 14,
+      "worsening": 2,
+      "principles": [
+        40,
+        26,
+        27,
+        1
+      ],
+      "confidence": 0.85,
+      "applications": 80
+    },
+    {
+      "improving": 14,
+      "worsening": 10,
+      "principles": [
+        3,
+        35,
+        10,
+        40
+      ],
+      "confidence": 0.85,
+      "applications": 75
+    },
+    {
+      "improving": 14,
+      "worsening": 11,
+      "principles": [
+        30,
+        10,
+        40,
+        3
+      ],
+      "confidence": 0.8,
+      "applications": 70
+    },
+    {
+      "improving": 14,
+      "worsening": 36,
+      "principles": [
+        1,
+        13,
+        35,
+        40
+      ],
+      "confidence": 0.75,
+      "applications": 45
+    },
+    {
+      "improving": 27,
+      "worsening": 1,
+      "principles": [
+        3,
+        8,
+        10,
+        40
+      ],
+      "confidence": 0.75,
+      "applications": 40
+    },
+    {
+      "improving": 27,
+      "worsening": 9,
+      "principles": [
+        11,
+        35,
+        27,
+        28
+      ],
+      "confidence": 0.7,
+      "applications": 35
+    },
+    {
+      "improving": 27,
+      "worsening": 14,
+      "principles": [
+        11,
+        3,
+        10,
+        32
+      ],
+      "confidence": 0.8,
+      "applications": 60
+    },
+    {
+      "improving": 27,
+      "worsening": 32,
+      "principles": [
+        1,
+        35,
+        11,
+        10
+      ],
+      "confidence": 0.75,
+      "applications": 50
+    },
+    {
+      "improving": 27,
+      "worsening": 33,
+      "principles": [
+        17,
+        27,
+        8,
+        40
+      ],
+      "confidence": 0.7,
+      "applications": 40
+    },
+    {
+      "improving": 27,
+      "worsening": 36,
+      "principles": [
+        13,
+        35,
+        1,
+        39
+      ],
+      "confidence": 0.75,
+      "applications": 45
+    },
+    {
+      "improving": 39,
+      "worsening": 1,
+      "principles": [
+        35,
+        26,
+        24,
+        37
+      ],
+      "confidence": 0.8,
+      "applications": 65
+    },
+    {
+      "improving": 39,
+      "worsening": 9,
+      "principles": [
+        35,
+        10,
+        2,
+        14
+      ],
+      "confidence": 0.85,
+      "applications": 70
+    },
+    {
+      "improving": 39,
+      "worsening": 25,
+      "principles": [
+        35,
+        20,
+        10,
+        28
+      ],
+      "confidence": 0.85,
+      "applications": 75
+    },
+    {
+      "improving": 39,
+      "worsening": 28,
+      "principles": [
+        10,
+        18,
+        32,
+        39
+      ],
+      "confidence": 0.8,
+      "applications": 60
+    },
+    {
+      "improving": 39,
+      "worsening": 33,
+      "principles": [
+        32,
+        1,
+        10,
+        25
+      ],
+      "confidence": 0.75,
+      "applications": 55
+    },
+    {
+      "improving": 39,
+      "worsening": 36,
+      "principles": [
+        35,
+        22,
+        1,
+        39
+      ],
+      "confidence": 0.75,
+      "applications": 50
+    },
+    {
+      "improving": 17,
+      "worsening": 1,
+      "principles": [
+        36,
+        22,
+        6,
+        38
+      ],
+      "confidence": 0.75,
+      "applications": 40
+    },
+    {
+      "improving": 17,
+      "worsening": 11,
+      "principles": [
+        35,
+        39,
+        19,
+        2
+      ],
+      "confidence": 0.7,
+      "applications": 35
+    },
+    {
+      "improving": 17,
+      "worsening": 22,
+      "principles": [
+        19,
+        13,
+        39,
+        35
+      ],
+      "confidence": 0.8,
+      "applications": 55
+    },
+    {
+      "improving": 17,
+      "worsening": 27,
+      "principles": [
+        19,
+        13,
+        39,
+        35
+      ],
+      "confidence": 0.75,
+      "applications": 45
+    },
+    {
+      "improving": 32,
+      "worsening": 1,
+      "principles": [
+        35,
+        28,
+        31,
+        40
+      ],
+      "confidence": 0.8,
+      "applications": 60
+    },
+    {
+      "improving": 32,
+      "worsening": 14,
+      "principles": [
+        1,
+        3,
+        10,
+        32
+      ],
+      "confidence": 0.75,
+      "applications": 50
+    },
+    {
+      "improving": 32,
+      "worsening": 27,
+      "principles": [
+        1,
+        35,
+        11,
+        10
+      ],
+      "confidence": 0.75,
+      "applications": 50
+    },
+    {
+      "improving": 32,
+      "worsening": 36,
+      "principles": [
+        27,
+        26,
+        1,
+        13
+      ],
+      "confidence": 0.8,
+      "applications": 55
+    },
+    {
+      "improving": 32,
+      "worsening": 39,
+      "principles": [
+        1,
+        28,
+        13,
+        27
+      ],
+      "confidence": 0.85,
+      "applications": 65
+    },
+    {
+      "improving": 33,
+      "worsening": 1,
+      "principles": [
+        32,
+        26,
+        12,
+        17
+      ],
+      "confidence": 0.75,
+      "applications": 45
+    },
+    {
+      "improving": 33,
+      "worsening": 27,
+      "principles": [
+        17,
+        27,
+        8,
+        40
+      ],
+      "confidence": 0.7,
+      "applications": 40
+    },
+    {
+      "improving": 33,
+      "worsening": 36,
+      "principles": [
+        32,
+        26,
+        12,
+        17
+      ],
+      "confidence": 0.8,
+      "applications": 55
+    },
+    {
+      "improving": 33,
+      "worsening": 39,
+      "principles": [
+        1,
+        16,
+        25,
+        2
+      ],
+      "confidence": 0.75,
+      "applications": 50
+    },
+    {
+      "improving": 38,
+      "worsening": 14,
+      "principles": [
+        8,
+        35,
+        40,
+        3
+      ],
+      "confidence": 0.75,
+      "applications": 45
+    },
+    {
+      "improving": 38,
+      "worsening": 27,
+      "principles": [
+        11,
+        27,
+        32,
+        35
+      ],
+      "confidence": 0.8,
+      "applications": 55
+    },
+    {
+      "improving": 38,
+      "worsening": 33,
+      "principles": [
+        23,
+        25,
+        28,
+        35
+      ],
+      "confidence": 0.85,
+      "applications": 60
+    },
+    {
+      "improving": 38,
+      "worsening": 36,
+      "principles": [
+        13,
+        35,
+        24,
+        1
+      ],
+      "confidence": 0.75,
+      "applications": 50
+    },
+    {
+      "improving": 38,
+      "worsening": 39,
+      "principles": [
+        1,
+        10,
+        34,
+        28
+      ],
+      "confidence": 0.85,
+      "applications": 65
+    }
+  ]
+}

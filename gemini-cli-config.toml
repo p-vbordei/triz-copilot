@@ -1,0 +1,96 @@
+# Gemini CLI Configuration for TRIZ Co-Pilot (T042-T043)
+# This file configures TRIZ tools for use with Gemini CLI
+
+[triz-copilot]
+name = "TRIZ Engineering Co-Pilot"
+description = "Systematic innovation assistant using TRIZ methodology"
+version = "1.0.0"
+author = "TRIZ Co-Pilot Team"
+
+[server]
+type = "mcp"
+command = ["python3", "src/mcp_server.py"]
+working_directory = "."
+environment = { PYTHONPATH = "." }
+
+# Command definitions for Gemini CLI
+[[commands]]
+name = "triz-workflow"
+description = "Start or continue guided TRIZ problem-solving workflow"
+usage = """
+  /triz-workflow start - Begin new session
+  /triz-workflow continue [session_id] [input] - Continue session
+  /triz-workflow reset [session_id] - Reset session
+"""
+category = "workflow"
+
+[[commands]]
+name = "triz-tool"
+description = "Access TRIZ tools directly"
+usage = """
+  /triz-tool get-principle [1-40] - Get principle details
+  /triz-tool contradiction-matrix [improving] [worsening] - Query matrix
+  /triz-tool brainstorm [principle] [context] - Generate ideas
+"""
+category = "tools"
+
+[[commands]]
+name = "triz-solve"
+description = "Autonomous TRIZ problem analysis and solution generation"
+usage = "/triz-solve [problem description]"
+examples = [
+  "/triz-solve 'Reduce weight of aircraft wing while maintaining strength'",
+  "/triz-solve 'Increase production speed without reducing quality'"
+]
+category = "analysis"
+
+[[commands]]
+name = "triz-help"
+description = "Show help for TRIZ commands"
+usage = "/triz-help"
+category = "help"
+
+# Tool capabilities
+[capabilities]
+features = [
+  "40 inventive principles",
+  "39x39 contradiction matrix",
+  "Guided problem-solving workflow",
+  "Autonomous problem analysis",
+  "Solution concept generation",
+  "Brainstorming assistance"
+]
+
+# Vector database configuration (for future semantic search)
+[vector_db]
+enabled = false  # Will be enabled when Qdrant is setup
+type = "qdrant"
+host = "localhost"
+port = 6333
+collection = "triz_principles"
+
+# Embedding configuration
+[embeddings]
+enabled = false  # Will be enabled when Ollama is setup
+provider = "ollama"
+model = "nomic-embed-text"
+dimension = 768
+
+# Session management
+[sessions]
+storage_path = "./sessions"
+max_sessions = 100
+session_timeout = 3600  # seconds
+
+# Performance settings
+[performance]
+max_response_time = 10  # seconds
+max_solution_concepts = 5
+min_confidence_score = 0.6
+
+# Logging
+[logging]
+level = "INFO"
+file = "triz-copilot.log"
+max_size = "10MB"
+max_files = 5
