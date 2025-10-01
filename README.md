@@ -4,11 +4,17 @@
 
 ## Project Overview
 
-The TRIZ Engineering Co-Pilot is a complete implementation of the Theory of Inventive Problem Solving (TRIZ) methodology as an intelligent assistant. It extends Google Gemini CLI with systematic innovation capabilities and provides three main interaction modes:
+The TRIZ Engineering Co-Pilot is a complete implementation of the Theory of Inventive Problem Solving (TRIZ) methodology as an intelligent assistant. It supports both **Claude CLI** and **Gemini CLI** with systematic innovation capabilities and provides three main interaction modes:
 
-- **Guided Workflow Mode** (`/triz-workflow`): Step-by-step TRIZ methodology for learning users
-- **Autonomous Solve Mode** (`/triz-solve`): Complete problem analysis for experienced users  
-- **Direct Tool Mode** (`/triz-tool`): Expert access to specific TRIZ components
+- **Guided Workflow Mode** (`/triz-workflow` or `triz_workflow_start`): Step-by-step TRIZ methodology for learning users
+- **Autonomous Solve Mode** (`/triz-solve` or `triz_solve`): Complete problem analysis for experienced users
+- **Direct Tool Mode** (`/triz-tool` or `triz_get_principle`): Expert access to specific TRIZ components
+
+### Platform Support
+
+- ✅ **Claude CLI** - Full MCP integration with all TRIZ tools
+- ✅ **Gemini CLI** - Complete tool support via MCP server
+- ✅ **Standalone CLI** - Direct Python interface
 
 ## ✅ Status: All 63 Tasks Complete
 

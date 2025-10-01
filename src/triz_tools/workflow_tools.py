@@ -189,3 +189,48 @@ def _get_or_load_session(session_id: str) -> Optional[ProblemSession]:
         _active_sessions[session_id] = session
     
     return session
+
+
+def triz_workflow_status(session_id: str) -> Dict[str, Any]:
+    """
+    Get current workflow status.
+    
+    Args:
+        session_id: The session ID to check
+        
+    Returns:
+        Dictionary with current workflow status
+    """
+    try:
+        session = _get_or_load_session(session_id)
+        
+        if not session:
+            return {
+                "success": False,
+                "message": "No active workflow found",
+                "data": {},
+                "session_id": session_id
+            }
+        
+        return {
+            "success": True,
+            "message": f"Workflow is at stage: {session.current_stage.value}",
+            "data": {
+                "session_id": session_id,
+                "current_stage": session.current_stage.value,
+                "problem_statement": session.problem_statement,
+                "ideal_final_result": session.ideal_final_result,
+                "contradictions": [c.to_dict() for c in session.contradictions] if session.contradictions else [],
+                "selected_principles": session.selected_principles,
+                "solution_concepts": [s.to_dict() for s in session.solution_concepts] if session.solution_concepts else []
+            },
+            "session_id": session_id,
+            "stage": session.current_stage.value
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Failed to get workflow status: {str(e)}",
+            "data": {},
+            "session_id": session_id
+        }
