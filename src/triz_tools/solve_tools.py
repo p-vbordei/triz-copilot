@@ -420,17 +420,17 @@ def triz_solve_autonomous(
     context: Optional[Dict[str, Any]] = None
 ) -> TRIZToolResponse:
     """
-    Perform autonomous TRIZ analysis and solution generation.
-    
-    This function analyzes the problem, identifies contradictions,
-    recommends TRIZ principles, and generates solution concepts.
-    
+    Perform autonomous TRIZ analysis and solution generation using DeepResearchAgent.
+
+    This function performs genius-level multi-stage research across all knowledge sources
+    to generate deeply informed solutions with research provenance.
+
     Args:
         problem_description: Detailed problem description
         context: Optional context information (industry, constraints, etc.)
-    
+
     Returns:
-        TRIZToolResponse with complete analysis and solutions
+        TRIZToolResponse with complete research-based analysis and solutions
     """
     # Validate input
     if not problem_description or len(problem_description.strip()) < 10:
@@ -439,58 +439,134 @@ def triz_solve_autonomous(
             message="Problem description is empty or insufficient. Please provide more detailed information.",
             data={}
         )
-    
+
     try:
-        # 1. Extract contradictions
-        contradictions = extract_contradictions(problem_description)
-        
-        # 2. Generate IFR
-        ifr = generate_ideal_final_result(problem_description)
-        
-        # 3. Select top principles
-        top_principles = select_top_principles(contradictions, problem_description)
-        
-        # 4. Generate solution concepts
-        solution_concepts = generate_solution_concepts(
-            problem_description,
-            top_principles,
-            contradictions
-        )
-        
-        # 5. Calculate confidence score
-        confidence = 0.7  # Base confidence
-        if contradictions:
-            confidence += 0.1
-        if len(top_principles) >= 3:
-            confidence += 0.1
-        if len(solution_concepts) >= 3:
-            confidence += 0.1
-        
-        # 6. Create problem summary
+        # Use DeepResearchAgent for genius-level research
+        from .research_agent import get_research_agent
+
+        research_agent = get_research_agent()
+        research_report = research_agent.research_problem(problem_description)
+
+        # Create problem summary
         problem_summary = problem_description[:200].strip()
         if len(problem_description) > 200:
             problem_summary += "..."
-        
-        # 7. Compile analysis report
+
+        # Generate IFR (simplified for backward compatibility)
+        ifr = generate_ideal_final_result(problem_description)
+
+        # Format contradictions for response
+        contradictions_formatted = [
+            {
+                'description': c.get('description', 'N/A'),
+                'type': c.get('type', 'technical'),
+                'improving': c.get('improving', 'N/A'),
+                'worsening': c.get('worsening', 'N/A'),
+                'source': c.get('source', 'analysis')
+            }
+            for c in research_report.contradictions
+        ]
+
+        # Format principles with rich research data
+        principles_formatted = [
+            {
+                'number': p.get('id'),
+                'name': p.get('name'),
+                'description': p.get('description'),
+                'relevance_score': p.get('score', 0.5),
+                'sources': p.get('sources', []),
+                'sub_principles': p.get('sub_principles', []),
+                'examples': p.get('examples', []),
+                'domains': p.get('domains', []),
+                'usage_frequency': p.get('usage_frequency', 'medium'),
+                'innovation_level': p.get('innovation_level', 3)
+            }
+            for p in research_report.principles
+        ]
+
+        # Format solutions with full research provenance
+        solutions_formatted = [
+            {
+                'title': s.get('title'),
+                'description': s.get('description'),
+                'principle': s.get('applied_principles', []),
+                'principle_names': s.get('principle_names', []),
+                'research_support': s.get('research_support', []),
+                'cross_domain_insights': s.get('cross_domain_insights', []),
+                'pros': s.get('pros', []),
+                'cons': s.get('cons', []),
+                'feasibility_score': s.get('feasibility_score', 0.7),
+                'confidence': s.get('confidence', 0.5),
+                'implementation_hints': s.get('implementation_hints', []),
+                'citations': s.get('citations', [])
+            }
+            for s in research_report.solutions
+        ]
+
+        # Compile comprehensive analysis report
         analysis_data = {
             "problem_summary": problem_summary,
             "ideal_final_result": ifr,
-            "contradictions_identified": contradictions,
-            "top_principles": top_principles,
-            "solution_concepts": solution_concepts,
-            "confidence_score": min(confidence, 1.0),
-            "materials_recommendations": []  # Empty for now, would integrate with materials DB
+            "contradictions": contradictions_formatted,
+            "recommended_principles": principles_formatted,
+            "solutions": solutions_formatted,
+            "cross_domain_analogies": research_report.cross_domain_analogies,
+            "confidence_score": research_report.confidence_score,
+            "research_depth": {
+                "total_findings": len(research_report.findings),
+                "sources_consulted": len(set(f.source for f in research_report.findings)),
+                "queries_executed": len(research_report.research_queries),
+                "knowledge_gaps": research_report.knowledge_gaps
+            },
+            "materials_recommendations": []  # TODO: Integrate materials from research
         }
-        
+
         return TRIZToolResponse(
             success=True,
-            message="TRIZ analysis completed successfully",
+            message=f"Deep research completed: {len(research_report.findings)} findings from {len(set(f.source for f in research_report.findings))} sources",
             data=analysis_data
         )
-        
+
     except Exception as e:
-        return TRIZToolResponse(
-            success=False,
-            message=f"Error during TRIZ analysis: {str(e)}",
-            data={}
-        )
+        import traceback
+        error_details = traceback.format_exc()
+
+        # Log the error
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error during deep research: {str(e)}\n{error_details}")
+
+        # Fallback to simple analysis
+        try:
+            # Use legacy simple analysis as fallback
+            contradictions = extract_contradictions(problem_description)
+            ifr = generate_ideal_final_result(problem_description)
+            top_principles = select_top_principles(contradictions, problem_description)
+            solution_concepts = generate_solution_concepts(
+                problem_description,
+                top_principles,
+                contradictions
+            )
+
+            analysis_data = {
+                "problem_summary": problem_description[:200],
+                "ideal_final_result": ifr,
+                "contradictions": contradictions,
+                "recommended_principles": top_principles,
+                "solutions": solution_concepts,
+                "confidence_score": 0.6,
+                "fallback_mode": True,
+                "error_message": f"Deep research failed, using fallback: {str(e)}"
+            }
+
+            return TRIZToolResponse(
+                success=True,
+                message="TRIZ analysis completed (fallback mode)",
+                data=analysis_data
+            )
+        except Exception as fallback_error:
+            return TRIZToolResponse(
+                success=False,
+                message=f"Error during TRIZ analysis: {str(e)}. Fallback also failed: {str(fallback_error)}",
+                data={}
+            )

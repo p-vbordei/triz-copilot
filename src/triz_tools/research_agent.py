@@ -1,0 +1,900 @@
+"""
+Deep Research Agent for TRIZ Co-Pilot
+Performs multi-stage, multi-source research to generate genius-level solutions.
+"""
+
+import logging
+from typing import List, Dict, Any, Optional, Tuple
+from dataclasses import dataclass, field
+import re
+import numpy as np
+
+from .services.vector_service import get_vector_service, SearchResult
+from .services.embedding_service import get_embedding_service
+from .knowledge_base import load_principles_from_file, load_contradiction_matrix
+from .models import TRIZToolResponse
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class ResearchQuery:
+    """A research query with metadata"""
+    query_text: str
+    query_type: str  # 'principle', 'material', 'book', 'analogy', 'contradiction'
+    priority: float = 1.0
+    target_collections: List[str] = field(default_factory=list)
+
+
+@dataclass
+class ResearchFinding:
+    """A finding from research"""
+    source: str  # Which collection/book
+    content: str
+    relevance_score: float
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    citations: List[str] = field(default_factory=list)
+
+
+@dataclass
+class ResearchReport:
+    """Complete research report"""
+    problem_statement: str
+    research_queries: List[ResearchQuery]
+    findings: List[ResearchFinding]
+    contradictions: List[Dict[str, Any]]
+    principles: List[Dict[str, Any]]
+    cross_domain_analogies: List[Dict[str, Any]]
+    solutions: List[Dict[str, Any]]
+    confidence_score: float
+    knowledge_gaps: List[str] = field(default_factory=list)
+
+
+class DeepResearchAgent:
+    """
+    Genius-level research agent that performs multi-stage research
+    across all knowledge sources to generate deeply informed solutions.
+    """
+
+    def __init__(self):
+        """Initialize the research agent"""
+        self.vector_service = get_vector_service()
+        self.embedding_service = get_embedding_service()
+        self.principles = load_principles_from_file()
+        self.matrix = load_contradiction_matrix()
+
+        # Available collections for search
+        self.collections = {
+            'principles': 'triz_principles',
+            'books_general': 'triz_documents',
+            'materials': 'materials_database',
+            'contradictions': 'triz_contradictions'
+        }
+
+        logger.info("DeepResearchAgent initialized")
+
+    def research_problem(self, problem_description: str) -> ResearchReport:
+        """
+        Main research orchestrator - performs deep multi-stage research.
+
+        Args:
+            problem_description: User's problem description
+
+        Returns:
+            Comprehensive research report
+        """
+        logger.info(f"Starting deep research for: {problem_description[:100]}...")
+
+        # Stage 1: Problem Understanding
+        research_plan = self._generate_research_plan(problem_description)
+        logger.info(f"Generated {len(research_plan)} research queries")
+
+        # Stage 2: Multi-Source Parallel Search
+        findings = self._multi_source_search(research_plan, problem_description)
+        logger.info(f"Collected {len(findings)} research findings")
+
+        # Stage 3: Contradiction Deep Dive
+        contradictions = self._deep_contradiction_analysis(problem_description, findings)
+        logger.info(f"Identified {len(contradictions)} contradictions")
+
+        # Stage 4: Principle Discovery (semantic, not just matrix)
+        principles = self._semantic_principle_discovery(
+            problem_description,
+            contradictions,
+            findings
+        )
+        logger.info(f"Discovered {len(principles)} relevant principles")
+
+        # Stage 5: Cross-Domain Analogy Search
+        analogies = self._find_cross_domain_analogies(problem_description, findings)
+        logger.info(f"Found {len(analogies)} cross-domain analogies")
+
+        # Stage 6: Gap Detection
+        gaps = self._detect_knowledge_gaps(findings, principles)
+
+        # Stage 7: Recursive Deep Dive (if gaps found)
+        if gaps and len(findings) < 20:
+            logger.info(f"Detected {len(gaps)} knowledge gaps, performing deep dive...")
+            additional_findings = self._recursive_deep_dive(gaps, problem_description)
+            findings.extend(additional_findings)
+
+        # Stage 8: Solution Synthesis
+        solutions = self._synthesize_solutions(
+            problem_description,
+            findings,
+            principles,
+            contradictions,
+            analogies
+        )
+        logger.info(f"Synthesized {len(solutions)} solutions")
+
+        # Stage 9: Calculate Confidence
+        confidence = self._calculate_confidence(findings, principles, solutions)
+
+        # Create comprehensive report
+        report = ResearchReport(
+            problem_statement=problem_description,
+            research_queries=research_plan,
+            findings=findings,
+            contradictions=contradictions,
+            principles=principles,
+            cross_domain_analogies=analogies,
+            solutions=solutions,
+            confidence_score=confidence,
+            knowledge_gaps=gaps
+        )
+
+        logger.info(f"Research complete. Confidence: {confidence:.2f}")
+        return report
+
+    def _generate_research_plan(self, problem: str) -> List[ResearchQuery]:
+        """
+        Generate multiple research queries from the problem.
+        Expands 1 problem into 10-15 targeted research queries.
+        """
+        queries = []
+
+        # Extract key concepts using simple NLP
+        problem_lower = problem.lower()
+
+        # Query 1: Direct problem search in books
+        queries.append(ResearchQuery(
+            query_text=problem,
+            query_type='book',
+            priority=1.0,
+            target_collections=['triz_documents']
+        ))
+
+        # Query 2: Extract contradictions and search for them
+        contradiction_patterns = [
+            (r"(\w+(?:\s+\w+)*)\s+(?:while|but|versus|vs)\s+(\w+(?:\s+\w+)*)", 2),
+            (r"increase\s+(\w+)", 1.5),
+            (r"reduce\s+(\w+)", 1.5),
+            (r"improve\s+(\w+)", 1.5),
+        ]
+
+        for pattern, priority in contradiction_patterns:
+            matches = re.findall(pattern, problem_lower)
+            for match in matches[:2]:  # Limit to 2 per pattern
+                if isinstance(match, tuple):
+                    query_text = f"{match[0]} contradiction resolution"
+                else:
+                    query_text = f"{match} optimization methods"
+
+                queries.append(ResearchQuery(
+                    query_text=query_text,
+                    query_type='contradiction',
+                    priority=priority,
+                    target_collections=['triz_documents', 'triz_principles']
+                ))
+
+        # Query 3: Search for TRIZ principles semantically
+        queries.append(ResearchQuery(
+            query_text=f"TRIZ inventive principles for {problem[:100]}",
+            query_type='principle',
+            priority=1.8,
+            target_collections=['triz_principles']
+        ))
+
+        # Query 4: Domain-specific search
+        domains = self._extract_domains(problem)
+        for domain in domains[:2]:
+            queries.append(ResearchQuery(
+                query_text=f"{domain} {problem[:50]}",
+                query_type='book',
+                priority=1.5,
+                target_collections=['triz_documents']
+            ))
+
+        # Query 5: Materials search if relevant
+        if any(word in problem_lower for word in ['material', 'weight', 'strength', 'property']):
+            queries.append(ResearchQuery(
+                query_text=f"materials for {problem[:50]}",
+                query_type='material',
+                priority=1.6,
+                target_collections=['materials_database', 'triz_documents']
+            ))
+
+        # Query 6: Cross-domain analogies
+        queries.append(ResearchQuery(
+            query_text=f"analogous problems {problem[:50]}",
+            query_type='analogy',
+            priority=1.3,
+            target_collections=['triz_documents']
+        ))
+
+        # Query 7: Solution examples
+        queries.append(ResearchQuery(
+            query_text=f"solutions examples {problem[:50]}",
+            query_type='book',
+            priority=1.4,
+            target_collections=['triz_documents']
+        ))
+
+        # Sort by priority
+        queries.sort(key=lambda q: q.priority, reverse=True)
+
+        return queries[:15]  # Limit to top 15 queries
+
+    def _multi_source_search(
+        self,
+        research_plan: List[ResearchQuery],
+        problem: str
+    ) -> List[ResearchFinding]:
+        """
+        Execute multiple searches across different collections in parallel.
+        """
+        findings = []
+
+        # Check if vector service is available
+        if not self.vector_service.is_available():
+            logger.warning("Vector service not available, using fallback")
+            return self._fallback_research(problem)
+
+        # Execute each query
+        for query in research_plan[:10]:  # Limit to top 10 to avoid overload
+            try:
+                # Generate embedding for query
+                query_embedding = self.embedding_service.generate_embedding(query.query_text)
+
+                if query_embedding is None:
+                    continue
+
+                # Search target collections
+                for collection in query.target_collections:
+                    if collection not in self.collections.values():
+                        continue
+
+                    results = self.vector_service.search(
+                        collection_name=collection,
+                        query_vector=query_embedding,
+                        limit=5,
+                        score_threshold=0.5
+                    )
+
+                    # Convert results to findings
+                    for result in results:
+                        finding = ResearchFinding(
+                            source=f"{collection} ({result.payload.get('document_name', 'N/A')})",
+                            content=result.payload.get('chunk_text', str(result.payload)),
+                            relevance_score=result.score * query.priority,
+                            metadata=result.payload,
+                            citations=[f"{collection}:{result.id}"]
+                        )
+                        findings.append(finding)
+
+            except Exception as e:
+                logger.warning(f"Search failed for query '{query.query_text}': {str(e)}")
+                continue
+
+        # Sort by relevance
+        findings.sort(key=lambda f: f.relevance_score, reverse=True)
+
+        return findings[:30]  # Return top 30 findings
+
+    def _deep_contradiction_analysis(
+        self,
+        problem: str,
+        findings: List[ResearchFinding]
+    ) -> List[Dict[str, Any]]:
+        """
+        Deep analysis of contradictions using both pattern matching
+        and findings from books.
+        """
+        contradictions = []
+        seen = set()
+
+        # Pattern-based extraction (existing method)
+        patterns = [
+            r"(\w+(?:\s+\w+)*)\s+while\s+(\w+(?:\s+\w+)*)",
+            r"(\w+(?:\s+\w+)*)\s+but\s+not\s+(\w+(?:\s+\w+)*)",
+            r"increase\s+(\w+(?:\s+\w+)*)\s+(?:reduce|decrease)\s+(\w+(?:\s+\w+)*)",
+        ]
+
+        problem_lower = problem.lower()
+
+        for pattern in patterns:
+            matches = re.findall(pattern, problem_lower)
+            for match in matches:
+                if len(match) >= 2:
+                    contradiction_key = f"{match[0]}_{match[1]}"
+                    if contradiction_key not in seen:
+                        seen.add(contradiction_key)
+                        contradictions.append({
+                            'type': 'technical',
+                            'improving': match[0],
+                            'worsening': match[1],
+                            'description': f"Need to improve {match[0]} while managing {match[1]}",
+                            'source': 'problem_statement'
+                        })
+
+        # Extract contradictions from findings
+        for finding in findings[:10]:
+            content_lower = finding.content.lower()
+            for pattern in patterns:
+                matches = re.findall(pattern, content_lower)
+                for match in matches:
+                    if len(match) >= 2:
+                        contradiction_key = f"{match[0]}_{match[1]}"
+                        if contradiction_key not in seen:
+                            seen.add(contradiction_key)
+                            contradictions.append({
+                                'type': 'discovered',
+                                'improving': match[0],
+                                'worsening': match[1],
+                                'description': f"Improve {match[0]} vs {match[1]}",
+                                'source': finding.source
+                            })
+
+        return contradictions[:10]  # Top 10 contradictions
+
+    def _semantic_principle_discovery(
+        self,
+        problem: str,
+        contradictions: List[Dict[str, Any]],
+        findings: List[ResearchFinding]
+    ) -> List[Dict[str, Any]]:
+        """
+        Discover relevant TRIZ principles using semantic search,
+        not just contradiction matrix lookup.
+        """
+        principles_map = {}
+
+        # 1. Matrix-based principles (existing method)
+        for contradiction in contradictions[:5]:
+            # Try to map to parameters (simplified)
+            imp_params = self._text_to_parameters(contradiction.get('improving', ''))
+            wor_params = self._text_to_parameters(contradiction.get('worsening', ''))
+
+            for imp in imp_params[:1]:
+                for wor in wor_params[:1]:
+                    result = self.matrix.lookup(imp, wor)
+                    if result:
+                        for p_id in result.recommended_principles:
+                            if p_id not in principles_map:
+                                principles_map[p_id] = {'score': 0, 'sources': []}
+                            principles_map[p_id]['score'] += 1.0
+                            principles_map[p_id]['sources'].append('contradiction_matrix')
+
+        # 2. Semantic search through principles
+        if self.vector_service.is_available():
+            try:
+                query_embedding = self.embedding_service.generate_embedding(problem)
+                if query_embedding is not None:
+                    results = self.vector_service.search(
+                        collection_name='triz_principles',
+                        query_vector=query_embedding,
+                        limit=10,
+                        score_threshold=0.3
+                    )
+
+                    for result in results:
+                        p_id = result.payload.get('principle_id', result.payload.get('principle_number'))
+                        if p_id and p_id not in principles_map:
+                            principles_map[p_id] = {'score': 0, 'sources': []}
+                        if p_id:
+                            principles_map[p_id]['score'] += result.score * 1.5  # Weight semantic search higher
+                            principles_map[p_id]['sources'].append('semantic_search')
+            except Exception as e:
+                logger.warning(f"Semantic principle search failed: {str(e)}")
+
+        # 3. Extract principles mentioned in findings
+        for finding in findings[:15]:
+            # Look for principle numbers mentioned
+            principle_mentions = re.findall(r'principle\s+(\d+)', finding.content.lower())
+            for p_id_str in principle_mentions:
+                try:
+                    p_id = int(p_id_str)
+                    if 1 <= p_id <= 40:
+                        if p_id not in principles_map:
+                            principles_map[p_id] = {'score': 0, 'sources': []}
+                        principles_map[p_id]['score'] += 0.8
+                        principles_map[p_id]['sources'].append(f'mentioned_in_{finding.source}')
+                except:
+                    pass
+
+        # Build final list with full details
+        principles_list = []
+        for p_id, data in principles_map.items():
+            principle = self.principles.get_principle(p_id)
+            if principle:
+                principles_list.append({
+                    'id': p_id,
+                    'name': principle.principle_name,
+                    'description': principle.description,
+                    'score': data['score'],
+                    'sources': data['sources'],
+                    'sub_principles': principle.sub_principles,
+                    'examples': principle.examples[:3],
+                    'domains': principle.domains,
+                    'usage_frequency': principle.usage_frequency,
+                    'innovation_level': principle.innovation_level
+                })
+
+        # Sort by score
+        principles_list.sort(key=lambda p: p['score'], reverse=True)
+
+        return principles_list[:10]  # Top 10 principles
+
+    def _find_cross_domain_analogies(
+        self,
+        problem: str,
+        findings: List[ResearchFinding]
+    ) -> List[Dict[str, Any]]:
+        """
+        Find analogous solutions from other domains.
+        """
+        analogies = []
+
+        # Extract domain from problem
+        problem_domain = self._extract_domains(problem)
+
+        # Search for similar patterns in other domains
+        other_domains = ['nature', 'automotive', 'aerospace', 'medical', 'construction', 'electronics']
+        search_domains = [d for d in other_domains if d not in problem_domain]
+
+        if self.vector_service.is_available():
+            for domain in search_domains[:3]:
+                try:
+                    query_text = f"{domain} solutions for {problem[:50]}"
+                    query_embedding = self.embedding_service.generate_embedding(query_text)
+
+                    if query_embedding is not None:
+                        results = self.vector_service.search(
+                            collection_name='triz_documents',
+                            query_vector=query_embedding,
+                            limit=3,
+                            score_threshold=0.4
+                        )
+
+                        for result in results:
+                            analogies.append({
+                                'source_domain': domain,
+                                'target_domain': problem_domain[0] if problem_domain else 'general',
+                                'description': result.payload.get('chunk_text', '')[:200],
+                                'relevance_score': result.score,
+                                'source_reference': result.payload.get('document_name', 'Unknown')
+                            })
+                except Exception as e:
+                    logger.debug(f"Analogy search failed for {domain}: {str(e)}")
+                    continue
+
+        return analogies[:5]  # Top 5 analogies
+
+    def _detect_knowledge_gaps(
+        self,
+        findings: List[ResearchFinding],
+        principles: List[Dict[str, Any]]
+    ) -> List[str]:
+        """
+        Detect what information is still missing.
+        """
+        gaps = []
+
+        # Check if we have enough findings
+        if len(findings) < 5:
+            gaps.append("Insufficient background research - need more sources")
+
+        # Check if we have principle coverage
+        if len(principles) < 3:
+            gaps.append("Limited principle coverage - need more TRIZ insights")
+
+        # Check for specific types of information
+        has_material_info = any('material' in f.content.lower() for f in findings[:10])
+        has_implementation_info = any('implement' in f.content.lower() for f in findings[:10])
+        has_case_studies = any('case' in f.content.lower() or 'example' in f.content.lower() for f in findings[:10])
+
+        if not has_material_info:
+            gaps.append("Missing materials information")
+
+        if not has_implementation_info:
+            gaps.append("Missing implementation guidance")
+
+        if not has_case_studies:
+            gaps.append("Missing case studies and examples")
+
+        return gaps
+
+    def _recursive_deep_dive(
+        self,
+        gaps: List[str],
+        original_problem: str
+    ) -> List[ResearchFinding]:
+        """
+        Perform recursive search to fill knowledge gaps.
+        """
+        additional_findings = []
+
+        # Generate queries to fill gaps
+        gap_queries = []
+        for gap in gaps[:3]:  # Limit to top 3 gaps
+            if "material" in gap.lower():
+                gap_queries.append(f"materials specifications {original_problem[:30]}")
+            elif "implementation" in gap.lower():
+                gap_queries.append(f"implementation steps {original_problem[:30]}")
+            elif "case" in gap.lower():
+                gap_queries.append(f"case studies examples {original_problem[:30]}")
+            elif "principle" in gap.lower():
+                gap_queries.append(f"TRIZ principles detailed {original_problem[:30]}")
+
+        # Execute gap-filling searches
+        for query_text in gap_queries:
+            try:
+                query_embedding = self.embedding_service.generate_embedding(query_text)
+                if query_embedding is None:
+                    continue
+
+                results = self.vector_service.search(
+                    collection_name='triz_documents',
+                    query_vector=query_embedding,
+                    limit=3,
+                    score_threshold=0.4
+                )
+
+                for result in results:
+                    finding = ResearchFinding(
+                        source=f"gap_filling_{result.payload.get('document_name', 'N/A')}",
+                        content=result.payload.get('chunk_text', '')[:500],
+                        relevance_score=result.score,
+                        metadata=result.payload,
+                        citations=[f"deep_dive:{result.id}"]
+                    )
+                    additional_findings.append(finding)
+            except Exception as e:
+                logger.debug(f"Gap-filling search failed for '{query_text}': {str(e)}")
+                continue
+
+        return additional_findings
+
+    def _synthesize_solutions(
+        self,
+        problem: str,
+        findings: List[ResearchFinding],
+        principles: List[Dict[str, Any]],
+        contradictions: List[Dict[str, Any]],
+        analogies: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        """
+        Synthesize solutions from all research findings.
+        NOT template-based - creates deeply researched solutions.
+        """
+        solutions = []
+
+        # Solution 1-3: Based on top principles with research support
+        for i, principle in enumerate(principles[:3]):
+            # Find relevant findings for this principle
+            principle_findings = [
+                f for f in findings
+                if str(principle['id']) in f.content or principle['name'].lower() in f.content.lower()
+            ]
+
+            # Find relevant analogies
+            principle_analogies = [
+                a for a in analogies
+                if principle['name'].lower() in a['description'].lower()
+            ][:2]
+
+            solution = {
+                'title': f"{principle['name']}-Based Solution",
+                'description': self._generate_research_based_description(
+                    principle,
+                    principle_findings[:3],
+                    problem
+                ),
+                'applied_principles': [principle['id']],
+                'principle_names': [principle['name']],
+                'research_support': [
+                    {
+                        'source': f.source,
+                        'excerpt': f.content[:150],
+                        'relevance': f.relevance_score
+                    }
+                    for f in principle_findings[:3]
+                ],
+                'cross_domain_insights': [
+                    {
+                        'domain': a['source_domain'],
+                        'insight': a['description'][:100]
+                    }
+                    for a in principle_analogies
+                ],
+                'pros': self._extract_pros_from_research(principle_findings),
+                'cons': self._extract_cons_from_research(principle_findings),
+                'feasibility_score': 0.7 + (0.05 * (3 - i)),
+                'confidence': min(1.0, principle['score'] / 3.0 + len(principle_findings) * 0.1),
+                'implementation_hints': self._extract_implementation_hints(principle_findings),
+                'citations': [f.source for f in principle_findings[:5]]
+            }
+
+            solutions.append(solution)
+
+        # Solution 4: Hybrid solution combining top 2 principles
+        if len(principles) >= 2:
+            hybrid_findings = findings[:5]  # Use top general findings
+
+            solution = {
+                'title': f"Hybrid: {principles[0]['name']} + {principles[1]['name']}",
+                'description': f"Synthesized approach combining {principles[0]['name']} and {principles[1]['name']}. "
+                              f"{principles[0]['description'][:100]}... integrated with {principles[1]['description'][:100]}...",
+                'applied_principles': [principles[0]['id'], principles[1]['id']],
+                'principle_names': [principles[0]['name'], principles[1]['name']],
+                'research_support': [
+                    {
+                        'source': f.source,
+                        'excerpt': f.content[:150],
+                        'relevance': f.relevance_score
+                    }
+                    for f in hybrid_findings
+                ],
+                'cross_domain_insights': [a for a in analogies[:2]],
+                'pros': [
+                    "Addresses multiple contradictions simultaneously",
+                    "Synergistic effects from principle combination",
+                    "Supported by multiple research sources"
+                ],
+                'cons': [
+                    "Higher implementation complexity",
+                    "Requires careful integration",
+                    "May need more resources"
+                ],
+                'feasibility_score': 0.65,
+                'confidence': min(1.0, (principles[0]['score'] + principles[1]['score']) / 6.0),
+                'implementation_hints': self._extract_implementation_hints(hybrid_findings),
+                'citations': [f.source for f in hybrid_findings]
+            }
+
+            solutions.append(solution)
+
+        # Solution 5: Analogy-based solution (if we have good analogies)
+        if analogies:
+            best_analogy = analogies[0]
+
+            solution = {
+                'title': f"Cross-Domain Solution from {best_analogy['source_domain'].title()}",
+                'description': f"Adapted from successful approaches in {best_analogy['source_domain']}: "
+                              f"{best_analogy['description']}",
+                'applied_principles': [p['id'] for p in principles[:2]],
+                'principle_names': [p['name'] for p in principles[:2]],
+                'research_support': [
+                    {
+                        'source': best_analogy['source_reference'],
+                        'excerpt': best_analogy['description'][:150],
+                        'relevance': best_analogy['relevance_score']
+                    }
+                ],
+                'cross_domain_insights': analogies[:3],
+                'pros': [
+                    "Proven in another domain",
+                    "Novel cross-domain transfer",
+                    "Lower risk due to existing validation"
+                ],
+                'cons': [
+                    "May need adaptation to current domain",
+                    "Domain differences could introduce challenges"
+                ],
+                'feasibility_score': 0.7,
+                'confidence': best_analogy['relevance_score'],
+                'implementation_hints': [f"Study {best_analogy['source_domain']} implementations"],
+                'citations': [best_analogy['source_reference']]
+            }
+
+            solutions.append(solution)
+
+        return solutions
+
+    def _generate_research_based_description(
+        self,
+        principle: Dict[str, Any],
+        findings: List[ResearchFinding],
+        problem: str
+    ) -> str:
+        """Generate solution description based on research findings"""
+        desc = f"Apply {principle['name']} principle to {problem[:80]}. "
+
+        # Add principle description
+        desc += f"{principle['description']} "
+
+        # Add insights from research
+        if findings:
+            desc += f"\n\nResearch insights: "
+            for finding in findings[:2]:
+                excerpt = finding.content[:150].strip()
+                desc += f"\n- From {finding.source}: {excerpt}... "
+
+        # Add sub-principle details
+        if principle.get('sub_principles'):
+            desc += f"\n\nSpecific approaches: {principle['sub_principles'][0]}"
+
+        return desc
+
+    def _extract_pros_from_research(self, findings: List[ResearchFinding]) -> List[str]:
+        """Extract pros from research findings"""
+        pros = []
+
+        for finding in findings[:3]:
+            content_lower = finding.content.lower()
+
+            # Look for positive indicators
+            if any(word in content_lower for word in ['benefit', 'advantage', 'improve', 'effective']):
+                # Extract sentence containing these words
+                sentences = finding.content.split('.')
+                for sentence in sentences:
+                    if any(word in sentence.lower() for word in ['benefit', 'advantage']):
+                        pros.append(sentence.strip()[:100])
+                        break
+
+        if not pros:
+            pros = [
+                "Supported by research findings",
+                "Based on proven TRIZ methodology",
+                "Applicable to problem domain"
+            ]
+
+        return pros[:4]
+
+    def _extract_cons_from_research(self, findings: List[ResearchFinding]) -> List[str]:
+        """Extract cons from research findings"""
+        cons = []
+
+        for finding in findings[:3]:
+            content_lower = finding.content.lower()
+
+            # Look for challenges/limitations
+            if any(word in content_lower for word in ['challenge', 'limitation', 'difficult', 'risk']):
+                sentences = finding.content.split('.')
+                for sentence in sentences:
+                    if any(word in sentence.lower() for word in ['challenge', 'limitation']):
+                        cons.append(sentence.strip()[:100])
+                        break
+
+        if not cons:
+            cons = [
+                "May require initial investment",
+                "Implementation complexity needs assessment",
+                "Domain-specific validation recommended"
+            ]
+
+        return cons[:4]
+
+    def _extract_implementation_hints(self, findings: List[ResearchFinding]) -> List[str]:
+        """Extract implementation hints from findings"""
+        hints = []
+
+        for finding in findings[:5]:
+            content_lower = finding.content.lower()
+
+            # Look for implementation guidance
+            if any(word in content_lower for word in ['implement', 'step', 'process', 'method']):
+                sentences = finding.content.split('.')
+                for sentence in sentences:
+                    if any(word in sentence.lower() for word in ['implement', 'step', 'first']):
+                        hints.append(sentence.strip()[:120])
+                        break
+
+        if not hints:
+            hints = [
+                "Start with feasibility analysis",
+                "Create prototype for testing",
+                "Validate with domain experts"
+            ]
+
+        return hints[:5]
+
+    def _calculate_confidence(
+        self,
+        findings: List[ResearchFinding],
+        principles: List[Dict[str, Any]],
+        solutions: List[Dict[str, Any]]
+    ) -> float:
+        """Calculate overall confidence score based on research depth"""
+        confidence = 0.5  # Base confidence
+
+        # Boost for number of findings
+        confidence += min(0.2, len(findings) * 0.01)
+
+        # Boost for number of principles
+        confidence += min(0.15, len(principles) * 0.03)
+
+        # Boost for solution quality
+        if solutions:
+            avg_solution_confidence = sum(s.get('confidence', 0.5) for s in solutions) / len(solutions)
+            confidence += avg_solution_confidence * 0.2
+
+        # Boost for source diversity
+        unique_sources = len(set(f.source for f in findings))
+        confidence += min(0.15, unique_sources * 0.02)
+
+        return min(1.0, confidence)
+
+    def _fallback_research(self, problem: str) -> List[ResearchFinding]:
+        """Fallback research when vector service is unavailable"""
+        # Use file-based search or direct principle lookup
+        findings = []
+
+        # Add principles as findings
+        for i, principle in enumerate(self.principles.principles.values()):
+            if i >= 10:  # Limit to 10
+                break
+
+            finding = ResearchFinding(
+                source=f"TRIZ Principle {principle.principle_id}",
+                content=f"{principle.principle_name}: {principle.description}",
+                relevance_score=0.5,
+                metadata={'principle_id': principle.principle_id}
+            )
+            findings.append(finding)
+
+        return findings
+
+    def _text_to_parameters(self, text: str) -> List[int]:
+        """Convert text to TRIZ parameter numbers (simplified)"""
+        # Simple keyword mapping
+        param_keywords = {
+            1: ['weight', 'mass'],
+            11: ['strength', 'strong'],
+            18: ['energy', 'power'],
+            29: ['productivity', 'efficiency']
+        }
+
+        text_lower = text.lower()
+        params = []
+
+        for param_id, keywords in param_keywords.items():
+            if any(kw in text_lower for kw in keywords):
+                params.append(param_id)
+
+        return params if params else [1]  # Default to weight
+
+    def _extract_domains(self, text: str) -> List[str]:
+        """Extract relevant domains from text"""
+        domains = []
+        text_lower = text.lower()
+
+        domain_keywords = {
+            'aerospace': ['aircraft', 'wing', 'flight', 'aviation'],
+            'automotive': ['car', 'vehicle', 'engine', 'automotive'],
+            'medical': ['medical', 'health', 'patient', 'clinical'],
+            'manufacturing': ['production', 'factory', 'assembly', 'manufacturing'],
+            'electronics': ['electronic', 'circuit', 'sensor', 'chip'],
+            'construction': ['building', 'construction', 'structural', 'architecture']
+        }
+
+        for domain, keywords in domain_keywords.items():
+            if any(kw in text_lower for kw in keywords):
+                domains.append(domain)
+
+        return domains if domains else ['general']
+
+
+# Singleton instance
+_research_agent: Optional[DeepResearchAgent] = None
+
+
+def get_research_agent(reset: bool = False) -> DeepResearchAgent:
+    """Get or create research agent singleton"""
+    global _research_agent
+
+    if reset or _research_agent is None:
+        _research_agent = DeepResearchAgent()
+
+    return _research_agent

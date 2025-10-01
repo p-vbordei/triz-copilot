@@ -130,39 +130,160 @@ Based on your contradiction analysis:
 
     @staticmethod
     def _format_solve_response(response: TRIZToolResponse) -> str:
-        """Format autonomous solve response (TASK-020)"""
+        """Format autonomous solve response with deep research provenance (TASK-020)"""
         data = response.data
 
-        output = f"""## 🚀 TRIZ Solution Analysis
+        output = f"""## 🔬 Deep TRIZ Research Analysis
 
 ### Problem Summary
 {data.get('problem_summary', 'N/A')}
 
 """
 
-        # Contradictions
+        # Research Depth Metrics
+        if "research_depth" in data:
+            rd = data["research_depth"]
+            output += f"""### 📊 Research Depth
+- **Findings Collected**: {rd.get('total_findings', 0)}
+- **Sources Consulted**: {rd.get('sources_consulted', 0)}
+- **Queries Executed**: {rd.get('queries_executed', 0)}
+- **Confidence Score**: {data.get('confidence_score', 0.0):.0%}
+
+"""
+
+        # Ideal Final Result
+        if "ideal_final_result" in data:
+            output += f"""### 🎯 Ideal Final Result
+{data['ideal_final_result']}
+
+"""
+
+        # Contradictions with sources
         if "contradictions" in data and data["contradictions"]:
-            output += "### Identified Contradictions\n"
-            for i, contradiction in enumerate(data["contradictions"], 1):
-                output += f"{i}. {contradiction.get('description', 'N/A')}\n"
+            output += "### ⚡ Identified Contradictions\n"
+            for i, contradiction in enumerate(data["contradictions"][:5], 1):
+                output += f"{i}. **{contradiction.get('improving', 'N/A')}** vs **{contradiction.get('worsening', 'N/A')}**\n"
+                output += f"   - {contradiction.get('description', 'N/A')}\n"
+                if contradiction.get('source') and contradiction['source'] != 'analysis':
+                    output += f"   - *Source: {contradiction['source']}*\n"
             output += "\n"
 
-        # Recommended principles
+        # Recommended principles with rich metadata
         if "recommended_principles" in data and data["recommended_principles"]:
-            output += "### Recommended TRIZ Principles\n"
+            output += "### 💡 Recommended TRIZ Principles\n\n"
             for principle in data["recommended_principles"][:5]:
-                output += f"- **#{principle.get('number', 'N/A')} - {principle.get('name', 'Unknown')}**: "
-                output += f"{principle.get('description', 'No description')[:150]}...\n"
-            output += "\n"
+                p_num = principle.get('number', 'N/A')
+                p_name = principle.get('name', 'Unknown')
+                p_score = principle.get('relevance_score', 0.0)
 
-        # Solution concepts
+                output += f"#### Principle {p_num}: {p_name}\n"
+                output += f"**Relevance**: {p_score:.0%} | "
+                output += f"**Usage**: {principle.get('usage_frequency', 'medium').title()} | "
+                output += f"**Innovation Level**: {principle.get('innovation_level', 3)}/5\n\n"
+
+                output += f"{principle.get('description', 'No description')[:200]}...\n\n"
+
+                # Show sources where this principle was found
+                if principle.get('sources'):
+                    sources = principle['sources'][:3]  # Limit to 3
+                    output += f"*Found in: {', '.join(sources)}*\n\n"
+
+                # Show domains
+                if principle.get('domains'):
+                    output += f"*Applicable domains: {', '.join(principle['domains'][:3])}*\n\n"
+
+                # Show examples
+                if principle.get('examples'):
+                    output += f"**Example**: {principle['examples'][0]}\n\n"
+
+                output += "---\n\n"
+
+        # Cross-Domain Analogies
+        if "cross_domain_analogies" in data and data["cross_domain_analogies"]:
+            output += "### 🌐 Cross-Domain Insights\n\n"
+            for i, analogy in enumerate(data["cross_domain_analogies"][:3], 1):
+                output += f"{i}. **From {analogy.get('source_domain', 'Unknown').title()}**\n"
+                output += f"   {analogy.get('description', 'N/A')[:150]}...\n"
+                output += f"   *Relevance: {analogy.get('relevance_score', 0.0):.0%}*\n"
+                if analogy.get('source_reference'):
+                    output += f"   *Source: {analogy['source_reference']}*\n"
+                output += "\n"
+
+        # Solution concepts with full research provenance
         if "solutions" in data and data["solutions"]:
-            output += "### Solution Concepts\n"
+            output += "### 🎨 Solution Concepts (Research-Based)\n\n"
             for i, solution in enumerate(data["solutions"], 1):
-                output += f"\n#### Solution {i}: {solution.get('title', 'Untitled')}\n"
-                output += f"{solution.get('description', 'No description')}\n"
-                if "principle" in solution:
-                    output += f"*Based on Principle #{solution['principle']}*\n"
+                output += f"#### Solution {i}: {solution.get('title', 'Untitled')}\n\n"
+
+                # Confidence and feasibility
+                conf = solution.get('confidence', 0.5)
+                feas = solution.get('feasibility_score', 0.7)
+                output += f"**Confidence**: {conf:.0%} | **Feasibility**: {feas:.0%}\n\n"
+
+                # Description
+                output += f"{solution.get('description', 'No description')}\n\n"
+
+                # Applied principles
+                if solution.get('principle_names'):
+                    output += f"**Applied Principles**: {', '.join(solution['principle_names'])}\n\n"
+
+                # Research Support - THIS IS THE KEY INNOVATION
+                if solution.get('research_support'):
+                    output += "**📚 Research Support**:\n"
+                    for support in solution['research_support'][:3]:
+                        output += f"- *{support.get('source', 'Unknown')}*: \"{support.get('excerpt', 'N/A')[:100]}...\"\n"
+                        output += f"  (Relevance: {support.get('relevance', 0.0):.0%})\n"
+                    output += "\n"
+
+                # Cross-domain insights for this solution
+                if solution.get('cross_domain_insights'):
+                    output += "**🔗 Cross-Domain Insights**:\n"
+                    for insight in solution['cross_domain_insights'][:2]:
+                        domain = insight.get('domain', 'unknown')
+                        desc = insight.get('insight', 'N/A')[:80]
+                        output += f"- From {domain}: {desc}...\n"
+                    output += "\n"
+
+                # Pros and Cons
+                if solution.get('pros'):
+                    output += "**Pros**:\n"
+                    for pro in solution['pros'][:3]:
+                        output += f"- {pro}\n"
+                    output += "\n"
+
+                if solution.get('cons'):
+                    output += "**Cons**:\n"
+                    for con in solution['cons'][:3]:
+                        output += f"- {con}\n"
+                    output += "\n"
+
+                # Implementation Hints
+                if solution.get('implementation_hints'):
+                    output += "**Implementation Hints**:\n"
+                    for hint in solution['implementation_hints'][:3]:
+                        output += f"- {hint}\n"
+                    output += "\n"
+
+                # Citations
+                if solution.get('citations'):
+                    citations = solution['citations'][:5]
+                    output += f"**Citations**: {', '.join(citations)}\n\n"
+
+                output += "---\n\n"
+
+        # Knowledge Gaps (if any)
+        if "research_depth" in data and data["research_depth"].get('knowledge_gaps'):
+            gaps = data["research_depth"]['knowledge_gaps']
+            if gaps:
+                output += "### 🔍 Knowledge Gaps Identified\n"
+                for gap in gaps[:3]:
+                    output += f"- {gap}\n"
+                output += "\n*Consider additional research in these areas*\n\n"
+
+        # Fallback mode indicator
+        if data.get('fallback_mode'):
+            output += "---\n\n"
+            output += "⚠️ *Note: Deep research unavailable, using fallback analysis*\n"
 
         return output
 

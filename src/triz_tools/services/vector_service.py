@@ -377,16 +377,16 @@ class VectorService:
     def get_collection_info(self, collection_name: str) -> Optional[Dict[str, Any]]:
         """
         Get information about a collection.
-        
+
         Args:
             collection_name: Collection name
-        
+
         Returns:
             Dictionary with collection info or None
         """
         if not self.is_available():
             return None
-        
+
         try:
             info = self.client.get_collection(collection_name=collection_name)
             return {
@@ -400,10 +400,154 @@ class VectorService:
                     "distance": info.config.params.vectors.distance,
                 }
             }
-            
+
         except Exception as e:
             logger.error(f"Failed to get collection info: {str(e)}")
             return None
+
+    def multi_collection_search(
+        self,
+        collection_names: List[str],
+        query_vector: np.ndarray,
+        limit_per_collection: int = 5,
+        score_threshold: Optional[float] = None
+    ) -> Dict[str, List[SearchResult]]:
+        """
+        Search across multiple collections simultaneously.
+
+        Args:
+            collection_names: List of collections to search
+            query_vector: Query vector
+            limit_per_collection: Results per collection
+            score_threshold: Minimum similarity score
+
+        Returns:
+            Dictionary mapping collection names to results
+        """
+        if not self.is_available():
+            return {}
+
+        results = {}
+
+        for collection_name in collection_names:
+            try:
+                collection_results = self.search(
+                    collection_name=collection_name,
+                    query_vector=query_vector,
+                    limit=limit_per_collection,
+                    score_threshold=score_threshold
+                )
+                if collection_results:
+                    results[collection_name] = collection_results
+                    logger.debug(f"Found {len(collection_results)} results in '{collection_name}'")
+            except Exception as e:
+                logger.warning(f"Search failed for collection '{collection_name}': {str(e)}")
+                continue
+
+        return results
+
+    def batch_search(
+        self,
+        collection_name: str,
+        query_vectors: List[np.ndarray],
+        limit_per_query: int = 5
+    ) -> List[List[SearchResult]]:
+        """
+        Perform multiple searches in parallel.
+
+        Args:
+            collection_name: Collection to search
+            query_vectors: List of query vectors
+            limit_per_query: Results per query
+
+        Returns:
+            List of result lists (one per query)
+        """
+        if not self.is_available():
+            return []
+
+        all_results = []
+
+        for query_vector in query_vectors:
+            results = self.search(
+                collection_name=collection_name,
+                query_vector=query_vector,
+                limit=limit_per_query
+            )
+            all_results.append(results)
+
+        return all_results
+
+    def search_with_reranking(
+        self,
+        collection_name: str,
+        query_vector: np.ndarray,
+        initial_limit: int = 20,
+        final_limit: int = 5,
+        diversity_penalty: float = 0.1
+    ) -> List[SearchResult]:
+        """
+        Search with result reranking for diversity.
+
+        Args:
+            collection_name: Collection to search
+            query_vector: Query vector
+            initial_limit: Initial results to fetch
+            final_limit: Final results to return
+            diversity_penalty: Penalty for similar results
+
+        Returns:
+            Reranked search results
+        """
+        if not self.is_available():
+            return []
+
+        # Get initial results
+        results = self.search(
+            collection_name=collection_name,
+            query_vector=query_vector,
+            limit=initial_limit
+        )
+
+        if len(results) <= final_limit:
+            return results
+
+        # Rerank for diversity
+        selected = []
+        remaining = results.copy()
+
+        # Always include top result
+        if remaining:
+            selected.append(remaining.pop(0))
+
+        # Select diverse results
+        while len(selected) < final_limit and remaining:
+            best_score = -1
+            best_idx = 0
+
+            for idx, candidate in enumerate(remaining):
+                # Base score from similarity
+                score = candidate.score
+
+                # Apply diversity penalty based on similarity to selected
+                for selected_result in selected:
+                    try:
+                        # Get vectors if available
+                        if hasattr(candidate, 'payload') and hasattr(selected_result, 'payload'):
+                            # Simple diversity check based on payload similarity
+                            common_fields = set(candidate.payload.keys()) & set(selected_result.payload.keys())
+                            similarity = len(common_fields) / max(len(candidate.payload), len(selected_result.payload))
+                            score -= diversity_penalty * similarity
+                    except:
+                        pass
+
+                if score > best_score:
+                    best_score = score
+                    best_idx = idx
+
+            selected.append(remaining.pop(best_idx))
+
+        return selected
 
 
 # Singleton instance
