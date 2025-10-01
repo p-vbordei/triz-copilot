@@ -27,11 +27,14 @@ from claude_tools.direct_handler import (
     handle_contradiction_matrix,
     handle_brainstorm,
 )
-from triz_tools.logging_config import setup_logging
+import logging
 
-
-# Setup logging
-logger = setup_logging("claude_mcp_server")
+# Setup simple logging for MCP server
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("claude_mcp_server")
 
 # Create MCP server instance
 app = Server("triz-copilot")
