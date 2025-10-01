@@ -78,9 +78,9 @@ Please check your input and try again."""
 **Stage**: {stage.value if hasattr(stage, 'value') else stage}
 """
 
-        # Add suggestions if available
-        if response.suggestions:
-            output += f"\n**Suggestions**: {', '.join(response.suggestions)}\n"
+        # Add suggestions if available in data
+        if data.get('suggestions'):
+            output += f"\n**Suggestions**: {', '.join(data['suggestions'])}\n"
 
         return output
 
@@ -189,7 +189,7 @@ Based on your contradiction analysis:
             WorkflowStage.PRINCIPLE_SELECTION: 3,
             WorkflowStage.SOLUTION_GENERATION: 4,
             WorkflowStage.EVALUATION: 5,
-            WorkflowStage.IMPLEMENTATION: 6,
+            WorkflowStage.COMPLETED: 6,
         }
         return stage_map.get(stage, 0)
 
@@ -202,7 +202,7 @@ Based on your contradiction analysis:
             WorkflowStage.PRINCIPLE_SELECTION: "Principle Selection",
             WorkflowStage.SOLUTION_GENERATION: "Solution Generation",
             WorkflowStage.EVALUATION: "Solution Evaluation",
-            WorkflowStage.IMPLEMENTATION: "Implementation Planning",
+            WorkflowStage.COMPLETED: "Completed",
         }
         return stage_titles.get(stage, "Unknown Stage")
 
