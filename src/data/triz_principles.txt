@@ -1,0 +1,414 @@
+# TRIZ 40 Inventive Principles
+
+## Principle 1: Segmentation
+a) Divide an object into independent parts
+b) Make an object easy to disassemble
+c) Increase the degree of fragmentation or segmentation
+
+Examples:
+- Modular furniture
+- Sectional sofas
+- Computer components
+- Replaceable razor blades
+
+## Principle 2: Taking Out
+a) Separate an interfering part or property from an object
+b) Single out the only useful part or property of an object
+
+Examples:
+- Noise cancellation headphones
+- Separate noisy compressor from quiet air conditioner
+- Locate a loud sound source away from where quiet is needed
+
+## Principle 3: Local Quality
+a) Change the structure of an object from uniform to non-uniform
+b) Change an external environment from uniform to non-uniform
+c) Make each part of an object function in conditions most suitable for its operation
+
+Examples:
+- Ergonomic tools with varying grip density
+- Progressive lenses in eyeglasses
+- Selective catalytic converters
+
+## Principle 4: Asymmetry
+a) Change the shape of an object from symmetrical to asymmetrical
+b) If an object is asymmetrical, increase its degree of asymmetry
+
+Examples:
+- Asymmetric mixing vessels create more turbulence
+- Asymmetric tires for better traction
+- Offset cam mechanisms
+
+## Principle 5: Merging
+a) Bring closer together identical or similar objects
+b) Assemble identical or similar parts to perform parallel operations
+c) Make operations contiguous or parallel
+
+Examples:
+- Network computers
+- Thousands of microprocessors in parallel computer
+- Vanes in venetian blinds
+
+## Principle 6: Universality
+a) Make an object or structure perform multiple functions
+b) Eliminate the need for other parts
+
+Examples:
+- Swiss Army knife
+- Sofa bed
+- Printer/scanner/copier combination
+- Child's car seat converts to stroller
+
+## Principle 7: Nesting
+a) Place one object inside another
+b) Place multiple objects inside others
+c) Make one part pass through a cavity in another
+
+Examples:
+- Telescoping antenna
+- Russian nested dolls (Matryoshka)
+- Retractable aircraft landing gear
+- Zoom lenses
+
+## Principle 8: Anti-Weight
+a) To compensate for weight, merge with objects that provide lift
+b) Compensate for weight by interaction with environment
+
+Examples:
+- Helium balloons to support advertising signs
+- Hydrofoils lift ship out of water
+- Magnetic levitation trains
+- Air cushion vehicles
+
+## Principle 9: Preliminary Anti-Action
+a) If harmful action is necessary, create beforehand anti-actions
+b) Create beforehand stresses in an object that oppose harmful stresses
+
+Examples:
+- Pre-stressed concrete
+- Pre-tension in bolts
+- Vaccinations
+- Fire breaks in forests
+
+## Principle 10: Preliminary Action
+a) Perform required change of an object in advance
+b) Pre-arrange objects so they can come into action conveniently
+
+Examples:
+- Pre-pasted wallpaper
+- Sterilized surgical instruments
+- Pre-formatted documents
+- Just-in-time manufacturing setup
+
+## Principle 11: Beforehand Cushioning
+a) Prepare emergency means beforehand
+b) Compensate for relatively low reliability with emergency measures
+
+Examples:
+- Airbags in cars
+- Backup parachutes
+- Emergency generators
+- Spare tires
+
+## Principle 12: Equipotentiality
+a) Limit position changes
+b) In a potential field, limit changes in conditions
+
+Examples:
+- Spring-loaded parts deliver components
+- Locks in canals to eliminate lifting water
+- "Skilift" chairs
+- Mechanical arms in factories
+
+## Principle 13: The Other Way Round
+a) Invert the action used to solve the problem
+b) Make movable parts fixed, and fixed parts movable
+c) Turn the object upside down
+
+Examples:
+- Moving sidewalk
+- Rotate the part instead of the tool
+- Treadmill
+- Inverted container cleaning
+
+## Principle 14: Spheroidality - Curvature
+a) Replace linear parts with curved ones
+b) Use rollers, balls, spirals, domes
+c) Replace linear motion with rotary motion
+
+Examples:
+- Ball point pens
+- Ball bearings
+- Arch structures
+- Spiral conveyors
+
+## Principle 15: Dynamics
+a) Allow characteristics of object to change to be optimal
+b) Divide object into parts capable of movement relative to each other
+c) If object is rigid, make it movable or adaptive
+
+Examples:
+- Adjustable steering wheels
+- Flexible manufacturing systems
+- Shape memory alloys
+- Adaptive wings on aircraft
+
+## Principle 16: Partial or Excessive Actions
+a) If 100% of objective is hard to achieve, use slightly less or more
+
+Examples:
+- Over-spray when painting, then remove excess
+- Over-fill molds to ensure complete filling
+- Backup systems that exceed requirements
+- Safety margins in design
+
+## Principle 17: Another Dimension
+a) Move object in two- or three-dimensional space
+b) Use multi-story arrangement instead of single-story
+c) Tilt or re-orient the object
+d) Use another side of area
+
+Examples:
+- Multi-layer circuit boards
+- Stack parking systems
+- Greenhouse with slanted glass roof
+- Double-sided tape
+
+## Principle 18: Mechanical Vibration
+a) Cause object to oscillate or vibrate
+b) Increase frequency
+c) Use object's resonant frequency
+d) Use piezoelectric vibrators
+e) Use combined ultrasonic and electromagnetic field oscillations
+
+Examples:
+- Vibrating screens for separation
+- Ultrasonic cleaning
+- Vibration to reduce friction
+- Oscillating razor blades
+
+## Principle 19: Periodic Action
+a) Replace continuous action with periodic or pulsating
+b) If action is already periodic, change frequency
+c) Use pauses between impulses to perform different action
+
+Examples:
+- Impact wrenches
+- Pulsating water jets for cleaning
+- ABS braking systems
+- Flashing warning lights
+
+## Principle 20: Continuity of Useful Action
+a) Carry on work continuously
+b) Eliminate all idle or intermittent actions
+c) Replace back-and-forth motion with rotary
+
+Examples:
+- Continuous casting of steel
+- Rotary engines
+- Continuous printing processes
+- Flywheel energy storage
+
+## Principle 21: Skipping
+a) Conduct process at high speed
+b) Skip harmful or hazardous operations
+
+Examples:
+- High-speed cutting to avoid heating
+- Fast freezing to preserve food structure
+- Rapid prototyping
+- High-speed photography
+
+## Principle 22: "Blessing in Disguise"
+a) Use harmful factors to achieve positive effect
+b) Eliminate harmful factor by adding it with another harmful factor
+c) Amplify harmful factor until it's no longer harmful
+
+Examples:
+- Use waste heat for building heating
+- Use pressure to create diamonds
+- Homeopathic medicine
+- Controlled burns prevent forest fires
+
+## Principle 23: Feedback
+a) Introduce feedback
+b) If feedback exists, change its magnitude or influence
+
+Examples:
+- Thermostat controls
+- Automatic volume control in audio
+- Servo mechanisms
+- Quality control systems
+
+## Principle 24: Intermediary
+a) Use intermediary carrier or process
+b) Merge one object temporarily with another
+
+Examples:
+- Carpenter's nail set
+- Catalyst in chemical reactions
+- Temporary protective coatings
+- Marriage broker
+
+## Principle 25: Self-Service
+a) Make object serve itself
+b) Use waste resources, energy, or substances
+
+Examples:
+- Self-cleaning ovens
+- Self-sharpening knives
+- Regenerative braking
+- Self-lubricating bearings
+
+## Principle 26: Copying
+a) Use simpler, inexpensive copies
+b) Replace object with optical copies
+c) If optical copies used, move to infrared or ultraviolet
+
+Examples:
+- Virtual reality simulations
+- Photographs instead of physical presence
+- Backup copies of data
+- Scale models for testing
+
+## Principle 27: Cheap Short-Living Objects
+a) Replace expensive object with multiple inexpensive objects
+
+Examples:
+- Disposable diapers
+- Paper patterns for sewing
+- Disposable cameras
+- Single-use medical devices
+
+## Principle 28: Mechanics Substitution
+a) Replace mechanical means with sensory means
+b) Use electric, magnetic and electromagnetic fields
+c) Replace static fields with dynamic ones
+d) Use fields in conjunction with field-activated particles
+
+Examples:
+- Magnetic bearings
+- Electromagnetic valves
+- Optical mouse vs mechanical
+- Electronic sensors replace mechanical switches
+
+## Principle 29: Pneumatics and Hydraulics
+a) Use gas and liquid parts instead of solid parts
+
+Examples:
+- Air cushion vehicles
+- Hydraulic lifts
+- Pneumatic transport
+- Inflatable structures
+
+## Principle 30: Flexible Shells and Thin Films
+a) Use flexible shells and thin films instead of three-dimensional structures
+b) Isolate object from external environment using flexible shells
+
+Examples:
+- Bubble wrap packaging
+- Thin film solar cells
+- Inflatable mattresses
+- Membrane structures
+
+## Principle 31: Porous Materials
+a) Make object porous or add porous elements
+b) If object is already porous, use pores to introduce useful substance
+
+Examples:
+- Foam metals for lightweight structures
+- Porous electrodes in batteries
+- Sponges
+- Catalytic converters
+
+## Principle 32: Color Changes
+a) Change color of object or external environment
+b) Change transparency of object or external environment
+
+Examples:
+- Thermochromic materials
+- Photochromic lenses
+- pH indicators
+- Camouflage
+
+## Principle 33: Homogeneity
+a) Make objects interacting with given object of same material
+
+Examples:
+- Diamond cutting tools for diamonds
+- Ice structures in cold regions
+- Wooden dowels in wood
+- Make container from same material as contents
+
+## Principle 34: Discarding and Recovering
+a) Make portions of object that have fulfilled their functions disappear
+b) Restore consumable parts during operation
+
+Examples:
+- Dissolving capsules for medicine
+- Biodegradable packaging
+- Self-restoring coatings
+- Rocket stages
+
+## Principle 35: Parameter Changes
+a) Change object's physical state
+b) Change concentration or consistency
+c) Change degree of flexibility
+d) Change temperature
+
+Examples:
+- Freeze liquids for transport
+- Phase change materials for thermal storage
+- Liquid-to-gas transformations
+- Adjustable stiffness materials
+
+## Principle 36: Phase Transitions
+a) Use phenomena occurring during phase transitions
+
+Examples:
+- Heat pipes use boiling and condensation
+- Freeze drying
+- Superconductivity at low temperatures
+- Shape memory alloys
+
+## Principle 37: Thermal Expansion
+a) Use thermal expansion of materials
+b) Use multiple materials with different thermal expansion coefficients
+
+Examples:
+- Bimetallic strips for thermostats
+- Shrink-fit assemblies
+- Thermal gap fillers
+- Expansion joints in bridges
+
+## Principle 38: Strong Oxidants
+a) Replace common air with oxygen-enriched air
+b) Replace enriched air with pure oxygen
+c) Expose air or oxygen to ionizing radiation
+d) Use ionized oxygen
+e) Replace ozonized oxygen with ozone
+
+Examples:
+- Oxygen enrichment in steel making
+- Ozone for water purification
+- Oxygen therapy
+- Plasma cutting
+
+## Principle 39: Inert Atmosphere
+a) Replace normal environment with inert one
+b) Add neutral parts or inert additives
+
+Examples:
+- Argon welding
+- Nitrogen packaging for food
+- Inert gas fire suppression
+- Vacuum packaging
+
+## Principle 40: Composite Materials
+a) Change from uniform to composite materials
+
+Examples:
+- Carbon fiber composites
+- Reinforced concrete
+- Fiberglass
+- Sandwich panel structures

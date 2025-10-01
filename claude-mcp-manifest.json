@@ -1,0 +1,69 @@
+{
+  "name": "triz-copilot",
+  "version": "1.0.0",
+  "description": "TRIZ Engineering Co-Pilot - Systematic innovation assistant for Claude CLI",
+  "homepage": "https://github.com/yourusername/triz-copilot",
+  "license": "MIT",
+  "author": {
+    "name": "TRIZ Co-Pilot Team"
+  },
+  "mcp": {
+    "version": "0.1.0",
+    "transport": "stdio"
+  },
+  "server": {
+    "command": "python3",
+    "args": [
+      "-m",
+      "src.claude_mcp_server"
+    ],
+    "env": {
+      "PYTHONPATH": "${PWD}",
+      "TRIZ_ENV": "production"
+    }
+  },
+  "capabilities": {
+    "tools": true,
+    "prompts": false,
+    "resources": false
+  },
+  "tools": [
+    {
+      "name": "triz_workflow_start",
+      "description": "Start a guided TRIZ problem-solving workflow with step-by-step guidance"
+    },
+    {
+      "name": "triz_workflow_continue",
+      "description": "Continue an existing TRIZ workflow session"
+    },
+    {
+      "name": "triz_solve",
+      "description": "Perform autonomous TRIZ analysis on a problem"
+    },
+    {
+      "name": "triz_get_principle",
+      "description": "Get detailed information about a specific TRIZ principle (1-40)"
+    },
+    {
+      "name": "triz_contradiction_matrix",
+      "description": "Query the TRIZ contradiction matrix for principle recommendations"
+    },
+    {
+      "name": "triz_brainstorm",
+      "description": "Generate contextual ideas using a specific TRIZ principle"
+    },
+    {
+      "name": "triz_health_check",
+      "description": "Check the health and status of the TRIZ system"
+    }
+  ],
+  "requirements": {
+    "python": ">=3.11",
+    "dependencies": [
+      "mcp>=1.15.0",
+      "qdrant-client>=1.7.0",
+      "ollama>=0.1.7",
+      "pydantic>=2.0.0"
+    ]
+  }
+}

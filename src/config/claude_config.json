@@ -1,0 +1,70 @@
+{
+  "mcp": {
+    "server_name": "triz-copilot",
+    "version": "1.0.0",
+    "description": "TRIZ Engineering Co-Pilot for Claude CLI",
+    "tools": {
+      "triz_workflow_start": {
+        "description": "Start guided TRIZ problem-solving workflow",
+        "examples": ["/triz-workflow"]
+      },
+      "triz_workflow_continue": {
+        "description": "Continue existing TRIZ workflow session",
+        "examples": ["/triz-workflow continue <session_id> <user_input>"]
+      },
+      "triz_solve": {
+        "description": "Perform autonomous TRIZ analysis",
+        "examples": ["/triz-solve reduce weight while maintaining strength"]
+      },
+      "triz_get_principle": {
+        "description": "Get details of a specific TRIZ principle",
+        "examples": ["/triz-tool get-principle 15"]
+      },
+      "triz_contradiction_matrix": {
+        "description": "Query TRIZ contradiction matrix",
+        "examples": [
+          "/triz-tool contradiction-matrix --improving 2 --worsening 14"
+        ]
+      },
+      "triz_brainstorm": {
+        "description": "Generate ideas using a TRIZ principle",
+        "examples": [
+          "/triz-tool brainstorm --principle 15 --context \"improve flexibility\""
+        ]
+      },
+      "triz_health_check": {
+        "description": "Check system health and dependencies",
+        "examples": ["/triz-health"]
+      }
+    }
+  },
+  "shared": {
+    "session_timeout_hours": 24,
+    "max_session_size_mb": 10,
+    "vector_db_url": "http://localhost:6333",
+    "ollama_url": "http://localhost:11434",
+    "embedding_model": "nomic-embed-text",
+    "sessions_directory": "~/.triz/sessions",
+    "knowledge_base_path": "src/data/knowledge_base.json",
+    "contradiction_matrix_path": "src/data/contradiction_matrix.csv",
+    "materials_db_path": "src/data/materials.json"
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "json",
+    "output": "stderr",
+    "include_timestamps": true
+  },
+  "performance": {
+    "principle_lookup_timeout_ms": 500,
+    "full_analysis_timeout_ms": 10000,
+    "vector_search_timeout_ms": 2000,
+    "max_concurrent_requests": 10
+  },
+  "features": {
+    "enable_vector_search": true,
+    "enable_file_fallback": true,
+    "enable_caching": true,
+    "enable_async_processing": true
+  }
+}
