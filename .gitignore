@@ -1,3 +1,9 @@
+# Books and large files
+books/
+*.pdf
+*.epub
+*.mp3
+
 # Python
 __pycache__/
 *.py[cod]
@@ -20,18 +26,11 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
+# Virtual environments
+.venv/
 venv/
 ENV/
 env/
-.venv
-
-# Testing
-.coverage
-.pytest_cache/
-htmlcov/
-.tox/
-.hypothesis/
 
 # IDE
 .vscode/
@@ -39,17 +38,13 @@ htmlcov/
 *.swp
 *.swo
 *~
+
+# OS
 .DS_Store
+Thumbs.db
 
 # Project specific
-*.log
-.env
-sessions/
-~/.triz_sessions/
-~/.gemini/
-
-# Qdrant
-qdrant_storage/
-
-# Ollama
-models/
+*.lock
+uv.lock
+test_*.py
+ingest_*.py
