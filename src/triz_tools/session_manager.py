@@ -430,3 +430,15 @@ def update_session(
     """Update session using default manager"""
     manager = get_session_manager()
     return manager.update_session(session_id, stage, data)
+
+
+def delete_session(session_id: str) -> bool:
+    """Delete session using default manager"""
+    manager = get_session_manager()
+    return manager.delete_session(session_id)
+
+
+def list_sessions(limit: int = 10) -> list:
+    """List sessions using default manager"""
+    manager = get_session_manager()
+    return manager.list_sessions(limit=limit)

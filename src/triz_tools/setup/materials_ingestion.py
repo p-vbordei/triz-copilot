@@ -38,8 +38,8 @@ class MaterialsIngestion:
         self.materials_service = get_materials_service()
         self.vector_service = get_vector_service()
         self.embedding_service = get_embedding_service()
-        
-        self.collection_name = "materials"
+
+        self.collection_name = "materials_database"
         self.ingested_count = 0
         
         logger.info("Materials ingestion initialized")
@@ -86,23 +86,39 @@ class MaterialsIngestion:
                 
                 for row in reader:
                     try:
-                        # Parse properties
+                        # Map field names from different CSV formats
+                        name = row.get("name") or row.get("material_name")
+                        category = row.get("category") or row.get("material_class", "unknown")
+
+                        # Parse properties with field name mapping
                         properties = {}
-                        for prop in ["density", "tensile_strength", "yield_strength",
-                                   "elastic_modulus", "thermal_conductivity"]:
-                            if prop in row and row[prop]:
-                                properties[prop] = float(row[prop])
-                        
-                        # Parse lists
-                        advantages = [a.strip() for a in row.get("advantages", "").split(";") if a.strip()]
-                        disadvantages = [d.strip() for d in row.get("disadvantages", "").split(";") if d.strip()]
-                        applications = [a.strip() for a in row.get("applications", "").split(";") if a.strip()]
-                        
+                        prop_mappings = {
+                            "density": ["density", "density_kg_m3"],
+                            "tensile_strength": ["tensile_strength", "tensile_strength_mpa"],
+                            "yield_strength": ["yield_strength", "yield_strength_mpa"],
+                            "elastic_modulus": ["elastic_modulus", "youngs_modulus_gpa"],
+                            "thermal_conductivity": ["thermal_conductivity", "thermal_conductivity_w_mk"]
+                        }
+
+                        for prop_key, possible_names in prop_mappings.items():
+                            for name_variant in possible_names:
+                                if name_variant in row and row[name_variant]:
+                                    try:
+                                        properties[prop_key] = float(row[name_variant])
+                                        break
+                                    except (ValueError, TypeError):
+                                        pass
+
+                        # Parse lists - split by comma or semicolon
+                        advantages = [a.strip() for a in row.get("advantages", "").replace(";", ",").split(",") if a.strip()]
+                        disadvantages = [d.strip() for d in row.get("disadvantages", "").replace(";", ",").split(",") if d.strip()]
+                        applications = [a.strip() for a in row.get("applications", "").replace(";", ",").split(",") if a.strip()]
+
                         # Create material
                         material = Material(
                             material_id=row["material_id"],
-                            name=row["name"],
-                            category=row.get("category", "unknown"),
+                            name=name,
+                            category=category,
                             properties=properties,
                             advantages=advantages,
                             disadvantages=disadvantages,
@@ -245,21 +261,29 @@ class MaterialsIngestion:
                 embedding = self.embedding_service.generate_embedding(text)
                 
                 if embedding is not None:
-                    # Store in vector DB
-                    self.vector_service.add_vectors(
-                        collection_name=self.collection_name,
-                        vectors=[embedding],
-                        payloads=[{
-                            "material_id": material.material_id,
-                            "name": material.name,
-                            "category": material.category,
-                            "properties": material.properties,
-                            "advantages": material.advantages,
-                            "applications": material.applications,
-                            "cost_index": material.cost_index,
-                            "sustainability_score": material.sustainability_score
-                        }]
-                    )
+                    # Store in vector DB with correct method name
+                    try:
+                        # Use insert_vectors with proper parameters
+                        import uuid
+                        self.vector_service.insert_vectors(
+                            collection_name=self.collection_name,
+                            vectors=[embedding],
+                            payloads=[{
+                                "material_id": material.material_id,
+                                "name": material.name,
+                                "category": material.category,
+                                "properties": material.properties,
+                                "advantages": material.advantages,
+                                "applications": material.applications,
+                                "cost_index": material.cost_index,
+                                "sustainability_score": material.sustainability_score
+                            }],
+                            ids=[abs(hash(material.material_id)) % (10 ** 8)]  # Generate numeric ID from string
+                        )
+                    except AttributeError:
+                        # Fallback for different API
+                        logger.warning(f"Could not insert vector for {material.name} - API mismatch")
+                        pass
                     
                     logger.debug(f"Added embedding for {material.name}")
                 

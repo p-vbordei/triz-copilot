@@ -8,11 +8,29 @@ from typing import List, Dict, Any, Optional, Tuple
 from pathlib import Path
 import json
 
-from .models.contradiction_matrix import (
+from .models.contradiction import (
     ContradictionMatrix,
     ContradictionResult,
-    EngineeringParameter
 )
+from .models import TRIZPrinciple
+
+# EngineeringParameter and MatrixEntry don't exist, define them here if needed
+class EngineeringParameter:
+    """Engineering parameter for contradiction matrix"""
+    def __init__(self, id: int, name: str, description: str = ""):
+        self.id = id
+        self.name = name
+        self.description = description
+
+
+class MatrixEntry:
+    """Matrix entry for contradiction resolution"""
+    def __init__(self, improving: int, worsening: int, principles: List[int]):
+        self.improving = improving
+        self.worsening = worsening
+        self.principles = principles
+        self.improving_parameter = improving
+        self.worsening_parameter = worsening
 
 logger = logging.getLogger(__name__)
 
@@ -98,9 +116,11 @@ class ContradictionMatrixLookup:
     def _build_reverse_index(self):
         """Build reverse index for principle lookup"""
         self.principle_to_contradictions = {}
-        
+
         for key, result in self.matrix.matrix.items():
-            for principle in result.recommended_principles:
+            # Handle both dict and ContradictionResult
+            principles = result.get("principles", []) if isinstance(result, dict) else result.recommended_principles
+            for principle in principles:
                 if principle not in self.principle_to_contradictions:
                     self.principle_to_contradictions[principle] = []
                 self.principle_to_contradictions[principle].append(key)
@@ -344,8 +364,31 @@ def get_matrix_lookup(
 ) -> ContradictionMatrixLookup:
     """Get or create matrix lookup singleton"""
     global _matrix_lookup
-    
+
     if reset or _matrix_lookup is None:
         _matrix_lookup = ContradictionMatrixLookup(matrix_file=matrix_file)
-    
+
     return _matrix_lookup
+
+
+def lookup_contradiction(improving: int, worsening: int) -> List[int]:
+    """Lookup contradiction in matrix (convenience function)"""
+    lookup = get_matrix_lookup()
+    result = lookup.lookup(improving, worsening)
+    return result.get("principles", []) if result else []
+
+
+def get_parameter_info(parameter_id: int) -> Optional[Dict[str, Any]]:
+    """Get information about a parameter"""
+    lookup = get_matrix_lookup()
+    if hasattr(lookup, 'parameters') and parameter_id in lookup.parameters:
+        return lookup.parameters[parameter_id]
+    return None
+
+
+def get_all_parameters() -> List[Dict[str, Any]]:
+    """Get all engineering parameters"""
+    lookup = get_matrix_lookup()
+    if hasattr(lookup, 'parameters'):
+        return [{"id": k, **v} for k, v in lookup.parameters.items()]
+    return []

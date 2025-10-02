@@ -4,7 +4,7 @@ Format TRIZ responses for Claude CLI display
 """
 
 from typing import Dict, Any, List
-from triz_tools.models import TRIZToolResponse, WorkflowStage
+from src.triz_tools.models import TRIZToolResponse, WorkflowStage
 
 
 class ClaudeResponseFormatter:

@@ -28,7 +28,7 @@ COLLECTIONS = {
         "description": "TRIZ 40 inventive principles with embeddings",
         "fields": [
             "principle_id",
-            "principle_number", 
+            "principle_number",
             "principle_name",
             "description",
             "sub_principles",
@@ -36,6 +36,19 @@ COLLECTIONS = {
             "domains",
             "usage_frequency",
             "innovation_level"
+        ]
+    },
+    "triz_documents": {
+        "vector_size": 768,
+        "distance": Distance.COSINE,
+        "description": "TRIZ books and documents for research",
+        "fields": [
+            "document_id",
+            "source",
+            "title",
+            "content",
+            "chunk_index",
+            "metadata"
         ]
     },
     "triz_contradictions": {
@@ -80,8 +93,8 @@ COLLECTIONS = {
         ]
     },
     "materials_database": {
-        "vector_size": 512,  # Smaller for material properties
-        "distance": Distance.EUCLID,  # Better for numeric properties
+        "vector_size": 768,  # Use same as others for consistency
+        "distance": Distance.COSINE,  # Use COSINE like others
         "description": "Engineering materials with properties",
         "fields": [
             "material_id",

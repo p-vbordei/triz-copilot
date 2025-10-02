@@ -4,10 +4,10 @@ Core data models for TRIZ Co-Pilot
 """
 
 from .response import TRIZToolResponse, WorkflowStage, WorkflowType
+from .session import ProblemSession
 from .contradiction import ContradictionResult, ContradictionMatrix
 from .principle import TRIZPrinciple, TRIZKnowledgeBase
 from .solution import SolutionConcept, AnalysisReport
-from .session import ProblemSession
 
 __all__ = [
     # Response models

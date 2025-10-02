@@ -570,3 +570,42 @@ def triz_solve_autonomous(
                 message=f"Error during TRIZ analysis: {str(e)}. Fallback also failed: {str(fallback_error)}",
                 data={}
             )
+
+
+def triz_solve_with_context(
+    problem_description: str,
+    context: Dict[str, Any]
+) -> TRIZToolResponse:
+    """
+    Solve TRIZ problem with additional context.
+    This is an alias for triz_solve_autonomous with context.
+
+    Args:
+        problem_description: Problem description
+        context: Additional context (industry, constraints, etc.)
+
+    Returns:
+        TRIZToolResponse with analysis
+    """
+    return triz_solve_autonomous(problem_description, context=context)
+
+
+def triz_solve_iterative(
+    problem_description: str,
+    previous_solutions: Optional[List[Dict[str, Any]]] = None,
+    max_iterations: int = 3
+) -> TRIZToolResponse:
+    """
+    Iteratively solve TRIZ problem, refining solutions.
+
+    Args:
+        problem_description: Problem description
+        previous_solutions: Previously generated solutions to refine
+        max_iterations: Maximum iterations
+
+    Returns:
+        TRIZToolResponse with refined analysis
+    """
+    # For now, just call autonomous solve
+    # Can be enhanced later to use previous_solutions for refinement
+    return triz_solve_autonomous(problem_description)

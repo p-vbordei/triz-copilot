@@ -305,6 +305,53 @@ def test_embeddings():
     return True
 
 
+# Backward compatibility aliases for tests
+class EmbeddingClient:
+    """Wrapper for EmbeddingService for backward compatibility"""
+    def __init__(self, model: str = "nomic-embed-text"):
+        self.model = model
+        self.service = get_embedding_service()
+
+    def generate(self, text: str) -> Optional[List[float]]:
+        return self.service.generate_embedding(text)
+
+    def batch_generate(self, texts: List[str]) -> List[Optional[List[float]]]:
+        return [self.service.generate_embedding(t) for t in texts]
+
+
+def get_embedding_client(model: str = "nomic-embed-text") -> EmbeddingClient:
+    """Get embedding client instance"""
+    return EmbeddingClient(model=model)
+
+
+def batch_generate_embeddings(texts: List[str], **kwargs) -> List[Optional[List[float]]]:
+    """Alias for generate_embeddings_batch"""
+    return generate_embeddings_batch(texts, **kwargs)
+
+
+def cosine_similarity(vec1: List[float], vec2: List[float]) -> float:
+    """Calculate cosine similarity between two vectors"""
+    v1 = np.array(vec1)
+    v2 = np.array(vec2)
+    return float(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+
+
+class EmbeddingCache:
+    """Simple embedding cache"""
+    def __init__(self, cache_dir: Optional[str] = None):
+        self.cache = {}
+        self.cache_dir = cache_dir
+
+    def get(self, text: str) -> Optional[List[float]]:
+        return self.cache.get(text)
+
+    def set(self, text: str, embedding: List[float]):
+        self.cache[text] = embedding
+
+    def clear(self):
+        self.cache = {}
+
+
 if __name__ == "__main__":
     # Run tests when executed directly
     logging.basicConfig(level=logging.INFO)

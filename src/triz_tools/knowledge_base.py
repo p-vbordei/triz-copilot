@@ -200,3 +200,36 @@ def _infer_related_principles(principle_num: int) -> List[int]:
     }
     
     return related_map.get(principle_num, [])
+
+
+def get_knowledge_base(reload: bool = False) -> TRIZKnowledgeBase:
+    """
+    Get the TRIZ knowledge base singleton.
+
+    Args:
+        reload: Force reload from file
+
+    Returns:
+        TRIZKnowledgeBase instance
+    """
+    global _knowledge_base_cache
+
+    if reload or _knowledge_base_cache is None:
+        _knowledge_base_cache = load_principles_from_file()
+
+    return _knowledge_base_cache
+
+
+# Global cache
+_knowledge_base_cache = None
+
+
+# Backward compatibility for tests
+class SearchResult:
+    """Search result wrapper"""
+    def __init__(self, principle: TRIZPrinciple, score: float, source: str = "semantic"):
+        self.principle = principle
+        self.score = score
+        self.source = source
+        self.principle_number = principle.principle_number
+        self.principle_name = principle.principle_name

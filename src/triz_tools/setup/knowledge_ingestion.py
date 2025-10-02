@@ -95,8 +95,9 @@ class TRIZKnowledgeIngestion:
                 }
                 
                 payloads.append(payload)
-                ids.append(f"principle_{principle_id}")
-                
+                # Use integer ID instead of string
+                ids.append(int(principle.principle_number))
+
                 logger.info(f"  Processed principle {principle_id}: {principle.principle_name}")
         
         # Insert into vector database
@@ -149,9 +150,10 @@ class TRIZKnowledgeIngestion:
         vectors = []
         payloads = []
         ids = []
-        
-        # Process matrix entries
-        for entry_key, entry_data in matrix_data.get("matrix", {}).items():
+        counter = 0
+
+        # Process matrix entries (it's a list, not a dict)
+        for entry_data in matrix_data.get("matrix", []):
             # Generate embedding for contradiction description
             improving = entry_data.get("improving", 0)
             worsening = entry_data.get("worsening", 0)
@@ -175,7 +177,9 @@ class TRIZKnowledgeIngestion:
                 }
                 
                 payloads.append(payload)
-                ids.append(f"contradiction_{improving}_{worsening}")
+                # Use integer counter for IDs
+                counter += 1
+                ids.append(counter)
         
         # Insert into vector database
         if vectors:

@@ -44,9 +44,11 @@ class ContradictionMatrix:
 
     def validate_parameters(self, imp, wor):
         if not (1 <= imp <= 39):
-            return False, f"Improving parameter must be 1-39, got {imp}"
+            return False, f"Improving parameter out of range: must be 1-39, got {imp}"
         if not (1 <= wor <= 39):
-            return False, f"Worsening parameter must be 1-39, got {wor}"
+            return False, f"Worsening parameter out of range: must be 1-39, got {wor}"
+        if imp == wor:
+            return False, f"Parameters must be different (same parameter {imp} for both)"
         return True, "Valid"
 
     def get_parameter(self, param_id):

@@ -26,8 +26,13 @@ _active_sessions: Dict[str, ProblemSession] = {}
 def triz_workflow_start() -> TRIZToolResponse:
     """Start a new TRIZ guided workflow session"""
     try:
+        # Generate session ID
+        session_id = str(uuid.uuid4())
+
         # Create new session
         session = ProblemSession(
+            session_id=session_id,
+            problem_statement="",  # Will be filled in first step
             workflow_type=WorkflowType.GUIDED,
             current_stage=WorkflowStage.PROBLEM_DEFINITION
         )
@@ -180,15 +185,20 @@ def _get_or_load_session(session_id: str) -> Optional[ProblemSession]:
     # Check cache first
     if session_id in _active_sessions:
         return _active_sessions[session_id]
-    
+
     # Try to load from file
     session_file = SESSIONS_DIR / f"{session_id}.json"
-    session = ProblemSession.load_from_file(session_file)
-    
-    if session:
-        _active_sessions[session_id] = session
-    
-    return session
+
+    if not session_file.exists():
+        return None
+
+    try:
+        session = ProblemSession.load_from_file(session_file)
+        if session:
+            _active_sessions[session_id] = session
+        return session
+    except Exception:
+        return None
 
 
 def triz_workflow_status(session_id: str) -> Dict[str, Any]:
