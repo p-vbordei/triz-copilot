@@ -72,38 +72,38 @@ PARAMETER_KEYWORDS = {
 def identify_parameters_from_text(text: str) -> List[int]:
     """
     Identify TRIZ parameters from problem description text.
-    
+
     Args:
         text: Problem description
-    
+
     Returns:
         List of parameter numbers found in text
     """
     text_lower = text.lower()
     identified_params = []
-    
+
     for param_num, keywords in PARAMETER_KEYWORDS.items():
         for keyword in keywords:
             if keyword in text_lower:
                 identified_params.append(param_num)
                 break
-    
+
     return list(set(identified_params))  # Remove duplicates
 
 
 def extract_contradictions(problem_text: str) -> List[Dict[str, Any]]:
     """
     Extract technical contradictions from problem description.
-    
+
     Args:
         problem_text: Problem description
-    
+
     Returns:
         List of identified contradictions
     """
     contradictions = []
     seen_pairs = set()  # Track unique contradictions
-    
+
     # Extended patterns for contradiction detection
     patterns = [
         # Standard patterns
@@ -118,9 +118,9 @@ def extract_contradictions(problem_text: str) -> List[Dict[str, Any]]:
         r"(\w+)\s+versus\s+(\w+)",
         r"(\w+)\s+vs\.?\s+(\w+)",
     ]
-    
+
     text_lower = problem_text.lower()
-    
+
     # Extract explicit contradictions
     for pattern in patterns:
         matches = re.findall(pattern, text_lower)
@@ -128,118 +128,134 @@ def extract_contradictions(problem_text: str) -> List[Dict[str, Any]]:
             if len(match) >= 2:
                 improving = match[0]
                 worsening = match[1] if len(match) > 1 else ""
-                
+
                 # Map to parameters
                 improving_params = identify_parameters_from_text(improving)
-                worsening_params = identify_parameters_from_text(worsening) if worsening else []
-                
+                worsening_params = (
+                    identify_parameters_from_text(worsening) if worsening else []
+                )
+
                 if improving_params and worsening_params:
                     for imp in improving_params:
                         for wor in worsening_params:
                             pair = (imp, wor)
                             if imp != wor and pair not in seen_pairs:
                                 seen_pairs.add(pair)
-                                contradictions.append({
-                                    "improving_parameter": imp,
-                                    "worsening_parameter": wor,
-                                    "parameter_names": {
-                                        "improving": f"Parameter {imp}",
-                                        "worsening": f"Parameter {wor}"
+                                contradictions.append(
+                                    {
+                                        "improving_parameter": imp,
+                                        "worsening_parameter": wor,
+                                        "parameter_names": {
+                                            "improving": f"Parameter {imp}",
+                                            "worsening": f"Parameter {wor}",
+                                        },
                                     }
-                                })
-    
+                                )
+
     # Look for specific contradictions in complex problems
     # Throughput vs Energy
     if "throughput" in text_lower and "energy" in text_lower:
         pair = (29, 18)  # Productivity vs Energy use
         if pair not in seen_pairs:
             seen_pairs.add(pair)
-            contradictions.append({
-                "improving_parameter": 29,  # Productivity
-                "worsening_parameter": 18,   # Energy use by moving object
-                "parameter_names": {
-                    "improving": "Productivity",
-                    "worsening": "Energy consumption"
+            contradictions.append(
+                {
+                    "improving_parameter": 29,  # Productivity
+                    "worsening_parameter": 18,  # Energy use by moving object
+                    "parameter_names": {
+                        "improving": "Productivity",
+                        "worsening": "Energy consumption",
+                    },
                 }
-            })
-    
+            )
+
     # Quality vs Inspection
-    if "quality" in text_lower and ("inspection" in text_lower or "defect" in text_lower):
+    if "quality" in text_lower and (
+        "inspection" in text_lower or "defect" in text_lower
+    ):
         pair = (28, 36)  # Accuracy vs Complexity
         if pair not in seen_pairs:
             seen_pairs.add(pair)
-            contradictions.append({
-                "improving_parameter": 28,  # Measurement accuracy
-                "worsening_parameter": 36,  # Device complexity
-                "parameter_names": {
-                    "improving": "Quality/Accuracy",
-                    "worsening": "System complexity"
+            contradictions.append(
+                {
+                    "improving_parameter": 28,  # Measurement accuracy
+                    "worsening_parameter": 36,  # Device complexity
+                    "parameter_names": {
+                        "improving": "Quality/Accuracy",
+                        "worsening": "System complexity",
+                    },
                 }
-            })
-    
+            )
+
     # Flexibility vs Variants
     if "flexible" in text_lower or "variant" in text_lower:
         pair = (35, 36)  # Adaptability vs Complexity
         if pair not in seen_pairs:
             seen_pairs.add(pair)
-            contradictions.append({
-                "improving_parameter": 35,  # Adaptability
-                "worsening_parameter": 36,  # Complexity
-                "parameter_names": {
-                    "improving": "Adaptability",
-                    "worsening": "System complexity"
+            contradictions.append(
+                {
+                    "improving_parameter": 35,  # Adaptability
+                    "worsening_parameter": 36,  # Complexity
+                    "parameter_names": {
+                        "improving": "Adaptability",
+                        "worsening": "System complexity",
+                    },
                 }
-            })
-    
+            )
+
     # Maintenance vs Downtime
     if "maintenance" in text_lower or "downtime" in text_lower:
         pair = (27, 25)  # Reliability vs Time
         if pair not in seen_pairs:
             seen_pairs.add(pair)
-            contradictions.append({
-                "improving_parameter": 27,  # Reliability
-                "worsening_parameter": 25,  # Loss of time
-                "parameter_names": {
-                    "improving": "Reliability",
-                    "worsening": "Time loss"
+            contradictions.append(
+                {
+                    "improving_parameter": 27,  # Reliability
+                    "worsening_parameter": 25,  # Loss of time
+                    "parameter_names": {
+                        "improving": "Reliability",
+                        "worsening": "Time loss",
+                    },
                 }
-            })
-    
+            )
+
     # If still no contradictions, use general approach
     if not contradictions:
         params = identify_parameters_from_text(problem_text)
         if len(params) >= 2:
             # Create potential contradictions from identified parameters
-            for i in range(min(3, len(params)-1)):
-                pair = (params[i], params[i+1])
+            for i in range(min(3, len(params) - 1)):
+                pair = (params[i], params[i + 1])
                 if pair not in seen_pairs:
                     seen_pairs.add(pair)
-                    contradictions.append({
-                        "improving_parameter": params[i],
-                        "worsening_parameter": params[i+1],
-                        "parameter_names": {
-                            "improving": f"Parameter {params[i]}",
-                            "worsening": f"Parameter {params[i+1]}"
+                    contradictions.append(
+                        {
+                            "improving_parameter": params[i],
+                            "worsening_parameter": params[i + 1],
+                            "parameter_names": {
+                                "improving": f"Parameter {params[i]}",
+                                "worsening": f"Parameter {params[i + 1]}",
+                            },
                         }
-                    })
-    
+                    )
+
     return contradictions
 
 
 def generate_ideal_final_result(problem_text: str) -> str:
     """
     Generate Ideal Final Result (IFR) statement.
-    
+
     Args:
         problem_text: Problem description
-    
+
     Returns:
         IFR statement
     """
     # Extract key goals and constraints
     goals = []
     constraints = []
-    
+
     # Look for improvement goals
     improve_patterns = [
         r"reduce\s+(\w+(?:\s+\w+)*)",
@@ -249,56 +265,56 @@ def generate_ideal_final_result(problem_text: str) -> str:
         r"minimize\s+(\w+(?:\s+\w+)*)",
         r"maximize\s+(\w+(?:\s+\w+)*)",
     ]
-    
+
     # Look for constraints
     constraint_patterns = [
         r"while\s+(?:maintaining|keeping)\s+(\w+(?:\s+\w+)*)",
         r"without\s+(?:increasing|adding|reducing)\s+(\w+(?:\s+\w+)*)",
         r"but\s+(?:not|without)\s+(\w+(?:\s+\w+)*)",
     ]
-    
+
     text_lower = problem_text.lower()
-    
+
     for pattern in improve_patterns:
         matches = re.findall(pattern, text_lower)
         goals.extend(matches)
-    
+
     for pattern in constraint_patterns:
         matches = re.findall(pattern, text_lower)
         constraints.extend(matches)
-    
+
     # Construct IFR
     ifr = "The ideal system would "
-    
+
     if goals:
         ifr += f"achieve {', '.join(goals[:2])} "
-    
+
     if constraints:
         ifr += f"while maintaining {', '.join(constraints[:2])} "
-    
+
     ifr += "without adding complexity or cost to the system."
-    
+
     return ifr
 
 
 def select_top_principles(contradictions: List[Dict], problem_text: str) -> List[Dict]:
     """
     Select top TRIZ principles based on contradictions and problem context.
-    
+
     Args:
         contradictions: List of identified contradictions
         problem_text: Original problem description
-    
+
     Returns:
         List of top principles with scores
     """
     principle_scores = {}
-    
+
     # Get principles from contradiction matrix
     for contradiction in contradictions:
         imp = contradiction["improving_parameter"]
         wor = contradiction["worsening_parameter"]
-        
+
         # Get recommended principles from matrix
         result = MATRIX.lookup(imp, wor)
         if result:
@@ -306,118 +322,115 @@ def select_top_principles(contradictions: List[Dict], problem_text: str) -> List
                 if principle_num not in principle_scores:
                     principle_scores[principle_num] = 0
                 principle_scores[principle_num] += 1.0
-    
+
     # If no matrix matches, use common principles
     if not principle_scores:
         # Common universally applicable principles
         common_principles = [1, 2, 6, 10, 15, 25, 35]
         for p in common_principles:
             principle_scores[p] = 0.5
-    
+
     # Sort by score and get top 5
     sorted_principles = sorted(
-        principle_scores.items(),
-        key=lambda x: x[1],
-        reverse=True
+        principle_scores.items(), key=lambda x: x[1], reverse=True
     )[:5]
-    
+
     # Format results
     top_principles = []
     for principle_id, score in sorted_principles:
         if principle_id in PRINCIPLES.principles:
             principle = PRINCIPLES.principles[principle_id]
-            top_principles.append({
-                "principle_id": principle_id,
-                "principle_name": principle.principle_name,
-                "relevance_score": min(score / 3.0, 1.0),  # Normalize score
-                "explanation": principle.description[:200] + "..."
-            })
-    
+            top_principles.append(
+                {
+                    "principle_id": principle_id,
+                    "principle_name": principle.principle_name,
+                    "relevance_score": min(score / 3.0, 1.0),  # Normalize score
+                    "explanation": principle.description[:200] + "...",
+                }
+            )
+
     return top_principles
 
 
 def generate_solution_concepts(
-    problem_text: str,
-    top_principles: List[Dict],
-    contradictions: List[Dict]
+    problem_text: str, top_principles: List[Dict], contradictions: List[Dict]
 ) -> List[Dict]:
     """
     Generate solution concepts based on TRIZ principles.
-    
+
     Args:
         problem_text: Original problem
         top_principles: Selected TRIZ principles
         contradictions: Identified contradictions
-    
+
     Returns:
         List of solution concepts
     """
     concepts = []
-    
+
     # Generate at least 3 concepts from top principles
     for i, principle_data in enumerate(top_principles[:3]):
         principle_id = principle_data["principle_id"]
         principle = PRINCIPLES.principles.get(principle_id)
-        
+
         if not principle:
             continue
-        
+
         # Create concept based on principle
         concept = {
             "concept_title": f"Solution using {principle.principle_name}",
             "description": f"Apply {principle.principle_name} principle to address the problem. "
-                          f"{principle.description} "
-                          f"This approach could help resolve the identified contradictions "
-                          f"by {principle.sub_principles[0] if principle.sub_principles else 'systematic innovation'}.",
+            f"{principle.description} "
+            f"This approach could help resolve the identified contradictions "
+            f"by {principle.sub_principles[0] if principle.sub_principles else 'systematic innovation'}.",
             "applied_principles": [principle_id],
             "pros": [
                 f"Directly addresses the contradiction",
                 f"Based on proven TRIZ principle #{principle_id}",
-                f"Can be implemented incrementally"
+                f"Can be implemented incrementally",
             ],
-            "cons": [
-                f"May require system redesign",
-                f"Initial implementation cost"
-            ],
-            "feasibility_score": 0.7 + (0.05 * (3 - i)),  # Higher score for top principles
-            "innovation_level": min(3 + i, 5)
+            "cons": [f"May require system redesign", f"Initial implementation cost"],
+            "feasibility_score": 0.7
+            + (0.05 * (3 - i)),  # Higher score for top principles
+            "innovation_level": min(3 + i, 5),
         }
-        
+
         concepts.append(concept)
-    
+
     # Add a combined solution if we have multiple principles
     if len(top_principles) >= 2:
         combined_principles = [p["principle_id"] for p in top_principles[:2]]
         combined_names = [p["principle_name"] for p in top_principles[:2]]
-        
-        concepts.append({
-            "concept_title": f"Hybrid Solution: {' + '.join(combined_names)}",
-            "description": f"Combine multiple TRIZ principles for a comprehensive solution. "
-                          f"By integrating {combined_names[0]} with {combined_names[1]}, "
-                          f"we can address multiple aspects of the problem simultaneously. "
-                          f"This hybrid approach leverages synergies between different inventive principles.",
-            "applied_principles": combined_principles,
-            "pros": [
-                "Addresses multiple contradictions",
-                "Synergistic effects possible",
-                "More robust solution",
-                "Higher innovation potential"
-            ],
-            "cons": [
-                "More complex implementation",
-                "Higher initial investment",
-                "Requires careful integration"
-            ],
-            "feasibility_score": 0.65,
-            "innovation_level": 4
-        })
-    
+
+        concepts.append(
+            {
+                "concept_title": f"Hybrid Solution: {' + '.join(combined_names)}",
+                "description": f"Combine multiple TRIZ principles for a comprehensive solution. "
+                f"By integrating {combined_names[0]} with {combined_names[1]}, "
+                f"we can address multiple aspects of the problem simultaneously. "
+                f"This hybrid approach leverages synergies between different inventive principles.",
+                "applied_principles": combined_principles,
+                "pros": [
+                    "Addresses multiple contradictions",
+                    "Synergistic effects possible",
+                    "More robust solution",
+                    "Higher innovation potential",
+                ],
+                "cons": [
+                    "More complex implementation",
+                    "Higher initial investment",
+                    "Requires careful integration",
+                ],
+                "feasibility_score": 0.65,
+                "innovation_level": 4,
+            }
+        )
+
     return concepts
 
 
 def triz_solve_autonomous(
-    problem_description: str,
-    context: Optional[Dict[str, Any]] = None
+    problem_description: str, context: Optional[Dict[str, Any]] = None
 ) -> TRIZToolResponse:
     """
     Perform autonomous TRIZ analysis and solution generation using DeepResearchAgent.
@@ -437,7 +450,7 @@ def triz_solve_autonomous(
         return TRIZToolResponse(
             success=False,
             message="Problem description is empty or insufficient. Please provide more detailed information.",
-            data={}
+            data={},
         )
 
     try:
@@ -458,11 +471,11 @@ def triz_solve_autonomous(
         # Format contradictions for response
         contradictions_formatted = [
             {
-                'description': c.get('description', 'N/A'),
-                'type': c.get('type', 'technical'),
-                'improving': c.get('improving', 'N/A'),
-                'worsening': c.get('worsening', 'N/A'),
-                'source': c.get('source', 'analysis')
+                "description": c.get("description", "N/A"),
+                "type": c.get("type", "technical"),
+                "improving": c.get("improving", "N/A"),
+                "worsening": c.get("worsening", "N/A"),
+                "source": c.get("source", "analysis"),
             }
             for c in research_report.contradictions
         ]
@@ -470,16 +483,16 @@ def triz_solve_autonomous(
         # Format principles with rich research data
         principles_formatted = [
             {
-                'number': p.get('id'),
-                'name': p.get('name'),
-                'description': p.get('description'),
-                'relevance_score': p.get('score', 0.5),
-                'sources': p.get('sources', []),
-                'sub_principles': p.get('sub_principles', []),
-                'examples': p.get('examples', []),
-                'domains': p.get('domains', []),
-                'usage_frequency': p.get('usage_frequency', 'medium'),
-                'innovation_level': p.get('innovation_level', 3)
+                "number": p.get("id"),
+                "name": p.get("name"),
+                "description": p.get("description"),
+                "relevance_score": p.get("score", 0.5),
+                "sources": p.get("sources", []),
+                "sub_principles": p.get("sub_principles", []),
+                "examples": p.get("examples", []),
+                "domains": p.get("domains", []),
+                "usage_frequency": p.get("usage_frequency", "medium"),
+                "innovation_level": p.get("innovation_level", 3),
             }
             for p in research_report.principles
         ]
@@ -487,21 +500,59 @@ def triz_solve_autonomous(
         # Format solutions with full research provenance
         solutions_formatted = [
             {
-                'title': s.get('title'),
-                'description': s.get('description'),
-                'principle': s.get('applied_principles', []),
-                'principle_names': s.get('principle_names', []),
-                'research_support': s.get('research_support', []),
-                'cross_domain_insights': s.get('cross_domain_insights', []),
-                'pros': s.get('pros', []),
-                'cons': s.get('cons', []),
-                'feasibility_score': s.get('feasibility_score', 0.7),
-                'confidence': s.get('confidence', 0.5),
-                'implementation_hints': s.get('implementation_hints', []),
-                'citations': s.get('citations', [])
+                "title": s.get("title"),
+                "description": s.get("description"),
+                "principle": s.get("applied_principles", []),
+                "principle_names": s.get("principle_names", []),
+                "research_support": s.get("research_support", []),
+                "cross_domain_insights": s.get("cross_domain_insights", []),
+                "pros": s.get("pros", []),
+                "cons": s.get("cons", []),
+                "feasibility_score": s.get("feasibility_score", 0.7),
+                "confidence": s.get("confidence", 0.5),
+                "implementation_hints": s.get("implementation_hints", []),
+                "citations": s.get("citations", []),
             }
             for s in research_report.solutions
         ]
+
+        # Extract materials recommendations from findings
+        materials_recommendations = []
+        for finding in research_report.findings:
+            # Check if finding is from materials sources
+            source = finding.source.lower()
+            if "materials" in source or "composite" in source or "polymer" in source:
+                # Extract clean content text
+                content = finding.content
+                if isinstance(content, str):
+                    reasoning = content[:200]
+                elif isinstance(content, dict):
+                    # Try to get text from dict
+                    reasoning = content.get(
+                        "content", content.get("full_content", str(content))
+                    )[:200]
+                else:
+                    reasoning = str(content)[:200]
+
+                # Extract book name for better naming
+                book_name = (
+                    source.split("(")[1].split(")")[0] if "(" in source else "Research"
+                )
+
+                material_info = {
+                    "name": f"Material guidance from {book_name[:30]}",
+                    "source": finding.source,
+                    "reasoning": reasoning,
+                    "relevance_score": finding.relevance_score,
+                    "category": finding.metadata.get("category", "Materials"),
+                }
+                materials_recommendations.append(material_info)
+
+        # Sort by relevance
+        materials_recommendations.sort(
+            key=lambda x: x.get("relevance_score", 0), reverse=True
+        )
+        materials_recommendations = materials_recommendations[:5]  # Top 5
 
         # Compile comprehensive analysis report
         analysis_data = {
@@ -514,25 +565,29 @@ def triz_solve_autonomous(
             "confidence_score": research_report.confidence_score,
             "research_depth": {
                 "total_findings": len(research_report.findings),
-                "sources_consulted": len(set(f.source for f in research_report.findings)),
+                "sources_consulted": len(
+                    set(f.source for f in research_report.findings)
+                ),
                 "queries_executed": len(research_report.research_queries),
-                "knowledge_gaps": research_report.knowledge_gaps
+                "knowledge_gaps": research_report.knowledge_gaps,
             },
-            "materials_recommendations": []  # TODO: Integrate materials from research
+            "materials_recommendations": materials_recommendations,
         }
 
         return TRIZToolResponse(
             success=True,
             message=f"Deep research completed: {len(research_report.findings)} findings from {len(set(f.source for f in research_report.findings))} sources",
-            data=analysis_data
+            data=analysis_data,
         )
 
     except Exception as e:
         import traceback
+
         error_details = traceback.format_exc()
 
         # Log the error
         import logging
+
         logger = logging.getLogger(__name__)
         logger.error(f"Error during deep research: {str(e)}\n{error_details}")
 
@@ -543,9 +598,7 @@ def triz_solve_autonomous(
             ifr = generate_ideal_final_result(problem_description)
             top_principles = select_top_principles(contradictions, problem_description)
             solution_concepts = generate_solution_concepts(
-                problem_description,
-                top_principles,
-                contradictions
+                problem_description, top_principles, contradictions
             )
 
             analysis_data = {
@@ -556,25 +609,24 @@ def triz_solve_autonomous(
                 "solutions": solution_concepts,
                 "confidence_score": 0.6,
                 "fallback_mode": True,
-                "error_message": f"Deep research failed, using fallback: {str(e)}"
+                "error_message": f"Deep research failed, using fallback: {str(e)}",
             }
 
             return TRIZToolResponse(
                 success=True,
                 message="TRIZ analysis completed (fallback mode)",
-                data=analysis_data
+                data=analysis_data,
             )
         except Exception as fallback_error:
             return TRIZToolResponse(
                 success=False,
                 message=f"Error during TRIZ analysis: {str(e)}. Fallback also failed: {str(fallback_error)}",
-                data={}
+                data={},
             )
 
 
 def triz_solve_with_context(
-    problem_description: str,
-    context: Dict[str, Any]
+    problem_description: str, context: Dict[str, Any]
 ) -> TRIZToolResponse:
     """
     Solve TRIZ problem with additional context.
@@ -593,7 +645,7 @@ def triz_solve_with_context(
 def triz_solve_iterative(
     problem_description: str,
     previous_solutions: Optional[List[Dict[str, Any]]] = None,
-    max_iterations: int = 3
+    max_iterations: int = 3,
 ) -> TRIZToolResponse:
     """
     Iteratively solve TRIZ problem, refining solutions.

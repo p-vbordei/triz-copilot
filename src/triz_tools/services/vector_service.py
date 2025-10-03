@@ -228,6 +228,20 @@ class VectorService:
             return []
 
         try:
+            # Check if collection exists and has data
+            try:
+                info = self.client.get_collection(collection_name=collection_name)
+                if info.points_count == 0:
+                    logger.debug(
+                        f"Collection '{collection_name}' is empty, skipping search"
+                    )
+                    return []
+            except Exception as check_error:
+                logger.warning(
+                    f"Collection '{collection_name}' not accessible: {str(check_error)}"
+                )
+                return []
+
             # Build filter if conditions provided
             search_filter = None
             if filter_conditions:
