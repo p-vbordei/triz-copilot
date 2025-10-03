@@ -4,10 +4,10 @@ Formats the comprehensive 8-phase analysis for Claude
 """
 
 from typing import Dict, Any
-from .formatter import ClaudeResponseFormatter
+from triz_tools.models import TRIZToolResponse
 
 
-def handle_solve_complete(problem: str) -> str:
+def handle_solve_complete(problem: str) -> TRIZToolResponse:
     """
     Execute complete TRIZ analysis and format for Claude.
 
@@ -172,4 +172,15 @@ def handle_solve_complete(problem: str) -> str:
         f"\n✅ **Complete TRIZ analysis finished:** {len(result['phases_completed'])} phases executed\n"
     )
 
-    return "\n".join(output)
+    formatted_output = "\n".join(output)
+
+    # Return TRIZToolResponse object
+    return TRIZToolResponse(
+        success=True,
+        message=f"Complete TRIZ analysis finished: {len(result['phases_completed'])} phases executed",
+        data={
+            "formatted_report": formatted_output,
+            "phases_completed": result["phases_completed"],
+            "problem": problem,
+        },
+    )
