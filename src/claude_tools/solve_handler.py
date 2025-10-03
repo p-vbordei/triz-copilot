@@ -10,31 +10,32 @@ from triz_tools.models import TRIZToolResponse
 
 def handle_solve(problem: str) -> TRIZToolResponse:
     """
-    Handle autonomous solve command
+    Handle autonomous solve command - DEPRECATED
+
+    This tool is deprecated. Users MUST use the 60-step guided research methodology.
 
     Args:
         problem: Problem description (up to 2000 characters)
 
     Returns:
-        TRIZToolResponse with complete analysis
+        TRIZToolResponse rejecting the request
     """
-    # Validate problem length
-    if len(problem) > 2000:
-        return TRIZToolResponse(
-            success=False,
-            message="Problem description exceeds 2000 character limit",
-            data={"max_length": 2000, "actual_length": len(problem)}
-        )
-
-    if len(problem.strip()) < 10:
-        return TRIZToolResponse(
-            success=False,
-            message="Problem description too short. Please provide more details.",
-            data={}
-        )
-
-    # Use existing autonomous solve tool
-    return solve_tools.triz_solve_autonomous(problem)
+    return TRIZToolResponse(
+        success=False,
+        message="⚠️ DEPRECATED TOOL - This autonomous solver is a shortcut that bypasses proper TRIZ methodology.\n\n"
+        "To solve TRIZ problems correctly, you MUST use:\n"
+        "  1. triz_research_start - Start 60-step guided research\n"
+        "  2. triz_research_submit - Submit findings for each step\n\n"
+        "The 60-step methodology is the ONLY acceptable approach for real TRIZ analysis.\n"
+        "NO SHORTCUTS ALLOWED. You must complete all 60 steps to get a solution.\n\n"
+        "Start your research with: triz_research_start",
+        data={
+            "error": "DEPRECATED_TOOL",
+            "required_tool": "triz_research_start",
+            "methodology": "60-step guided research",
+            "no_shortcuts": True,
+        },
+    )
 
 
 def identify_contradictions(problem: str) -> TRIZToolResponse:
@@ -59,16 +60,20 @@ def identify_contradictions(problem: str) -> TRIZToolResponse:
             data={
                 "problem": problem,
                 "contradictions": contradictions,
-                "technical_count": len([c for c in contradictions if c.get("type") == "technical"]),
-                "physical_count": len([c for c in contradictions if c.get("type") == "physical"]),
-            }
+                "technical_count": len(
+                    [c for c in contradictions if c.get("type") == "technical"]
+                ),
+                "physical_count": len(
+                    [c for c in contradictions if c.get("type") == "physical"]
+                ),
+            },
         )
 
     except Exception as e:
         return TRIZToolResponse(
             success=False,
             message=f"Failed to identify contradictions: {str(e)}",
-            data={}
+            data={},
         )
 
 
@@ -91,9 +96,7 @@ def recommend_principles(problem: str, top_k: int = 5) -> TRIZToolResponse:
 
         if not principles:
             return TRIZToolResponse(
-                success=False,
-                message="No relevant principles found",
-                data={}
+                success=False, message="No relevant principles found", data={}
             )
 
         return TRIZToolResponse(
@@ -102,8 +105,8 @@ def recommend_principles(problem: str, top_k: int = 5) -> TRIZToolResponse:
             data={
                 "problem": problem,
                 "recommended_principles": principles,
-                "count": len(principles)
-            }
+                "count": len(principles),
+            },
         )
 
     except Exception as e:
@@ -120,21 +123,19 @@ def recommend_principles(problem: str, top_k: int = 5) -> TRIZToolResponse:
                 data={
                     "problem": problem,
                     "recommended_principles": principles,
-                    "count": len(principles)
-                }
+                    "count": len(principles),
+                },
             )
         except Exception as fallback_error:
             return TRIZToolResponse(
                 success=False,
                 message=f"Failed to recommend principles: {str(e)}; Fallback failed: {str(fallback_error)}",
-                data={}
+                data={},
             )
 
 
 def generate_solutions(
-    problem: str,
-    principles: List[Dict[str, Any]],
-    count: int = 3
+    problem: str, principles: List[Dict[str, Any]], count: int = 3
 ) -> TRIZToolResponse:
     """
     Generate solution concepts using TRIZ principles (TASK-020)
@@ -160,13 +161,11 @@ def generate_solutions(
                 "problem": problem,
                 "solutions": solutions,
                 "principles_used": [p.get("number") for p in principles],
-                "count": len(solutions)
-            }
+                "count": len(solutions),
+            },
         )
 
     except Exception as e:
         return TRIZToolResponse(
-            success=False,
-            message=f"Failed to generate solutions: {str(e)}",
-            data={}
+            success=False, message=f"Failed to generate solutions: {str(e)}", data={}
         )

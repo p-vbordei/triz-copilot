@@ -75,13 +75,13 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_solve",
-            description="Autonomous TRIZ problem analysis with deep research capabilities. MATERIALS ANALYSIS: For materials problems, this tool automatically searches 44+ materials engineering books (1,135 book chunks) including Encyclopedia of Materials, Composites volumes, and Plastics Materials. It extracts specific materials, densities (g/cm³), strengths (MPa), formability data, and creates comparison tables. RESEARCH DEPTH: Performs 15+ targeted searches combining semantic vector search with regex property extraction. For materials questions, it goes beyond search to actually READ and ANALYZE book content. OUTPUT: Complete solution report with contradiction analysis, recommended TRIZ principles, materials recommendations with properties, and ranked solutions. IMPORTANT: Provide detailed problem descriptions including what you're trying to achieve, constraints, available resources, and success criteria for best results.",
+            description="⚠️ DEPRECATED - USE triz_research_start INSTEAD. This autonomous solver is a SHORTCUT that bypasses proper TRIZ methodology. For correct TRIZ problem solving, you MUST use triz_research_start which guides you through 60 systematic research steps. This tool remains only for legacy compatibility and reference checking, but should NOT be used for actual problem solving.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "problem": {
                         "type": "string",
-                        "description": "Technical problem description with details: what you're trying to achieve, current limitations, constraints, available resources, and success criteria (up to 2000 characters)",
+                        "description": "⚠️ DO NOT USE - Use triz_research_start instead for proper 60-step methodology",
                     },
                 },
                 "required": ["problem"],
@@ -147,13 +147,13 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_solve_complete",
-            description="Complete TRIZ analysis with ALL 8 phases of full TRIZ methodology (not shortcuts): PHASE 1: Function Analysis (main, auxiliary, harmful, insufficient, excessive functions). PHASE 2: Resource Analysis (substance, field, space, time, information resources). PHASE 3: Ideal Final Result (IFR statement, trimming, X-element). PHASE 4: Contradiction Analysis - BOTH types: Technical contradictions (improving one parameter worsens another) AND Physical contradictions (opposite requirements for same parameter - THE BREAKTHROUGH!). PHASE 5: Multi-Method Solution Search (40 Inventive Principles + Separation Principles for time/space/condition/system level + Substance-Field Analysis). PHASE 6: Deep Materials Analysis (if materials problem detected): searches 44+ materials engineering books (1,135 chunks), extracts materials/densities/strengths/formability with regex, creates material comparison tables, performs 15+ targeted material queries. PHASE 7: Solution Synthesis & Ranking by feasibility. PHASE 8: Implementation Planning (steps, suppliers, cost, timeline). IMPORTANT: Physical contradiction analysis (Phase 4) often reveals separation in TIME/SPACE as the key solution (e.g., material flexible when heated, rigid when cooled). Provide detailed problem descriptions for best results.",
+            description="⚠️ DEPRECATED - USE triz_research_start INSTEAD. This 8-phase solver is a SHORTCUT that provides instant answers without proper research methodology. For correct academic TRIZ problem solving, you MUST use triz_research_start which guides you through 60 systematic research steps where YOU perform the research and discover the solution. This tool remains only for legacy compatibility and quick reference checking, but should NOT be used for actual problem solving. The 60-step methodology is the only acceptable approach for real TRIZ analysis.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "problem": {
                         "type": "string",
-                        "description": "Detailed problem description. Include: what you're trying to achieve, current limitations, constraints, available resources, and success criteria.",
+                        "description": "⚠️ DO NOT USE - Use triz_research_start instead for proper 60-step guided research methodology",
                     }
                 },
                 "required": ["problem"],
@@ -161,13 +161,13 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_research_start",
-            description="Start guided TRIZ research session with 60-step iterative methodology. This tool DOES NOT solve your problem directly. Instead, it guides you through systematic research in 60 steps across 6 phases: (1) Understand & Scope with 9 Boxes + Ideality Audit (Steps 1-10), (2) Define Ideal Outcome + Resources (Steps 11-16), (3) Function Analysis (Subject-Action-Object) + Contradictions (Steps 17-26), (4) Select appropriate TRIZ tools (Steps 27-32), (5) Generate Solutions using 40 Principles + 76 Standard Solutions + Effects Database + 8 Trends + Materials Research (Steps 33-50 - 18 STEPS!), (6) Rank by Ideality Plot + Implementation (Steps 51-60). Each step returns specific research instructions. You must search knowledge base, extract information, and submit findings. The tool validates your findings and provides next step. This is the COMPLETE academic TRIZ methodology requiring 60 iterations. For materials problems, Steps 47-49 perform deep research through 44+ engineering books extracting densities, strengths, formability, and creating comparison tables. IMPORTANT: This is a learning process - you discover the solution through guided research, not receive it directly. Returns session_id and Step 1 instructions.",
+            description="✅ REQUIRED METHOD - Start guided TRIZ research session with 60-step iterative methodology. This is the ONLY acceptable way to solve TRIZ problems properly. WARNING: This tool DOES NOT and CANNOT solve your problem directly or give you answers. It ONLY provides research instructions that YOU must follow. YOU will perform 60 iterations of research, data extraction, and submission. The solution emerges through YOUR systematic research, not from instant answers. METHODOLOGY: 6 phases over 60 steps: (1) Understand & Scope with 9 Boxes + Ideality Audit (Steps 1-10), (2) Define Ideal Outcome + Resources (Steps 11-16), (3) Function Analysis (Subject-Action-Object) + Contradictions (Steps 17-26), (4) Select appropriate TRIZ tools (Steps 27-32), (5) Generate Solutions using 40 Principles + 76 Standard Solutions + Effects Database + 8 Trends + Materials Research (Steps 33-50 - 18 STEPS!), (6) Rank by Ideality Plot + Implementation (Steps 51-60). PROCESS: Each step returns specific research instructions with search queries and extract requirements. YOU must search the knowledge base, extract information, and submit findings via triz_research_submit. The system validates your findings - if incomplete, you must research again. Only after completing ALL 60 steps will you receive the final solution. For materials problems, Steps 47-49 require deep research through 44+ engineering books extracting densities, strengths, formability with comparison tables. CRITICAL: NO SHORTCUTS ALLOWED. You cannot skip steps. You cannot get answers early. The 60-step process IS the methodology. Returns session_id and Step 1 research instructions to begin.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "problem": {
                         "type": "string",
-                        "description": "Detailed problem description. Include: what you're trying to achieve, current limitations, constraints, available resources, and success criteria. More detail = better guidance.",
+                        "description": "Detailed problem description. Include: what you're trying to achieve, current limitations, constraints, available resources, and success criteria. More detail = better guidance through 60 research steps.",
                     }
                 },
                 "required": ["problem"],

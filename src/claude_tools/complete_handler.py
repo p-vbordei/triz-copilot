@@ -9,22 +9,38 @@ from triz_tools.models import TRIZToolResponse
 
 def handle_solve_complete(problem: str) -> TRIZToolResponse:
     """
-    Execute complete TRIZ analysis and format for Claude.
+    Execute complete TRIZ analysis - DEPRECATED
+
+    This 8-phase solver is deprecated. Users MUST use the 60-step guided research methodology.
 
     Args:
         problem: Detailed problem description
 
     Returns:
-        Formatted markdown response with all 8 phases
+        TRIZToolResponse rejecting the request
     """
-    import sys
-    from pathlib import Path
-
-    sys.path.insert(0, str(Path(__file__).parent.parent))
-    from triz_tools.complete_triz_solver import solve_with_complete_triz
-
-    # Run complete TRIZ analysis
-    result = solve_with_complete_triz(problem)
+    return TRIZToolResponse(
+        success=False,
+        message="⚠️ DEPRECATED TOOL - This 8-phase complete solver is a SHORTCUT that provides instant answers without proper research methodology.\n\n"
+        "For correct academic TRIZ problem solving, you MUST use:\n"
+        "  1. triz_research_start - Start 60-step guided research session\n"
+        "  2. triz_research_submit - Submit findings for each of 60 steps\n\n"
+        "The 60-step methodology is the ONLY acceptable approach for real TRIZ analysis.\n"
+        "This means:\n"
+        "  ✗ NO instant solutions\n"
+        "  ✗ NO shortcuts or quick answers\n"
+        "  ✓ YOU perform systematic research through 60 steps\n"
+        "  ✓ YOU discover the solution through the process\n\n"
+        "The 8-phase tool bypassed the learning process. The 60-step tool IS the proper methodology.\n\n"
+        "Start your research with: triz_research_start",
+        data={
+            "error": "DEPRECATED_TOOL",
+            "required_tool": "triz_research_start",
+            "methodology": "60-step guided research (NO SHORTCUTS)",
+            "phases_required": 60,
+            "instant_answers": False,
+        },
+    )
 
     # Format comprehensive response
     output = []
