@@ -314,7 +314,7 @@ class DeepResearchAgent:
                         collection_name=collection,
                         query_vector=query_embedding,
                         limit=5,
-                        score_threshold=0.05,  # Lower threshold for random embeddings
+                        score_threshold=0.0,  # No threshold - return top results
                     )
 
                     # Convert results to findings
@@ -448,7 +448,7 @@ class DeepResearchAgent:
                         collection_name="triz_principles",
                         query_vector=query_embedding,
                         limit=10,
-                        score_threshold=0.3,
+                        score_threshold=0.0,  # No threshold - return top results
                     )
 
                     for result in results:
@@ -558,7 +558,7 @@ class DeepResearchAgent:
                             collection_name="triz_documents",
                             query_vector=query_embedding,
                             limit=3,
-                            score_threshold=0.4,
+                            score_threshold=0.0,  # No threshold - return top results
                         )
 
                         for result in results:
@@ -653,7 +653,7 @@ class DeepResearchAgent:
                     collection_name="triz_documents",
                     query_vector=query_embedding,
                     limit=3,
-                    score_threshold=0.4,
+                    score_threshold=0.0,  # No threshold - return top results
                 )
 
                 for result in results:
