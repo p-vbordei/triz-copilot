@@ -320,12 +320,16 @@ class DeepResearchAgent:
                     # Convert results to findings
                     for result in results:
                         # Extract content - try different field names
-                        content = (
-                            result.payload.get("full_content")
-                            or result.payload.get("content")
-                            or result.payload.get("chunk_text")
-                            or str(result.payload)
-                        )
+                        # For triz_principles, keep the dict structure
+                        if collection == "triz_principles":
+                            content = result.payload
+                        else:
+                            content = (
+                                result.payload.get("full_content")
+                                or result.payload.get("content")
+                                or result.payload.get("chunk_text")
+                                or str(result.payload)
+                            )
 
                         finding = ResearchFinding(
                             source=f"{collection} ({result.payload.get('document_name', 'N/A')})",
@@ -385,7 +389,7 @@ class DeepResearchAgent:
 
         # Extract contradictions from findings
         for finding in findings[:10]:
-            content_lower = finding.content.lower()
+            content_lower = str(finding.content).lower()
             for pattern in patterns:
                 matches = re.findall(pattern, content_lower)
                 for match in matches:
@@ -463,22 +467,36 @@ class DeepResearchAgent:
 
         # 3. Extract principles mentioned in findings
         for finding in findings[:15]:
-            # Look for principle numbers mentioned
-            principle_mentions = re.findall(
-                r"principle\s+(\d+)", finding.content.lower()
-            )
-            for p_id_str in principle_mentions:
-                try:
-                    p_id = int(p_id_str)
-                    if 1 <= p_id <= 40:
-                        if p_id not in principles_map:
-                            principles_map[p_id] = {"score": 0, "sources": []}
-                        principles_map[p_id]["score"] += 0.8
-                        principles_map[p_id]["sources"].append(
-                            f"mentioned_in_{finding.source}"
-                        )
-                except:
-                    pass
+            # If content is a dict from triz_principles collection, extract principle_number directly
+            if isinstance(finding.content, dict):
+                p_id = finding.content.get("principle_number") or finding.content.get(
+                    "principle_id"
+                )
+                if p_id and 1 <= p_id <= 40:
+                    if p_id not in principles_map:
+                        principles_map[p_id] = {"score": 0, "sources": []}
+                    principles_map[p_id]["score"] += (
+                        2.0  # High score for direct principle findings
+                    )
+                    principles_map[p_id]["sources"].append(
+                        f"direct_from_{finding.source}"
+                    )
+            else:
+                # Look for principle numbers mentioned in text
+                content_str = str(finding.content).lower()
+                principle_mentions = re.findall(r"principle\s+(\d+)", content_str)
+                for p_id_str in principle_mentions:
+                    try:
+                        p_id = int(p_id_str)
+                        if 1 <= p_id <= 40:
+                            if p_id not in principles_map:
+                                principles_map[p_id] = {"score": 0, "sources": []}
+                            principles_map[p_id]["score"] += 0.8
+                            principles_map[p_id]["sources"].append(
+                                f"mentioned_in_{finding.source}"
+                            )
+                    except:
+                        pass
 
         # Build final list with full details
         principles_list = []
@@ -582,12 +600,14 @@ class DeepResearchAgent:
             gaps.append("Limited principle coverage - need more TRIZ insights")
 
         # Check for specific types of information
-        has_material_info = any("material" in f.content.lower() for f in findings[:10])
+        has_material_info = any(
+            "material" in str(f.content).lower() for f in findings[:10]
+        )
         has_implementation_info = any(
-            "implement" in f.content.lower() for f in findings[:10]
+            "implement" in str(f.content).lower() for f in findings[:10]
         )
         has_case_studies = any(
-            "case" in f.content.lower() or "example" in f.content.lower()
+            "case" in str(f.content).lower() or "example" in str(f.content).lower()
             for f in findings[:10]
         )
 
@@ -671,8 +691,8 @@ class DeepResearchAgent:
             principle_findings = [
                 f
                 for f in findings
-                if str(principle["id"]) in f.content
-                or principle["name"].lower() in f.content.lower()
+                if str(principle["id"]) in str(f.content)
+                or principle["name"].lower() in str(f.content).lower()
             ]
 
             # Find relevant analogies
@@ -692,7 +712,7 @@ class DeepResearchAgent:
                 "research_support": [
                     {
                         "source": f.source,
-                        "excerpt": f.content[:150],
+                        "excerpt": str(f.content)[:5000],
                         "relevance": f.relevance_score,
                     }
                     for f in principle_findings[:3]
@@ -728,7 +748,7 @@ class DeepResearchAgent:
                 "research_support": [
                     {
                         "source": f.source,
-                        "excerpt": f.content[:150],
+                        "excerpt": str(f.content)[:5000],
                         "relevance": f.relevance_score,
                     }
                     for f in hybrid_findings
@@ -808,7 +828,8 @@ class DeepResearchAgent:
         if findings:
             desc += f"\n\nResearch insights: "
             for finding in findings[:2]:
-                excerpt = finding.content[:150].strip()
+                content_str = str(finding.content)
+                excerpt = content_str[:5000].strip()
                 desc += f"\n- From {finding.source}: {excerpt}... "
 
         # Add sub-principle details
@@ -822,7 +843,8 @@ class DeepResearchAgent:
         pros = []
 
         for finding in findings[:3]:
-            content_lower = finding.content.lower()
+            content_str = str(finding.content)
+            content_lower = content_str.lower()
 
             # Look for positive indicators
             if any(
@@ -830,7 +852,7 @@ class DeepResearchAgent:
                 for word in ["benefit", "advantage", "improve", "effective"]
             ):
                 # Extract sentence containing these words
-                sentences = finding.content.split(".")
+                sentences = content_str.split(".")
                 for sentence in sentences:
                     if any(
                         word in sentence.lower() for word in ["benefit", "advantage"]
@@ -852,14 +874,15 @@ class DeepResearchAgent:
         cons = []
 
         for finding in findings[:3]:
-            content_lower = finding.content.lower()
+            content_str = str(finding.content)
+            content_lower = content_str.lower()
 
             # Look for challenges/limitations
             if any(
                 word in content_lower
                 for word in ["challenge", "limitation", "difficult", "risk"]
             ):
-                sentences = finding.content.split(".")
+                sentences = content_str.split(".")
                 for sentence in sentences:
                     if any(
                         word in sentence.lower() for word in ["challenge", "limitation"]
@@ -883,14 +906,15 @@ class DeepResearchAgent:
         hints = []
 
         for finding in findings[:5]:
-            content_lower = finding.content.lower()
+            content_str = str(finding.content)
+            content_lower = content_str.lower()
 
             # Look for implementation guidance
             if any(
                 word in content_lower
                 for word in ["implement", "step", "process", "method"]
             ):
-                sentences = finding.content.split(".")
+                sentences = content_str.split(".")
                 for sentence in sentences:
                     if any(
                         word in sentence.lower()

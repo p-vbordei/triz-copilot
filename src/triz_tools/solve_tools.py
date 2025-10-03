@@ -522,17 +522,17 @@ def triz_solve_autonomous(
             # Check if finding is from materials sources
             source = finding.source.lower()
             if "materials" in source or "composite" in source or "polymer" in source:
-                # Extract clean content text
+                # Extract clean content text (use full chunk - we have 8000 char chunks)
                 content = finding.content
                 if isinstance(content, str):
-                    reasoning = content[:200]
+                    reasoning = content[:5000]  # Show substantial content
                 elif isinstance(content, dict):
                     # Try to get text from dict
                     reasoning = content.get(
                         "content", content.get("full_content", str(content))
-                    )[:200]
+                    )[:5000]
                 else:
-                    reasoning = str(content)[:200]
+                    reasoning = str(content)[:5000]
 
                 # Extract book name for better naming
                 book_name = (
