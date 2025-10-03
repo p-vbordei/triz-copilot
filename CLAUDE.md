@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-The TRIZ Engineering Co-Pilot is a complete implementation of the Theory of Inventive Problem Solving (TRIZ) methodology as an intelligent assistant. It extends Google Gemini CLI with systematic innovation capabilities and provides three main interaction modes:
+The TRIZ Engineering Co-Pilot is a complete implementation of the Theory of Inventive Problem Solving (TRIZ) methodology as an intelligent assistant. It provides MCP server integration for both Google Gemini CLI and Claude Code, with three main interaction modes:
 
-- **Guided Workflow Mode** (`/triz-workflow`): Step-by-step TRIZ methodology for learning users
-- **Autonomous Solve Mode** (`/triz-solve`): Complete problem analysis for experienced users  
-- **Direct Tool Mode** (`/triz-tool`): Expert access to specific TRIZ components
+- **Guided Workflow Mode**: Step-by-step TRIZ methodology for learning users
+- **Autonomous Solve Mode**: Complete problem analysis for experienced users  
+- **Direct Tool Mode**: Expert access to specific TRIZ components
 
 ## Architecture
 
@@ -24,8 +24,12 @@ The TRIZ Engineering Co-Pilot is a complete implementation of the Theory of Inve
 The system follows a library-first approach with three main layers:
 
 1. **Core TRIZ Library** (`src/triz_tools/`): Standalone Python library implementing all TRIZ logic, vector operations, and session management
-2. **CLI Integration** (`src/cli.py`, `src/mcp_server.py`): Minimal wrapper for Gemini CLI and standalone CLI usage
-3. **Data Layer** (`src/data/`): TRIZ knowledge base, contradiction matrix, and materials database
+2. **MCP Servers**: 
+   - `src/mcp_server.py` - Gemini CLI integration
+   - `src/claude_mcp_server.py` - Claude Code integration
+   - `src/claude_tools/` - Claude-specific handlers and formatters
+3. **CLI Interface** (`src/cli.py`): Standalone CLI for direct usage
+4. **Data Layer** (`src/data/`): TRIZ knowledge base, contradiction matrix, and materials database
 
 Key architectural patterns:
 - **Vector Search**: Semantic similarity search using Qdrant for finding relevant TRIZ principles and materials
@@ -180,20 +184,14 @@ Key test files:
 
 ## Current Status
 
-✅ **IMPLEMENTATION COMPLETE** - All 63 tasks completed:
-- Core TRIZ library with 40 principles and contradiction matrix
-- Vector search with Qdrant and file-based fallback
-- Session management with JSON persistence
-- CLI and MCP server integration
-- Comprehensive test coverage (contract, integration, unit, performance)
-- Documentation and quickstart guide
+✅ **PRODUCTION READY** - Complete implementation with dual MCP server support:
+- ✅ Core TRIZ library with 40 principles and contradiction matrix
+- ✅ Vector search with Qdrant and file-based fallback
+- ✅ Session management with JSON persistence
+- ✅ Standalone CLI interface
+- ✅ Gemini CLI MCP server integration (`src/mcp_server.py`)
+- ✅ Claude Code MCP server integration (`src/claude_mcp_server.py`)
+- ✅ Comprehensive test coverage (contract, integration, unit, performance)
+- ✅ Clean documentation (README.md + CLAUDE.md)
 
-The system is production-ready and successfully transforms TRIZ methodology into an accessible, intelligent assistant.
-
-## Active Development
-
-🚧 **Feature Branch: 002-add-claude-cli**
-- Adding Claude CLI integration alongside existing Gemini CLI support
-- Implementing `/triz-workflow`, `/triz-solve`, and `/triz-tool` commands for Claude
-- Ensuring platform-agnostic session management
-- Specification complete, awaiting implementation plan
+The system is production-ready and successfully transforms TRIZ methodology into an accessible, intelligent assistant available through multiple interfaces.

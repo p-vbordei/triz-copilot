@@ -63,20 +63,24 @@ python src/cli.py interactive
 
 ### Claude Code Integration
 
-Add TRIZ tools to Claude Code with slash commands:
+The project includes MCP (Model Context Protocol) server integration for Claude Code:
 
-```bash
-# Guided workflow (learning mode)
-/triz-workflow "Design a lightweight but strong component"
-
-# Quick autonomous solve
-/triz-solve "Reduce noise while increasing airflow"
-
-# Direct tool access
-/triz-tool principle 35
+**Setup**: Add to your Claude Desktop configuration:
+```json
+{
+  "mcpServers": {
+    "triz": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/triz2", "run", "python", "src/claude_mcp_server.py"]
+    }
+  }
+}
 ```
 
-See [CLAUDE_DESKTOP_SETUP.md](CLAUDE_DESKTOP_SETUP.md) for installation instructions.
+**Available Tools**:
+- `triz_workflow` - Guided step-by-step TRIZ methodology
+- `triz_solve` - Autonomous problem analysis and solution generation
+- `triz_tool` - Direct access to principles, matrix, and materials database
 
 ## Three Ways to Work
 
@@ -150,10 +154,7 @@ python -c "from src.triz_tools.health_checks import run_health_check; run_health
 
 ## Documentation
 
-- [QUICKSTART.md](QUICKSTART.md) - Detailed setup guide
-- [docs/cli_usage.md](docs/cli_usage.md) - Complete CLI reference
-- [docs/api_reference.md](docs/api_reference.md) - API documentation
-- [CLAUDE.md](CLAUDE.md) - Development guide
+- [CLAUDE.md](CLAUDE.md) - Development guide for contributors
 
 ## Examples
 
