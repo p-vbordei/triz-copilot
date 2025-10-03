@@ -117,6 +117,12 @@ class GuidedTRIZSolver:
         current_step_num = session.current_step
         current_step = session.steps[current_step_num - 1]
 
+        # Ensure instruction is loaded (might be None if session was loaded from disk)
+        if not current_step.instruction:
+            current_step.instruction = self._generate_step_instruction(
+                current_step_num, session.problem, session.accumulated_knowledge
+            )
+
         # Validate findings
         validation = self._validate_findings(current_step, findings)
 

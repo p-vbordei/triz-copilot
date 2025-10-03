@@ -788,8 +788,8 @@ def generate(
             ],
             extract_requirements=[
                 "executive_summary",
-                "complete_triz_journey",
-                "recommended_solution",
+                "triz_methodology_applied",
+                "recommended_solution_details",
                 "supporting_evidence",
                 "implementation_roadmap",
                 "future_triz_iterations",

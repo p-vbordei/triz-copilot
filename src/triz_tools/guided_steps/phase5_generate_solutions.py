@@ -438,6 +438,8 @@ def generate(
                     f"principle {principle_num} combined with other principles",
                 ],
                 extract_requirements=[
+                    "principle_number",
+                    "principle_name",
                     "principle_summary",
                     "quick_application_ideas",
                     "combination_potential",
@@ -465,20 +467,26 @@ def generate(
                 search_queries=[
                     "combining multiple TRIZ principles synergy",
                     "multi-principle solutions TRIZ",
+                    "how to integrate TRIZ principles effectively",
+                    "complementary TRIZ principles combinations",
                 ],
                 extract_requirements=[
                     "principles_applied",
                     "combination_opportunities",
+                    "synergy_analysis",
+                    "next_steps",
                 ],
                 validation_criteria="Document which principles were applied and potential combinations",
                 expected_output_format="""
                 {
                     "principles_applied": [1, 15],
                     "combinations_identified": "How principles 1 and 15 can work together",
+                    "synergy_analysis": "Analysis of how principles complement each other",
+                    "next_steps": "Proceed to Standard Solutions",
                     "status": "Only 2 principles recommended, proceeding to Standard Solutions"
                 }
                 """,
-                why_this_matters="Documenting principle application status ensures we track all TRIZ tools used.",
+                why_this_matters="Documenting principle application status ensures we track all TRIZ tools used. Understanding synergies helps create better combined solutions.",
                 related_triz_tool="40 Inventive Principles Summary",
             )
 
