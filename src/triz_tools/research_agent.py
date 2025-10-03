@@ -246,12 +246,118 @@ class DeepResearchAgent:
                     target_collections=["materials_database"],
                 )
             )
-            # Search books for deep knowledge and selection guidance
+
+            # COMPREHENSIVE MATERIAL SEARCHES - Multiple specific queries to find examples
+
+            # 5a. General material selection for the problem
             queries.append(
                 ResearchQuery(
-                    query_text=f"material selection and properties for {problem[:100]}",
+                    query_text=f"material selection criteria properties {problem[:100]}",
                     query_type="material",
-                    priority=2.1,
+                    priority=2.4,
+                    target_collections=["materials_knowledge"],
+                )
+            )
+
+            # 5b. Lightweight materials and weight reduction
+            if any(
+                word in problem_lower for word in ["light", "weight", "heavy", "mass"]
+            ):
+                queries.append(
+                    ResearchQuery(
+                        query_text="lightweight materials weight reduction aluminum magnesium titanium composite density comparison",
+                        query_type="material",
+                        priority=2.5,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+                queries.append(
+                    ResearchQuery(
+                        query_text="weight savings structural materials aerospace automotive applications",
+                        query_type="material",
+                        priority=2.3,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+
+            # 5c. Formability and bending
+            if any(
+                word in problem_lower
+                for word in ["bend", "form", "shape", "flexible", "sheet"]
+            ):
+                queries.append(
+                    ResearchQuery(
+                        query_text="sheet metal forming bending formability ductility aluminum alloys",
+                        query_type="material",
+                        priority=2.5,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+                queries.append(
+                    ResearchQuery(
+                        query_text="thermoforming bendable materials plastic metal composite manufacturing",
+                        query_type="material",
+                        priority=2.3,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+
+            # 5d. Specific material comparisons
+            if any(
+                word in problem_lower
+                for word in ["aluminum", "aluminium", "alternative"]
+            ):
+                queries.append(
+                    ResearchQuery(
+                        query_text="aluminum alloys magnesium titanium comparison properties strength weight",
+                        query_type="material",
+                        priority=2.6,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+
+            # 5e. Composite materials
+            if any(
+                word in problem_lower
+                for word in ["composite", "cfrp", "carbon", "fiber", "fibre"]
+            ):
+                queries.append(
+                    ResearchQuery(
+                        query_text="composite materials carbon fiber CFRP properties applications manufacturing",
+                        query_type="material",
+                        priority=2.5,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+                queries.append(
+                    ResearchQuery(
+                        query_text="thermoplastic composites glass fiber reinforced polymer lightweight",
+                        query_type="material",
+                        priority=2.3,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+
+            # 5f. Application-specific searches
+            if any(
+                word in problem_lower
+                for word in ["robot", "electronic", "enclosure", "housing"]
+            ):
+                queries.append(
+                    ResearchQuery(
+                        query_text="materials electronics enclosure robotics structural components shielding",
+                        query_type="material",
+                        priority=2.4,
+                        target_collections=["materials_knowledge"],
+                    )
+                )
+
+            # 5g. Case studies and examples
+            queries.append(
+                ResearchQuery(
+                    query_text="material selection case study example application design criteria",
+                    query_type="material",
+                    priority=2.2,
                     target_collections=["materials_knowledge"],
                 )
             )
@@ -310,10 +416,13 @@ class DeepResearchAgent:
                     if collection not in self.collections.values():
                         continue
 
+                    # Use higher limit for materials_knowledge to find better matches
+                    search_limit = 10 if collection == "materials_knowledge" else 5
+
                     results = self.vector_service.search(
                         collection_name=collection,
                         query_vector=query_embedding,
-                        limit=5,
+                        limit=search_limit,
                         score_threshold=0.0,  # No threshold - return top results
                     )
 
@@ -349,7 +458,9 @@ class DeepResearchAgent:
         # Sort by relevance
         findings.sort(key=lambda f: f.relevance_score, reverse=True)
 
-        return findings[:30]  # Return top 30 findings
+        return findings[
+            :50
+        ]  # Return top 50 findings (increased for comprehensive material searches)
 
     def _deep_contradiction_analysis(
         self, problem: str, findings: List[ResearchFinding]

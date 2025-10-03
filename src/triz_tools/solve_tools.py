@@ -552,7 +552,7 @@ def triz_solve_autonomous(
         materials_recommendations.sort(
             key=lambda x: x.get("relevance_score", 0), reverse=True
         )
-        materials_recommendations = materials_recommendations[:5]  # Top 5
+        materials_recommendations = materials_recommendations[:10]  # Top 10
 
         # Compile comprehensive analysis report
         analysis_data = {
