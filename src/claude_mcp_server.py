@@ -48,7 +48,7 @@ async def list_tools() -> list[Tool]:
     return [
         Tool(
             name="triz_workflow_start",
-            description="Start a guided TRIZ problem-solving workflow with step-by-step guidance through all stages",
+            description="Start a guided TRIZ problem-solving workflow with step-by-step guidance through all stages. This interactive workflow guides you through: problem formulation, contradiction identification (technical and physical), solution generation using TRIZ principles, materials research (if applicable - searches 44+ engineering books with 1,135 chunks), and implementation planning. The workflow adapts based on your problem type. For materials problems, it automatically performs deep research from materials engineering books with property extraction and comparison tables.",
             inputSchema={
                 "type": "object",
                 "properties": {},
@@ -75,13 +75,13 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_solve",
-            description="Perform autonomous TRIZ analysis on a problem description and return complete solution report",
+            description="Autonomous TRIZ problem analysis with deep research capabilities. MATERIALS ANALYSIS: For materials problems, this tool automatically searches 44+ materials engineering books (1,135 book chunks) including Encyclopedia of Materials, Composites volumes, and Plastics Materials. It extracts specific materials, densities (g/cm³), strengths (MPa), formability data, and creates comparison tables. RESEARCH DEPTH: Performs 15+ targeted searches combining semantic vector search with regex property extraction. For materials questions, it goes beyond search to actually READ and ANALYZE book content. OUTPUT: Complete solution report with contradiction analysis, recommended TRIZ principles, materials recommendations with properties, and ranked solutions. IMPORTANT: Provide detailed problem descriptions including what you're trying to achieve, constraints, available resources, and success criteria for best results.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "problem": {
                         "type": "string",
-                        "description": "Technical problem description (up to 2000 characters)",
+                        "description": "Technical problem description with details: what you're trying to achieve, current limitations, constraints, available resources, and success criteria (up to 2000 characters)",
                     },
                 },
                 "required": ["problem"],
@@ -147,7 +147,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_solve_complete",
-            description="Complete TRIZ analysis with ALL 8 phases: Function Analysis, Resource Inventory, IFR, Technical+Physical Contradictions, Multi-Method Solutions (40 Principles + Separation + Substance-Field), Deep Materials Analysis, Solution Synthesis, and Implementation Planning. This is the FULL TRIZ methodology, not shortcuts!",
+            description="Complete TRIZ analysis with ALL 8 phases of full TRIZ methodology (not shortcuts): PHASE 1: Function Analysis (main, auxiliary, harmful, insufficient, excessive functions). PHASE 2: Resource Analysis (substance, field, space, time, information resources). PHASE 3: Ideal Final Result (IFR statement, trimming, X-element). PHASE 4: Contradiction Analysis - BOTH types: Technical contradictions (improving one parameter worsens another) AND Physical contradictions (opposite requirements for same parameter - THE BREAKTHROUGH!). PHASE 5: Multi-Method Solution Search (40 Inventive Principles + Separation Principles for time/space/condition/system level + Substance-Field Analysis). PHASE 6: Deep Materials Analysis (if materials problem detected): searches 44+ materials engineering books (1,135 chunks), extracts materials/densities/strengths/formability with regex, creates material comparison tables, performs 15+ targeted material queries. PHASE 7: Solution Synthesis & Ranking by feasibility. PHASE 8: Implementation Planning (steps, suppliers, cost, timeline). IMPORTANT: Physical contradiction analysis (Phase 4) often reveals separation in TIME/SPACE as the key solution (e.g., material flexible when heated, rigid when cooled). Provide detailed problem descriptions for best results.",
             inputSchema={
                 "type": "object",
                 "properties": {
