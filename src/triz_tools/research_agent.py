@@ -97,6 +97,19 @@ class DeepResearchAgent:
         findings = self._multi_source_search(research_plan, problem_description)
         logger.info(f"Collected {len(findings)} research findings")
 
+        # Stage 2.5: Deep Material Analysis (if materials problem detected)
+        if self._is_materials_problem(problem_description):
+            logger.info(
+                "Materials problem detected - performing deep materials analysis..."
+            )
+            materials_analysis = self._deep_materials_analysis(
+                problem_description, findings
+            )
+            # Add materials analysis as enriched findings
+            for material_finding in materials_analysis:
+                findings.append(material_finding)
+            logger.info(f"Added {len(materials_analysis)} deep materials findings")
+
         # Stage 3: Contradiction Deep Dive
         contradictions = self._deep_contradiction_analysis(
             problem_description, findings
@@ -1129,6 +1142,184 @@ class DeepResearchAgent:
                 domains.append(domain)
 
         return domains if domains else ["general"]
+
+    def _is_materials_problem(self, problem: str) -> bool:
+        """Detect if this is a materials selection/properties problem"""
+        materials_keywords = [
+            "material",
+            "metal",
+            "alloy",
+            "composite",
+            "polymer",
+            "plastic",
+            "aluminum",
+            "aluminium",
+            "steel",
+            "titanium",
+            "magnesium",
+            "carbon fiber",
+            "cfrp",
+            "weight",
+            "density",
+            "strength",
+            "formability",
+            "bendable",
+            "lightweight",
+            "properties",
+            "sheet",
+            "component",
+        ]
+        problem_lower = problem.lower()
+        keyword_count = sum(1 for kw in materials_keywords if kw in problem_lower)
+        return keyword_count >= 3  # If 3+ materials keywords, it's a materials problem
+
+    def _deep_materials_analysis(
+        self, problem: str, initial_findings: List[ResearchFinding]
+    ) -> List[ResearchFinding]:
+        """
+        Perform deep analysis of materials from books.
+
+        This goes beyond semantic search to actually READ and ANALYZE
+        the book content about materials.
+        """
+        deep_findings = []
+
+        # Extract materials mentioned in initial findings
+        materials_findings = [
+            f
+            for f in initial_findings
+            if "materials" in f.source.lower() or "composite" in f.source.lower()
+        ]
+
+        if not materials_findings:
+            logger.warning("No materials findings to analyze deeply")
+            return []
+
+        logger.info(f"Deep analyzing {len(materials_findings)} materials findings...")
+
+        # Extract specific materials, properties, and comparisons from content
+        for finding in materials_findings[:10]:  # Analyze top 10 materials findings
+            content = str(finding.content)
+
+            # Extract material names mentioned
+            material_patterns = [
+                r"(?:aluminum|aluminium|magnesium|titanium|steel|carbon fiber|CFRP|polymer|composite|alloy)\s+(?:alloy|sheet|composite)?",
+                r"(?:AZ31|6061|7075|Ti-6Al-4V|CFRP|GFRP)",
+            ]
+
+            materials_found = []
+            for pattern in material_patterns:
+                matches = re.findall(pattern, content, re.IGNORECASE)
+                materials_found.extend(matches)
+
+            # Extract density/weight information
+            density_pattern = r"density.*?(\d+\.?\d*)\s*(?:g/cm|kg/m)"
+            densities = re.findall(density_pattern, content, re.IGNORECASE)
+
+            # Extract strength/modulus information
+            strength_pattern = (
+                r"(?:strength|modulus|stiffness).*?(\d+\.?\d*)\s*(?:MPa|GPa)"
+            )
+            strengths = re.findall(strength_pattern, content, re.IGNORECASE)
+
+            # Create enriched finding with extracted data
+            if materials_found or densities or strengths:
+                analysis_content = f"DEEP MATERIALS ANALYSIS:\n\n"
+                analysis_content += f"Source: {finding.source}\n\n"
+
+                if materials_found:
+                    unique_materials = list(
+                        set([m.strip() for m in materials_found[:5]])
+                    )
+                    analysis_content += (
+                        f"Materials identified: {', '.join(unique_materials)}\n\n"
+                    )
+
+                if densities:
+                    analysis_content += (
+                        f"Density values found: {', '.join(densities[:3])} g/cm³\n\n"
+                    )
+
+                if strengths:
+                    analysis_content += (
+                        f"Strength values found: {', '.join(strengths[:3])} MPa/GPa\n\n"
+                    )
+
+                analysis_content += f"Context:\n{content[:1000]}"
+
+                deep_finding = ResearchFinding(
+                    source=f"ANALYZED_{finding.source}",
+                    content=analysis_content,
+                    relevance_score=finding.relevance_score
+                    * 1.5,  # Boost analyzed findings
+                    metadata={
+                        **finding.metadata,
+                        "analysis_type": "deep_materials",
+                        "materials_found": materials_found[:5],
+                        "densities": densities[:3],
+                        "strengths": strengths[:3],
+                    },
+                    citations=finding.citations,
+                )
+                deep_findings.append(deep_finding)
+
+        # Search for specific material comparisons
+        comparison_queries = [
+            "aluminum vs magnesium weight comparison density",
+            "lightweight materials comparison table properties",
+            "formable sheet metals ductility comparison",
+            "CFRP alternatives bendable composites",
+        ]
+
+        for query in comparison_queries:
+            try:
+                query_embedding = self.embedding_service.generate_embedding(query)
+                if query_embedding is not None:
+                    results = self.vector_service.search(
+                        collection_name="materials_knowledge",
+                        query_vector=query_embedding,
+                        limit=3,
+                        score_threshold=0.0,
+                    )
+
+                    for result in results:
+                        content = (
+                            result.payload.get("full_content")
+                            or result.payload.get("content")
+                            or result.payload.get("chunk_text")
+                            or ""
+                        )
+
+                        # Only add if it contains comparison keywords
+                        if any(
+                            word in str(content).lower()
+                            for word in [
+                                "vs",
+                                "versus",
+                                "compared",
+                                "comparison",
+                                "table",
+                            ]
+                        ):
+                            comparison_finding = ResearchFinding(
+                                source=f"COMPARISON_{result.payload.get('document_name', 'N/A')}",
+                                content=f"MATERIALS COMPARISON:\n\nQuery: {query}\n\n{content[:2000]}",
+                                relevance_score=result.score
+                                * 1.8,  # High boost for comparisons
+                                metadata={
+                                    **result.payload,
+                                    "analysis_type": "comparison",
+                                    "query": query,
+                                },
+                                citations=[f"comparison:{result.id}"],
+                            )
+                            deep_findings.append(comparison_finding)
+            except Exception as e:
+                logger.warning(f"Comparison search failed for '{query}': {e}")
+                continue
+
+        logger.info(f"Generated {len(deep_findings)} deep materials analyses")
+        return deep_findings
 
 
 # Singleton instance
