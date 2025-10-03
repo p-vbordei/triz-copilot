@@ -20,7 +20,10 @@ from mcp.types import (
 
 from claude_tools.async_utils import run_sync
 from claude_tools.formatter import ClaudeResponseFormatter
-from claude_tools.workflow_handler import handle_workflow_start, handle_workflow_continue
+from claude_tools.workflow_handler import (
+    handle_workflow_start,
+    handle_workflow_continue,
+)
 from claude_tools.solve_handler import handle_solve
 from claude_tools.direct_handler import (
     handle_get_principle,
@@ -31,8 +34,7 @@ import logging
 
 # Setup simple logging for MCP server
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger("claude_mcp_server")
 
@@ -144,6 +146,20 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
+            name="triz_solve_complete",
+            description="Complete TRIZ analysis with ALL 8 phases: Function Analysis, Resource Inventory, IFR, Technical+Physical Contradictions, Multi-Method Solutions (40 Principles + Separation + Substance-Field), Deep Materials Analysis, Solution Synthesis, and Implementation Planning. This is the FULL TRIZ methodology, not shortcuts!",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "problem": {
+                        "type": "string",
+                        "description": "Detailed problem description. Include: what you're trying to achieve, current limitations, constraints, available resources, and success criteria.",
+                    }
+                },
+                "required": ["problem"],
+            },
+        ),
+        Tool(
             name="triz_health_check",
             description="Check the health and status of the TRIZ system",
             inputSchema={
@@ -169,46 +185,72 @@ async def call_tool(name: str, arguments: Any) -> Sequence[TextContent]:
             session_id = arguments.get("session_id")
             user_input = arguments.get("user_input")
             if not session_id or not user_input:
-                return [TextContent(
-                    type="text",
-                    text="Error: session_id and user_input are required"
-                )]
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: session_id and user_input are required",
+                    )
+                ]
             result = await run_sync(handle_workflow_continue, session_id, user_input)
 
         elif name == "triz_solve":
             problem = arguments.get("problem")
             if not problem:
-                return [TextContent(type="text", text="Error: problem description is required")]
+                return [
+                    TextContent(
+                        type="text", text="Error: problem description is required"
+                    )
+                ]
             result = await run_sync(handle_solve, problem)
 
         elif name == "triz_get_principle":
             principle_number = arguments.get("principle_number")
             if not principle_number:
-                return [TextContent(type="text", text="Error: principle_number is required")]
+                return [
+                    TextContent(type="text", text="Error: principle_number is required")
+                ]
             result = await run_sync(handle_get_principle, principle_number)
 
         elif name == "triz_contradiction_matrix":
             improving = arguments.get("improving_parameter")
             worsening = arguments.get("worsening_parameter")
             if not improving or not worsening:
-                return [TextContent(
-                    type="text",
-                    text="Error: improving_parameter and worsening_parameter are required"
-                )]
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: improving_parameter and worsening_parameter are required",
+                    )
+                ]
             result = await run_sync(handle_contradiction_matrix, improving, worsening)
 
         elif name == "triz_brainstorm":
             principle_number = arguments.get("principle_number")
             context = arguments.get("context")
             if not principle_number or not context:
-                return [TextContent(
-                    type="text",
-                    text="Error: principle_number and context are required"
-                )]
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: principle_number and context are required",
+                    )
+                ]
             result = await run_sync(handle_brainstorm, principle_number, context)
+
+        elif name == "triz_solve_complete":
+            from claude_tools.complete_handler import handle_solve_complete
+
+            problem = arguments.get("problem")
+            if not problem:
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: problem description is required",
+                    )
+                ]
+            result = await run_sync(handle_solve_complete, problem)
 
         elif name == "triz_health_check":
             from triz_tools.health_checks import check_system_health
+
             result = await run_sync(check_system_health)
 
         else:
@@ -230,11 +272,7 @@ async def main():
     logger.info("Starting TRIZ Co-Pilot MCP Server for Claude")
 
     async with stdio_server() as (read_stream, write_stream):
-        await app.run(
-            read_stream,
-            write_stream,
-            app.create_initialization_options()
-        )
+        await app.run(read_stream, write_stream, app.create_initialization_options())
 
 
 if __name__ == "__main__":
