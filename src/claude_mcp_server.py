@@ -160,6 +160,38 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
+            name="triz_research_start",
+            description="Start guided TRIZ research session with 60-step iterative methodology. This tool DOES NOT solve your problem directly. Instead, it guides you through systematic research in 60 steps across 6 phases: (1) Understand & Scope with 9 Boxes + Ideality Audit (Steps 1-10), (2) Define Ideal Outcome + Resources (Steps 11-16), (3) Function Analysis (Subject-Action-Object) + Contradictions (Steps 17-26), (4) Select appropriate TRIZ tools (Steps 27-32), (5) Generate Solutions using 40 Principles + 76 Standard Solutions + Effects Database + 8 Trends + Materials Research (Steps 33-50 - 18 STEPS!), (6) Rank by Ideality Plot + Implementation (Steps 51-60). Each step returns specific research instructions. You must search knowledge base, extract information, and submit findings. The tool validates your findings and provides next step. This is the COMPLETE academic TRIZ methodology requiring 60 iterations. For materials problems, Steps 47-49 perform deep research through 44+ engineering books extracting densities, strengths, formability, and creating comparison tables. IMPORTANT: This is a learning process - you discover the solution through guided research, not receive it directly. Returns session_id and Step 1 instructions.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "problem": {
+                        "type": "string",
+                        "description": "Detailed problem description. Include: what you're trying to achieve, current limitations, constraints, available resources, and success criteria. More detail = better guidance.",
+                    }
+                },
+                "required": ["problem"],
+            },
+        ),
+        Tool(
+            name="triz_research_submit",
+            description="Submit research findings for current TRIZ research step and receive next step instructions (or final solution if step 60). You must provide findings dictionary matching the extract_requirements from previous step's instruction. The tool validates your findings - if validation fails, you'll receive hints and must research again. If validation succeeds, you receive next step instructions. This continues for all 60 steps. The final step (60) returns complete TRIZ solution with all evidence from your research. IMPORTANT: Findings must be a dictionary/object with keys matching the extract_requirements list from the current step instruction.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "session_id": {
+                        "type": "string",
+                        "description": "Session ID from triz_research_start",
+                    },
+                    "findings": {
+                        "type": "object",
+                        "description": "Research findings dictionary with keys matching extract_requirements from current step instruction. Must include all required fields with detailed information from knowledge base research.",
+                    },
+                },
+                "required": ["session_id", "findings"],
+            },
+        ),
+        Tool(
             name="triz_health_check",
             description="Check the health and status of the TRIZ system",
             inputSchema={
@@ -247,6 +279,32 @@ async def call_tool(name: str, arguments: Any) -> Sequence[TextContent]:
                     )
                 ]
             result = await run_sync(handle_solve_complete, problem)
+
+        elif name == "triz_research_start":
+            from claude_tools.guided_handler import handle_research_start
+
+            problem = arguments.get("problem")
+            if not problem:
+                return [
+                    TextContent(
+                        type="text", text="Error: problem description is required"
+                    )
+                ]
+            result = await run_sync(handle_research_start, problem)
+
+        elif name == "triz_research_submit":
+            from claude_tools.guided_handler import handle_research_submit
+
+            session_id = arguments.get("session_id")
+            findings = arguments.get("findings")
+            if not session_id or not findings:
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: session_id and findings are required",
+                    )
+                ]
+            result = await run_sync(handle_research_submit, session_id, findings)
 
         elif name == "triz_health_check":
             from triz_tools.health_checks import check_system_health
