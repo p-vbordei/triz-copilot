@@ -1,9 +1,10 @@
 """
 TRIZ Workflow Tools (T037)
 Implementation of guided workflow functions
+NOW INTEGRATED WITH ACTUAL TRIZ ANALYSIS
 """
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from pathlib import Path
 import uuid
 
@@ -14,6 +15,13 @@ from .models import (
     WorkflowType,
 )
 from .services.traceability_logger import TraceabilityLogger
+from .solve_tools import (
+    extract_contradictions,
+    generate_ideal_final_result,
+    select_top_principles,
+    generate_solution_concepts,
+)
+from .knowledge_base import load_principles_from_file
 
 
 # Session storage directory
@@ -97,17 +105,75 @@ def triz_workflow_continue(session_id: str, user_input: str) -> TRIZToolResponse
             session.advance_stage()
 
         elif session.current_stage == WorkflowStage.PRINCIPLE_SELECTION:
-            # Parse contradictions from user input
-            session.session_data.contradictions.append({"description": user_input})
-            next_prompt = "Based on your contradictions, we've identified relevant TRIZ principles. Would you like to explore specific principles or generate solution concepts?"
+            # ACTUAL TRIZ ANALYSIS: Extract contradictions from problem
+            problem_text = session.session_data.problem_statement
+            contradictions = extract_contradictions(problem_text + " " + user_input)
+
+            # Store contradictions
+            session.session_data.contradictions = contradictions[:5]  # Top 5
+
+            # ACTUAL TRIZ ANALYSIS: Select principles based on contradictions
+            principles = select_top_principles(contradictions, problem_text)
+            session.session_data.selected_principles = [p["principle_id"] for p in principles]
+
+            # Load principle details
+            knowledge_base = load_principles_from_file()
+            principle_details = []
+            for p in principles:
+                principle = knowledge_base.get_principle(p["principle_id"])
+                if principle:
+                    principle_details.append({
+                        "id": p["principle_id"],
+                        "name": principle.principle_name,
+                        "description": principle.description,
+                        "relevance": p["relevance_score"]
+                    })
+
+            next_prompt = f"""Based on the contradictions identified, here are the most relevant TRIZ principles:
+
+{_format_principles(principle_details)}
+
+Would you like to proceed with generating solution concepts based on these principles?"""
             session.advance_stage()
 
         elif session.current_stage == WorkflowStage.SOLUTION_GENERATION:
-            next_prompt = "Let's generate solution concepts using TRIZ principles. Which aspects of your problem are most critical to address?"
+            # ACTUAL TRIZ ANALYSIS: Generate solutions
+            problem_text = session.session_data.problem_statement
+            contradictions = session.session_data.contradictions
+
+            # Get top principles
+            principles = select_top_principles(contradictions, problem_text)
+
+            # Generate solutions
+            solutions = generate_solution_concepts(problem_text, principles, contradictions)
+            session.session_data.solutions = solutions
+
+            # Format solutions for presentation
+            solutions_text = _format_solutions(solutions)
+
+            next_prompt = f"""Generated {len(solutions)} solution concepts:
+
+{solutions_text}
+
+Please evaluate these solutions. Which criteria are most important for your situation: feasibility, effectiveness, or innovation?"""
             session.advance_stage()
 
         elif session.current_stage == WorkflowStage.EVALUATION:
-            next_prompt = "Please evaluate the proposed solutions. Which criteria are most important: feasibility, effectiveness, or innovation?"
+            # Store user evaluation criteria
+            session.session_data.evaluation_criteria = user_input
+
+            next_prompt = f"""Workflow completed!
+
+Summary:
+- Problem: {session.session_data.problem_statement[:100]}...
+- IFR: {session.session_data.ideal_final_result[:100]}...
+- Contradictions Found: {len(session.session_data.contradictions)}
+- Principles Applied: {len(session.session_data.selected_principles)}
+- Solutions Generated: {len(session.session_data.solutions)}
+
+Your evaluation criteria: {user_input}
+
+You can review the complete analysis in the session data."""
             session.advance_stage()
 
         elif session.current_stage == WorkflowStage.COMPLETED:
@@ -222,6 +288,42 @@ def _get_or_load_session(session_id: str) -> Optional[ProblemSession]:
         return session
     except Exception:
         return None
+
+
+def _format_principles(principles: List[Dict[str, Any]]) -> str:
+    """Format principles for display"""
+    if not principles:
+        return "No principles identified."
+
+    formatted = []
+    for i, p in enumerate(principles[:5], 1):  # Top 5
+        formatted.append(
+            f"{i}. **Principle {p['id']}: {p['name']}** (Relevance: {p['relevance']:.2f})\n"
+            f"   {p['description'][:200]}..."
+        )
+
+    return "\n\n".join(formatted)
+
+
+def _format_solutions(solutions: List[Dict[str, Any]]) -> str:
+    """Format solutions for display"""
+    if not solutions:
+        return "No solutions generated."
+
+    formatted = []
+    for i, sol in enumerate(solutions[:5], 1):  # Top 5
+        title = sol.get("title", f"Solution {i}")
+        desc = sol.get("description", "No description")
+        principle = sol.get("principle_name", "Unknown principle")
+        feasibility = sol.get("feasibility_score", 0.0)
+
+        formatted.append(
+            f"{i}. **{title}** (Feasibility: {feasibility:.2f})\n"
+            f"   Based on: {principle}\n"
+            f"   {desc[:300]}..."
+        )
+
+    return "\n\n".join(formatted)
 
 
 def triz_workflow_status(session_id: str) -> Dict[str, Any]:
