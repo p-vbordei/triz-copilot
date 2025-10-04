@@ -36,11 +36,15 @@ def generate(
                 f"future trends predictions {problem[:50]}",
             ],
             extract_requirements=[
-                "sub_system_components",  # What's inside the system?
-                "system_description",  # The system itself
-                "super_system_context",  # Environment/users/market
-                "past_evolution",  # How did it evolve?
-                "future_predictions",  # Where is it going?
+                "sub_system_past",
+                "sub_system_present",
+                "sub_system_future",
+                "system_past",
+                "system_present",
+                "system_future",
+                "super_system_past",
+                "super_system_present",
+                "super_system_future",
             ],
             validation_criteria="Must identify at least 3 items for sub-system, system, and super-system across time",
             expected_output_format="""
@@ -70,10 +74,8 @@ def generate(
                 "component interactions interfaces connections",
             ],
             extract_requirements=[
-                "component_list",  # All identified components
-                "component_materials",  # What they're made of
-                "component_functions",  # What each does
-                "component_interactions",  # How they connect
+                "components",  # Array of component objects with name/material/function
+                "interactions",  # Array of interaction descriptions
             ],
             validation_criteria="Must identify at least 5 specific sub-system components with materials",
             expected_output_format="""
@@ -103,7 +105,7 @@ def generate(
                 "user_needs",  # What do they need?
                 "operating_environment",  # Where does it operate?
                 "market_context",  # Market/industry context
-                "competitors_alternatives",  # What else exists?
+                "competitors",  # What else exists?
             ],
             validation_criteria="Must identify users, environment, and at least 2 competitors/alternatives",
             expected_output_format="""
@@ -190,9 +192,7 @@ def generate(
                 "functional requirements specifications",
             ],
             extract_requirements=[
-                "benefits_list",  # All benefits
-                "benefit_importance",  # Rank 1-10
-                "current_achievement",  # How well achieved now (0-10)
+                "benefits",  # Array of benefit objects with description/importance/current_achievement
             ],
             validation_criteria="Must identify at least 5 distinct benefits with importance rankings",
             expected_output_format="""
@@ -218,9 +218,7 @@ def generate(
                 "resource consumption inputs needed",
             ],
             extract_requirements=[
-                "costs_list",  # All costs
-                "cost_magnitude",  # Rank 1-10
-                "cost_type",  # money, time, materials, effort, energy
+                "costs",  # Array of cost objects with description/magnitude/type
             ],
             validation_criteria="Must identify at least 5 distinct costs across different types",
             expected_output_format="""
@@ -246,9 +244,7 @@ def generate(
                 "failures defects complaints",
             ],
             extract_requirements=[
-                "harms_list",  # All harms
-                "harm_severity",  # Rank 1-10
-                "harm_type",  # safety, environmental, waste, side-effects
+                "harms",  # Array of harm objects with description/severity/type
             ],
             validation_criteria="Must identify at least 3 distinct harms with severity rankings",
             expected_output_format="""
@@ -273,10 +269,8 @@ def generate(
                 "benchmarking comparison analysis",
             ],
             extract_requirements=[
-                "ideality_calculation",  # Sum(Benefits)/(Sum(Costs)+Sum(Harms))
-                "ideality_score",  # Numerical value
-                "ideality_category",  # EXCELLENT/GOOD/ACCEPTABLE/POOR
-                "key_insights",  # What does this reveal?
+                "calculation",  # Object with total_benefits/total_costs/total_harms/ideality_score/category
+                "insights",  # Array of insight strings
             ],
             validation_criteria="Must calculate Ideality score using data from steps 6-8",
             expected_output_format="""
@@ -308,10 +302,10 @@ def generate(
                 "system thinking causal relationships",
             ],
             extract_requirements=[
-                "root_causes",  # Fundamental causes
-                "patterns_observed",  # Trends/patterns from 9 Boxes
-                "key_contradictions",  # Emerging contradictions
-                "priority_problems",  # What to solve first?
+                "root_causes",  # Array of root cause objects with cause/evidence/impacts
+                "patterns",  # Array of pattern observations from 9 Boxes
+                "key_contradictions",  # Array of emerging contradictions
+                "priorities",  # Array of priority problems to solve first
             ],
             validation_criteria="Must identify at least 2 root causes with evidence from 9 Boxes",
             expected_output_format="""

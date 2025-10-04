@@ -100,10 +100,7 @@ def generate(
                 f"benefits assessment {problem[:50]}",
             ],
             extract_requirements=[
-                "benefits_per_solution",
-                "importance_ratings",
-                "achievement_estimates",
-                "benefit_scoring",
+                "solutions_benefits",  # Array of solution benefit analysis objects
             ],
             validation_criteria=f"Must identify and rate all benefits for each of {num_solutions} solutions",
             expected_output_format="""
@@ -168,10 +165,7 @@ def generate(
                 "resource requirements time money effort",
             ],
             extract_requirements=[
-                "costs_per_solution",
-                "cost_types",
-                "magnitude_ratings",
-                "cost_scoring",
+                "solutions_costs",  # Array of solution cost analysis objects
             ],
             validation_criteria=f"Must identify and rate all costs for each of {num_solutions} solutions across cost types",
             expected_output_format="""

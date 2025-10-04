@@ -37,10 +37,7 @@ def generate(
                 "functional modeling system interactions",
             ],
             extract_requirements=[
-                "function_list",  # All Subject-Action-Object triplets
-                "subjects",  # All subjects (actors)
-                "objects",  # All objects (receivers)
-                "actions",  # All actions (verbs)
+                "functions",  # Array of Subject-Action-Object relationship objects
             ],
             validation_criteria="Must identify at least 10 Subject-Action-Object relationships",
             expected_output_format="""
@@ -67,9 +64,7 @@ def generate(
                 "useful actions adequate performance",
             ],
             extract_requirements=[
-                "useful_functions",  # Functions working well
-                "adequacy_rating",  # How adequate (1-10)
-                "why_useful",  # Why these are good
+                "useful",  # Array of useful function objects with subject/action/object/adequacy/why
             ],
             validation_criteria="Must identify at least 5 useful functions from step 17",
             expected_output_format="""
@@ -105,10 +100,7 @@ def generate(
                 "performance gaps shortfalls deficiencies",
             ],
             extract_requirements=[
-                "insufficient_functions",  # Functions that are weak
-                "desired_level",  # What level is needed (1-10)
-                "current_level",  # What level is now (1-10)
-                "gap_size",  # How big is the gap?
+                "insufficient",  # Array of insufficient function objects with subject/action/object/current_level/desired_level/gap/why
             ],
             validation_criteria="Must identify at least 3 insufficient functions with gap analysis",
             expected_output_format="""
@@ -148,10 +140,7 @@ def generate(
                 "waste excess unnecessary redundancy",
             ],
             extract_requirements=[
-                "excessive_functions",  # Functions that are too strong
-                "optimal_level",  # What level is optimal (1-10)
-                "current_level",  # What level is now (1-10)
-                "waste_impact",  # What waste does this cause?
+                "excessive",  # Array of excessive function objects with subject/action/object/optimal_level/current_level/excess/waste/opportunity
             ],
             validation_criteria="Must identify at least 2 excessive functions if any exist",
             expected_output_format="""
@@ -184,10 +173,7 @@ def generate(
                 "harmful actions damage waste",
             ],
             extract_requirements=[
-                "harmful_functions",  # Harmful actions
-                "severity",  # How bad (1-10)
-                "impact",  # What damage/harm?
-                "source",  # Where found in research?
+                "harmful",  # Array of harmful function objects with subject/action/object/severity/impact/source
             ],
             validation_criteria="Must identify at least 4 harmful functions with severity ratings",
             expected_output_format="""
@@ -234,9 +220,7 @@ def generate(
                 "harm elimination standard solutions",
             ],
             extract_requirements=[
-                "elimination_examples",  # How others eliminated harms
-                "applicable_methods",  # Which can we use?
-                "standard_solutions_found",  # Standard Solutions identified
+                "examples",  # Array of harm elimination examples with harm/elimination_method/principle/source/applicability
             ],
             validation_criteria="Must find at least 5 harm elimination examples from research",
             expected_output_format="""
@@ -280,10 +264,7 @@ def generate(
                 "design trade-offs engineering compromises",
             ],
             extract_requirements=[
-                "contradictions_list",  # All technical contradictions
-                "improving_parameter",  # What improves
-                "worsening_parameter",  # What worsens
-                "evidence",  # Research evidence
+                "technical_contradictions",  # Array of technical contradiction objects with description/improving/worsening/evidence
             ],
             validation_criteria="Must identify at least 2 technical contradictions with clear trade-offs",
             expected_output_format="""
@@ -375,10 +356,7 @@ def generate(
                 "conflicting requirements solved",
             ],
             extract_requirements=[
-                "resolution_examples",  # How others solved
-                "principles_used",  # Which principles
-                "separation_applied",  # Which separation
-                "applicable_to_problem",  # Can we use this?
+                "examples",  # Array of contradiction resolution examples with contradiction/resolution/separation/principles/source/applicability
             ],
             validation_criteria="Must find at least 5 contradiction resolution examples",
             expected_output_format="""
@@ -418,10 +396,8 @@ def generate(
                 "ideality impact harm severity ranking",
             ],
             extract_requirements=[
-                "priority_ranking",  # Ordered list of problems
-                "ranking_criteria",  # Why this order?
-                "solve_first",  # Top priority
-                "ideality_impact",  # Impact on Ideality
+                "priority_ranking",  # Array of ranked problem objects with rank/problem/type/ideality_impact/severity/solvability/why
+                "solve_order",  # Array of ordered solution steps
             ],
             validation_criteria="Must rank all identified problems with clear justification",
             expected_output_format="""

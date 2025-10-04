@@ -73,13 +73,13 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_solve",
-            description="⚠️ DEPRECATED - USE triz_workflow_start INSTEAD. This autonomous solver is a SHORTCUT that bypasses proper TRIZ methodology. For correct TRIZ problem solving, you MUST use triz_workflow_start which guides you through 60 systematic steps.",
+            description="⚠️ DEPRECATED - USE triz_research_start INSTEAD. This autonomous solver is a SHORTCUT that bypasses proper TRIZ methodology. For correct TRIZ problem solving, you MUST use triz_research_start which guides you through 60 systematic research steps.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "problem": {
                         "type": "string",
-                        "description": "⚠️ DO NOT USE - Use triz_workflow_start instead for proper 60-step methodology",
+                        "description": "⚠️ DO NOT USE - Use triz_research_start instead for proper 60-step methodology",
                     },
                 },
                 "required": ["problem"],
@@ -144,6 +144,20 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
+            name="triz_solve_complete",
+            description="⚠️ DEPRECATED - USE triz_research_start INSTEAD. This 8-phase solver is a SHORTCUT that provides instant answers without proper research methodology. For correct academic TRIZ problem solving, you MUST use triz_research_start which guides you through 60 systematic research steps where YOU perform the research and discover the solution. This tool remains only for legacy compatibility and quick reference checking, but should NOT be used for actual problem solving. The 60-step methodology is the only acceptable approach for real TRIZ analysis.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "problem": {
+                        "type": "string",
+                        "description": "⚠️ DO NOT USE - Use triz_research_start instead for proper 60-step guided research methodology",
+                    }
+                },
+                "required": ["problem"],
+            },
+        ),
+        Tool(
             name="triz_research_start",
             description="✅ REQUIRED METHOD - Start guided TRIZ research session with 60-step iterative methodology. This is the ONLY acceptable way to solve TRIZ problems properly. Returns session_id and Step 1 research instructions. ALL STEPS ARE LOGGED TO FILES so you can recover from context loss.",
             inputSchema={
@@ -159,7 +173,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_research_submit",
-            description="Submit research findings for current TRIZ research step and receive next step instructions. Each submission is logged to file for persistence.",
+            description="Submit research findings for current TRIZ research step and receive next step instructions (or final solution if step 60). You must provide findings dictionary matching the extract_requirements from previous step's instruction. The tool validates your findings - if validation fails, you'll receive hints and must research again. If validation succeeds, you receive next step instructions. This continues for all 60 steps. The final step (60) returns complete TRIZ solution with all evidence from your research. IMPORTANT: Findings must be a dictionary/object with keys matching the extract_requirements list from the current step instruction. EXAMPLE for Step 1 (9 Boxes): If extract_requirements is ['sub_system_past', 'sub_system_present', 'sub_system_future', 'system_past', 'system_present', 'system_future', 'super_system_past', 'super_system_present', 'super_system_future'], then findings must be: {'sub_system_past': ['Steel brackets with rivets', 'Multiple fasteners'], 'sub_system_present': ['Aluminum-CFRP hybrid', 'Bearing assemblies'], 'sub_system_future': ['Thermoplastic composites', 'Self-healing polymers'], 'system_past': ['Heavy steel assemblies'], 'system_present': ['Hybrid aluminum/CFRP assembly'], 'system_future': ['Single-piece formable composites'], 'super_system_past': ['Industrial robots'], 'super_system_present': ['Mobile household robots'], 'super_system_future': ['Autonomous home assistants']}. Each field must contain detailed, researched information as arrays or objects per the expected_output_format shown in step instructions. Each submission is logged to file for persistence and traceability.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -169,7 +183,7 @@ async def list_tools() -> list[Tool]:
                     },
                     "findings": {
                         "type": "object",
-                        "description": "Research findings dictionary with keys matching extract_requirements from current step instruction.",
+                        "description": "Research findings dictionary with keys matching extract_requirements from current step instruction. Must include all required fields with detailed information from knowledge base research. Follow the expected_output_format structure shown in step instructions exactly.",
                     },
                 },
                 "required": ["session_id", "findings"],
@@ -250,6 +264,19 @@ async def call_tool(name: str, arguments: Any) -> Sequence[TextContent]:
                     )
                 ]
             result = await run_sync(handle_brainstorm, principle_number, context)
+
+        elif name == "triz_solve_complete":
+            from claude_tools.complete_handler import handle_solve_complete
+
+            problem = arguments.get("problem")
+            if not problem:
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: problem description is required",
+                    )
+                ]
+            result = await run_sync(handle_solve_complete, problem)
 
         elif name == "triz_research_start":
             from claude_tools.guided_handler import handle_research_start

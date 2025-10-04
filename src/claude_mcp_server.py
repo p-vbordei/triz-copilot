@@ -175,7 +175,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="triz_research_submit",
-            description="Submit research findings for current TRIZ research step and receive next step instructions (or final solution if step 60). You must provide findings dictionary matching the extract_requirements from previous step's instruction. The tool validates your findings - if validation fails, you'll receive hints and must research again. If validation succeeds, you receive next step instructions. This continues for all 60 steps. The final step (60) returns complete TRIZ solution with all evidence from your research. IMPORTANT: Findings must be a dictionary/object with keys matching the extract_requirements list from the current step instruction.",
+            description="Submit research findings for current TRIZ research step and receive next step instructions (or final solution if step 60). You must provide findings dictionary matching the extract_requirements from previous step's instruction. The tool validates your findings - if validation fails, you'll receive hints and must research again. If validation succeeds, you receive next step instructions. This continues for all 60 steps. The final step (60) returns complete TRIZ solution with all evidence from your research. IMPORTANT: Findings must be a dictionary/object with keys matching the extract_requirements list from the current step instruction. EXAMPLE for Step 1 (9 Boxes): If extract_requirements is ['sub_system_past', 'sub_system_present', 'sub_system_future', 'system_past', 'system_present', 'system_future', 'super_system_past', 'super_system_present', 'super_system_future'], then findings must be: {'sub_system_past': ['Steel brackets with rivets', 'Multiple fasteners'], 'sub_system_present': ['Aluminum-CFRP hybrid', 'Bearing assemblies'], 'sub_system_future': ['Thermoplastic composites', 'Self-healing polymers'], 'system_past': ['Heavy steel assemblies'], 'system_present': ['Hybrid aluminum/CFRP assembly'], 'system_future': ['Single-piece formable composites'], 'super_system_past': ['Industrial robots'], 'super_system_present': ['Mobile household robots'], 'super_system_future': ['Autonomous home assistants']}. Each field must contain detailed, researched information as arrays or objects per the expected_output_format shown in step instructions.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -185,7 +185,7 @@ async def list_tools() -> list[Tool]:
                     },
                     "findings": {
                         "type": "object",
-                        "description": "Research findings dictionary with keys matching extract_requirements from current step instruction. Must include all required fields with detailed information from knowledge base research.",
+                        "description": "Research findings dictionary with keys matching extract_requirements from current step instruction. Must include all required fields with detailed information from knowledge base research. Follow the expected_output_format structure shown in step instructions exactly.",
                     },
                 },
                 "required": ["session_id", "findings"],

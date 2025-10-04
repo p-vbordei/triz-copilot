@@ -36,7 +36,7 @@ def generate(
                 "prime_benefit",  # THE main desired outcome
                 "ultimate_goal",  # Long-term vision
                 "wish_list",  # All desired benefits
-                "constraints_to_ignore",  # What we're ignoring for now
+                "constraints_ignoring",  # What we're ignoring for now
             ],
             validation_criteria="Must list at least 8 desired benefits without considering feasibility",
             expected_output_format="""
@@ -69,10 +69,7 @@ def generate(
                 "other industries similar problems solved",
             ],
             extract_requirements=[
-                "cross_domain_examples",  # Examples from other fields
-                "nature_solutions",  # Biomimicry insights
-                "analogous_problems",  # Similar problems elsewhere
-                "transfer_potential",  # Can we adapt these?
+                "cross_domain",  # Array of cross-domain solution examples with domain/solution/principle/transfer
             ],
             validation_criteria="Must find at least 3 cross-domain examples with specific details",
             expected_output_format="""
@@ -107,11 +104,11 @@ def generate(
                 "waste byproducts reusable resources",
             ],
             extract_requirements=[
-                "substance_resources",  # Materials, components
-                "field_resources",  # Energy, forces, fields
-                "space_resources",  # Available volume, areas
-                "time_resources",  # Available time, timing opportunities
-                "information_resources",  # Data, knowledge, signals
+                "substance",  # Array of substance resources (materials, components)
+                "field",  # Array of field resources (energy, forces, fields)
+                "space",  # Array of space resources (available volume, areas)
+                "time",  # Array of time resources (available time, timing opportunities)
+                "information",  # Array of information resources (data, knowledge, signals)
             ],
             validation_criteria="Must identify at least 10 resources across all 5 types",
             expected_output_format="""
@@ -151,9 +148,7 @@ def generate(
                 "clever resource usage examples TRIZ",
             ],
             extract_requirements=[
-                "resource_usage_examples",  # Clever uses found
-                "applicable_to_problem",  # Which can we use?
-                "inspiration_sources",  # Where found?
+                "examples",  # Array of resource usage examples with resource/use/source/applicability
             ],
             validation_criteria="Must find at least 4 resource utilization examples from research",
             expected_output_format="""
@@ -187,10 +182,8 @@ def generate(
                 "breakthrough innovations revolutionary designs",
             ],
             extract_requirements=[
-                "ideal_sub_system",  # Perfect components
-                "ideal_system",  # Perfect system
-                "ideal_super_system",  # Perfect context
-                "path_to_ideal",  # How to get there?
+                "ideal_9boxes",  # Object with sub_system/system/super_system describing ideal state
+                "gap_analysis",  # Object with current_to_ideal_gap and path to achieve it
             ],
             validation_criteria="Must define ideal state for all 9 boxes",
             expected_output_format="""
@@ -219,11 +212,9 @@ def generate(
                 "zero cost zero harm ideal calculation",
             ],
             extract_requirements=[
-                "ideal_benefits_total",  # Maximum possible
-                "ideal_costs",  # Minimum (ideally 0)
-                "ideal_harms",  # Minimum (ideally 0)
-                "ideal_ideality_score",  # Target number
-                "gap_from_current",  # How far are we?
+                "ideal_calculation",  # Object with ideal_benefits/ideal_costs/ideal_harms/ideal_ideality/category
+                "current_vs_ideal",  # Object comparing current_ideality vs ideal_ideality with gap analysis
+                "priorities",  # Array of priority improvement actions
             ],
             validation_criteria="Must calculate ideal Ideality and compare to current from Step 9",
             expected_output_format="""

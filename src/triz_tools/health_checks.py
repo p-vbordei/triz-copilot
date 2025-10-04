@@ -723,12 +723,61 @@ def get_health_summary() -> Dict[str, Any]:
 def run_diagnostics() -> Dict[str, Any]:
     """
     Run system diagnostics.
-    
+
     Returns:
         Diagnostic results
     """
     diagnostics = SystemDiagnostics()
     return diagnostics.run_diagnostics()
+
+
+def check_system_health():
+    """
+    Check system health and return TRIZToolResponse.
+
+    This is the MCP server interface for health checks.
+
+    Returns:
+        TRIZToolResponse with health status
+    """
+    from .models import TRIZToolResponse
+
+    try:
+        # Run health checks
+        health_results = check_health(verbose=True)
+        summary = get_health_summary()
+
+        # Format health status for display
+        status_lines = []
+        for component, status in health_results.items():
+            icon = "✅" if status.is_healthy else "⚠️" if status.is_degraded else "❌"
+            status_lines.append(f"{icon} {component}: {status.message}")
+
+        # Compile health data
+        health_data = {
+            "overall_status": summary["overall_status"],
+            "components": {k: v.to_dict() for k, v in health_results.items()},
+            "summary": summary,
+            "status_report": "\n".join(status_lines),
+        }
+
+        # Determine success based on overall status
+        success = summary["overall_status"] in ["healthy", "degraded"]
+        message = f"System health: {summary['overall_status']} ({summary['healthy']}/{summary['components_checked']} healthy)"
+
+        return TRIZToolResponse(
+            success=success,
+            message=message,
+            data=health_data
+        )
+
+    except Exception as e:
+        from .models import TRIZToolResponse
+        return TRIZToolResponse(
+            success=False,
+            message=f"Health check failed: {str(e)}",
+            data={"error": str(e)}
+        )
 
 
 if __name__ == "__main__":

@@ -167,9 +167,7 @@ class GuidedTRIZSolver:
         )
         tracker.log_step(
             step_number=current_step_num,
-            step_name=current_step.instruction.step_name
-            if current_step.instruction
-            else f"Step {current_step_num}",
+            step_name=current_step.title if current_step.title else f"Step {current_step_num}",
             user_input=json.dumps(findings, indent=2),
             system_response=validation["message"],
             findings_generated=finding_ids,
@@ -436,30 +434,86 @@ class GuidedTRIZSolver:
 
         extract_reqs = step.instruction.extract_requirements
 
-        # Check if all required fields present
+        # Normalize findings keys for flexible matching
+        findings_normalized = {}
+        findings_original_keys = {}
+        for key in findings.keys():
+            normalized_key = key.lower().replace(" ", "_").replace("-", "_")
+            findings_normalized[normalized_key] = key
+            findings_original_keys[normalized_key] = findings[key]
+
+        # Check if all required fields present with flexible matching
         missing_fields = []
         for req in extract_reqs:
-            if req not in findings:
-                # Try variations
-                req_lower = req.lower().replace(" ", "_")
-                if req_lower not in findings:
-                    missing_fields.append(req)
+            # Normalize requirement key
+            req_normalized = req.lower().replace(" ", "_").replace("-", "_")
+
+            # Direct match
+            if req in findings:
+                continue
+
+            # Normalized match
+            if req_normalized in findings_normalized:
+                continue
+
+            # No match found
+            missing_fields.append(req)
 
         if missing_fields:
+            # Provide helpful error with what was provided vs what was expected
+            provided_keys = list(findings.keys())
             return {
                 "valid": False,
                 "error": f"Missing required findings: {', '.join(missing_fields)}",
-                "hint": f"Your findings must include all of: {', '.join(extract_reqs)}",
+                "hint": f"Expected: {', '.join(extract_reqs)}\nYou provided: {', '.join(provided_keys)}\n\nMake sure your findings keys exactly match the expected format.",
             }
 
-        # Basic content validation
+        # Basic content validation - check for empty or too-short content
         for key, value in findings.items():
+            # String validation
             if isinstance(value, str) and len(value.strip()) < 10:
                 return {
                     "valid": False,
-                    "error": f"Finding '{key}' is too short ({len(value)} chars). Provide detailed research with at least 50 characters.",
-                    "hint": "Search the knowledge base thoroughly and extract specific, detailed information.",
+                    "error": f"Finding '{key}' is too short ({len(value)} chars). Provide detailed research.",
+                    "hint": "Each finding should contain meaningful content from your research.",
                 }
+
+            # List validation - ensure lists have content
+            if isinstance(value, list):
+                if len(value) == 0:
+                    return {
+                        "valid": False,
+                        "error": f"Finding '{key}' is an empty list. Provide at least one item.",
+                        "hint": "Research the knowledge base and extract relevant information.",
+                    }
+                # Check list items aren't trivial
+                if all(isinstance(item, str) and len(item.strip()) < 5 for item in value):
+                    return {
+                        "valid": False,
+                        "error": f"Finding '{key}' contains trivial items. Provide detailed information.",
+                        "hint": "Each list item should be descriptive and specific.",
+                    }
+
+            # Dictionary/Object validation - ensure objects have content
+            if isinstance(value, dict):
+                if len(value) == 0:
+                    return {
+                        "valid": False,
+                        "error": f"Finding '{key}' is an empty object. Provide required fields.",
+                        "hint": "Check the expected output format for required object structure.",
+                    }
+                # Check nested content isn't all empty
+                if all(
+                    (isinstance(v, str) and len(v.strip()) == 0) or
+                    (isinstance(v, list) and len(v) == 0) or
+                    (isinstance(v, dict) and len(v) == 0)
+                    for v in value.values()
+                ):
+                    return {
+                        "valid": False,
+                        "error": f"Finding '{key}' object contains only empty values. Provide meaningful data.",
+                        "hint": "Each object field should have substantial content.",
+                    }
 
         return {
             "valid": True,

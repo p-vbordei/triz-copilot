@@ -101,11 +101,7 @@ def generate(
                 f"principle {principle_num} patents implementations products",
             ],
             extract_requirements=[
-                "examples_list",  # At least 5 examples
-                "example_domain",  # Industry/field
-                "how_principle_applied",  # Specific application
-                "results_achieved",  # What was the outcome?
-                "applicability_to_problem",  # Can we adapt this?
+                "examples",  # Array of example objects with example/domain/application/results/source/applicability
             ],
             validation_criteria=f"Must find at least 5 real-world examples of Principle #{principle_num} from diverse industries",
             expected_output_format="""
@@ -172,10 +168,8 @@ def generate(
                 f"how many ways to apply principle {principle_num}",
             ],
             extract_requirements=[
-                "sub_principles",  # Different ways to apply
-                "variation_types",  # Categories of application
-                "implementation_methods",  # Specific methods
-                "selection_criteria",  # When to use each variation
+                "sub_principles",  # Array of sub-principle objects with variation/description/example/when_to_use
+                "selection_criteria",  # String describing how to choose variation
             ],
             validation_criteria=f"Must identify at least 3 sub-principles or variations of Principle #{principle_num}",
             expected_output_format="""
@@ -224,11 +218,7 @@ def generate(
                 f"{principle_name} implementation engineering design",
             ],
             extract_requirements=[
-                "solution_concepts",  # Specific solutions using this principle
-                "principle_application",  # How principle maps to problem
-                "expected_benefits",  # What improvements expected
-                "implementation_challenges",  # Potential difficulties
-                "feasibility_assessment",  # Can this work?
+                "solutions",  # Array of solution concept objects with concept/principle_application/how_it_works/expected_benefits/implementation/challenges/feasibility
             ],
             validation_criteria=f"Must generate at least 3 concrete solution concepts applying Principle #{principle_num} to the problem",
             expected_output_format="""
@@ -317,11 +307,7 @@ def generate(
                 f"principle {principle_num} patents implementations products",
             ],
             extract_requirements=[
-                "examples_list",
-                "example_domain",
-                "how_principle_applied",
-                "results_achieved",
-                "applicability_to_problem",
+                "examples",  # Array of example objects with example/domain/application/results/source/applicability
             ],
             validation_criteria=f"Must find at least 5 real-world examples of Principle #{principle_num} from diverse industries",
             expected_output_format="""
@@ -357,10 +343,8 @@ def generate(
                 f"how many ways to apply principle {principle_num}",
             ],
             extract_requirements=[
-                "sub_principles",
-                "variation_types",
-                "implementation_methods",
-                "selection_criteria",
+                "sub_principles",  # Array of sub-principle objects with variation/description/example/when_to_use
+                "selection_criteria",  # String describing how to choose variation
             ],
             validation_criteria=f"Must identify at least 3 sub-principles or variations of Principle #{principle_num}",
             expected_output_format="""
@@ -373,7 +357,8 @@ def generate(
                         "when_to_use": "Appropriate situations"
                     },
                     ... (at least 3 variations)
-                ]
+                ],
+                "selection_criteria": "Choose variation based on..."
             }
             """,
             why_this_matters=f"Understanding variations of Principle #{principle_num} helps select optimal approach for our specific constraints.",
@@ -397,11 +382,7 @@ def generate(
                 f"{principle_name} implementation engineering design",
             ],
             extract_requirements=[
-                "solution_concepts",
-                "principle_application",
-                "expected_benefits",
-                "implementation_challenges",
-                "feasibility_assessment",
+                "solutions",  # Array of solution concept objects with concept/principle_application/how_it_works/expected_benefits/implementation/challenges/feasibility
             ],
             validation_criteria=f"Must generate at least 3 concrete solution concepts applying Principle #{principle_num} to the problem",
             expected_output_format="""

@@ -83,10 +83,7 @@ def generate(
                 f"engineering parameters {problem[:50]}",
             ],
             extract_requirements=[
-                "parameter_mappings",  # Each contradiction mapped to 39-P
-                "improving_numbers",  # Parameter numbers (1-39)
-                "worsening_numbers",  # Parameter numbers (1-39)
-                "mapping_confidence",  # How confident in mapping?
+                "mappings",  # Array of parameter mapping objects with contradiction/improving/worsening/confidence/reasoning
             ],
             validation_criteria="Must map all technical contradictions from Step 23 to 39 Parameters",
             expected_output_format="""
@@ -115,9 +112,7 @@ def generate(
                 f"improve parameter {accumulated_knowledge.get('step_28', {}).get('improving_numbers', ['1'])[0] if accumulated_knowledge.get('step_28') else '1'}",
             ],
             extract_requirements=[
-                "matrix_lookups",  # Results for each contradiction
-                "recommended_principles",  # Principle numbers (1-40)
-                "principle_priority",  # Which are most recommended?
+                "lookups",  # Array of matrix lookup objects with improving/worsening/principles_found/principle_names/priority_order/reasoning
             ],
             validation_criteria="Must lookup all parameter pairs from Step 28 in Contradiction Matrix",
             expected_output_format="""
@@ -147,9 +142,7 @@ def generate(
                 "eliminate block convert correct harm TRIZ",
             ],
             extract_requirements=[
-                "standard_solutions",  # Which Standard Solutions apply
-                "harm_strategies",  # Eliminate, Block, Convert, Correct
-                "application_examples",  # How to apply
+                "solutions",  # Array of standard solution objects with harm/severity/strategies
             ],
             validation_criteria="Must identify Standard Solutions for all harmful functions from Step 21",
             expected_output_format="""
