@@ -94,3 +94,7 @@ level = "INFO"
 file = "triz-copilot.log"
 max_size = "10MB"
 max_files = 5
+
+[mcpServers.triz]
+command = "uv"
+args = ["--directory", "/Users/vladbordei/Documents/Development/triz2", "run", "python", "src/mcp_server.py"]

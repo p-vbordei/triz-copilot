@@ -37,6 +37,7 @@ from .triz_models import (
     SolutionConcept,
     Resource,
 )
+from .services.traceability_logger import TraceabilityLogger
 
 
 class GuidedTRIZSolver:
@@ -50,6 +51,7 @@ class GuidedTRIZSolver:
     def __init__(self):
         self.sessions_dir = Path(__file__).parent.parent / "data" / "guided_sessions"
         self.sessions_dir.mkdir(parents=True, exist_ok=True)
+        self.trackers: Dict[str, TraceabilityLogger] = {}  # Track loggers per session
 
     def start_guided_session(self, problem: str) -> Dict[str, Any]:
         """
@@ -82,6 +84,11 @@ class GuidedTRIZSolver:
 
         self._save_session(session)
 
+        # Initialize traceability logger
+        tracker = TraceabilityLogger(session_id)
+        tracker.log_problem(problem)
+        self.trackers[session_id] = tracker
+
         return {
             "session_id": session_id,
             "total_steps": 60,
@@ -113,6 +120,10 @@ class GuidedTRIZSolver:
 
         if not session:
             return {"success": False, "error": f"Session {session_id} not found"}
+
+        # Get or create traceability logger
+        if session_id not in self.trackers:
+            self.trackers[session_id] = TraceabilityLogger.load_session(session_id)
 
         current_step_num = session.current_step
         current_step = session.steps[current_step_num - 1]
@@ -148,17 +159,40 @@ class GuidedTRIZSolver:
         # Update TRIZ artifacts
         self._update_triz_artifacts(session, current_step_num, findings)
 
+        # Log to traceability system
+        tracker = self.trackers[session_id]
+        source_ids = self._log_sources(tracker, findings)
+        finding_ids = self._log_findings(
+            tracker, current_step_num, findings, source_ids
+        )
+        tracker.log_step(
+            step_number=current_step_num,
+            step_name=current_step.instruction.step_name
+            if current_step.instruction
+            else f"Step {current_step_num}",
+            user_input=json.dumps(findings, indent=2),
+            system_response=validation["message"],
+            findings_generated=finding_ids,
+            sources_used=source_ids,
+        )
+
         # Check if final step
         if current_step_num >= 60:
             final_solution = self._generate_final_solution(session)
             self._save_session(session)
+
+            # Generate final traceability report
+            tracker = self.trackers[session_id]
+            solution_file = tracker.generate_final_solution(final_solution)
+            session_summary = tracker.get_session_summary()
 
             return {
                 "success": True,
                 "completed": True,
                 "total_steps": 60,
                 "final_solution": final_solution,
-                "session_summary": self._generate_session_summary(session),
+                "session_summary": session_summary,
+                "traceability_files": session_summary["files"],
                 "triz_artifacts": {
                     "nine_boxes": session.nine_boxes,
                     "current_ideality": session.current_ideality,
@@ -615,6 +649,95 @@ class GuidedTRIZSolver:
         elif 51 <= step_num <= 60:
             return f"Step {step_num - 50} of 10 in Phase 6 (Rank & Implement)"
         return ""
+
+    def _log_sources(
+        self, tracker: TraceabilityLogger, findings: Dict[str, Any]
+    ) -> List[str]:
+        """Extract and log sources from findings"""
+        source_ids = []
+
+        # Look for common source patterns in findings
+        if "sources" in findings and isinstance(findings["sources"], list):
+            for source in findings["sources"]:
+                if isinstance(source, dict):
+                    source_id = tracker.add_source(
+                        source_type=source.get("type", "unknown"),
+                        source_name=source.get("name", "Unnamed source"),
+                        content=source.get("content", ""),
+                        relevance_score=source.get("score"),
+                        metadata=source.get("metadata", {}),
+                    )
+                    source_ids.append(source_id)
+
+        # Check for principle references
+        if "principle_number" in findings:
+            source_id = tracker.add_source(
+                source_type="principle",
+                source_name=f"TRIZ Principle {findings['principle_number']}",
+                content=str(findings.get("principle_content", "")),
+                metadata={"principle_number": findings["principle_number"]},
+            )
+            source_ids.append(source_id)
+
+        # Check for material references
+        if "material_name" in findings or "materials" in findings:
+            materials = findings.get("materials", [findings.get("material_name")])
+            for material in materials:
+                if material:
+                    source_id = tracker.add_source(
+                        source_type="material",
+                        source_name=str(material),
+                        content=str(findings.get("material_properties", "")),
+                        metadata=findings.get("material_metadata", {}),
+                    )
+                    source_ids.append(source_id)
+
+        return source_ids
+
+    def _log_findings(
+        self,
+        tracker: TraceabilityLogger,
+        step_num: int,
+        findings: Dict[str, Any],
+        source_ids: List[str],
+    ) -> List[str]:
+        """Extract and log TRIZ findings"""
+        finding_ids = []
+
+        # Determine finding type based on step phase
+        if 1 <= step_num <= 10:
+            finding_type = "context_analysis"
+        elif 11 <= step_num <= 16:
+            finding_type = "ideal_definition"
+        elif 17 <= step_num <= 26:
+            finding_type = (
+                "contradiction"
+                if "contradiction" in str(findings).lower()
+                else "function_analysis"
+            )
+        elif 27 <= step_num <= 32:
+            finding_type = "tool_selection"
+        elif 33 <= step_num <= 50:
+            finding_type = (
+                "solution"
+                if "solution" in str(findings).lower()
+                else "principle_application"
+            )
+        elif 51 <= step_num <= 60:
+            finding_type = "evaluation"
+        else:
+            finding_type = "unknown"
+
+        # Log the finding
+        finding_id = tracker.add_finding(
+            finding_type=finding_type,
+            content=findings,
+            source_ids=source_ids,
+            step_number=step_num,
+        )
+        finding_ids.append(finding_id)
+
+        return finding_ids
 
     def _save_session(self, session: TRIZGuidedSession):
         """Save session to JSON file"""

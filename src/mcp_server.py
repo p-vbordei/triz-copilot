@@ -1,354 +1,308 @@
+#!/usr/bin/env python3
 """
-MCP Server for TRIZ Co-Pilot Integration with Gemini CLI (T041-T045)
-Provides TRIZ tools as MCP-compatible endpoints.
+Gemini CLI MCP Server for TRIZ Co-Pilot
+Provides proper MCP protocol integration with tool schemas and file persistence
 """
 
-import json
 import asyncio
-from typing import Dict, Any, List, Optional
-from pathlib import Path
 import sys
+from pathlib import Path
+from typing import Any, Sequence
+
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp.types import Tool, TextContent
 import logging
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.triz_tools.workflow_tools import (
-    triz_workflow_start,
-    triz_workflow_continue,
-    triz_workflow_reset,
+from claude_tools.async_utils import run_sync
+from claude_tools.formatter import ClaudeResponseFormatter
+from claude_tools.workflow_handler import (
+    handle_workflow_start,
+    handle_workflow_continue,
 )
-from src.triz_tools.direct_tools import (
-    triz_tool_get_principle,
-    triz_tool_contradiction_matrix,
-    triz_tool_brainstorm,
-)
-from src.triz_tools.solve_tools import (
-    triz_solve_autonomous,
+from claude_tools.solve_handler import handle_solve
+from claude_tools.direct_handler import (
+    handle_get_principle,
+    handle_contradiction_matrix,
+    handle_brainstorm,
 )
 
 # Setup logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("gemini_mcp_server")
+
+# Create MCP server instance
+app = Server("triz-copilot-gemini")
 
 
-class TRIZMCPServer:
-    """MCP Server for TRIZ Co-Pilot"""
-    
-    def __init__(self):
-        self.commands = self._register_commands()
-        self.sessions = {}  # Track active sessions
-        
-    def _register_commands(self) -> Dict[str, callable]:
-        """Register all TRIZ commands for MCP"""
-        return {
-            # Workflow commands
-            "triz-workflow": self.handle_workflow,
-            "triz-workflow-start": self.handle_workflow_start,
-            "triz-workflow-continue": self.handle_workflow_continue,
-            "triz-workflow-reset": self.handle_workflow_reset,
-            
-            # Direct tool commands
-            "triz-tool": self.handle_tool,
-            "triz-tool-principle": self.handle_get_principle,
-            "triz-tool-matrix": self.handle_contradiction_matrix,
-            "triz-tool-brainstorm": self.handle_brainstorm,
-            
-            # Autonomous solve
-            "triz-solve": self.handle_solve,
-            
-            # Help command
-            "triz-help": self.handle_help,
-        }
-    
-    async def handle_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
-        """Main request handler for MCP protocol"""
-        try:
-            command = request.get("command", "").lower()
-            args = request.get("args", {})
-            
-            if command not in self.commands:
-                return {
-                    "success": False,
-                    "error": f"Unknown command: {command}",
-                    "available_commands": list(self.commands.keys())
-                }
-            
-            # Execute command
-            handler = self.commands[command]
-            result = await handler(args)
-            
-            return {
-                "success": True,
-                "result": result
-            }
-            
-        except Exception as e:
-            logger.error(f"Error handling request: {str(e)}")
-            return {
-                "success": False,
-                "error": str(e)
-            }
-    
-    async def handle_workflow(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Handle /triz-workflow command with subcommands"""
-        subcommand = args.get("subcommand", "").lower()
-        
-        if subcommand == "start":
-            return await self.handle_workflow_start(args)
-        elif subcommand == "continue":
-            return await self.handle_workflow_continue(args)
-        elif subcommand == "reset":
-            return await self.handle_workflow_reset(args)
-        else:
-            return {
-                "message": "Available workflow commands",
-                "commands": [
-                    "/triz-workflow start - Start new TRIZ session",
-                    "/triz-workflow continue [session_id] [input] - Continue session",
-                    "/triz-workflow reset [session_id] - Reset session"
-                ]
-            }
-    
-    async def handle_workflow_start(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Start new TRIZ workflow session"""
-        response = triz_workflow_start()
-        
-        # Track session
-        if response.success and response.session_id:
-            self.sessions[response.session_id] = {
-                "stage": response.stage.value if response.stage else None,
-                "created": True
-            }
-        
-        return {
-            "success": response.success,
-            "message": response.message,
-            "data": response.data,
-            "session_id": response.session_id,
-            "stage": response.stage.value if response.stage else None
-        }
-    
-    async def handle_workflow_continue(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Continue TRIZ workflow session"""
-        session_id = args.get("session_id", "")
-        user_input = args.get("input", "")
-        
-        if not session_id:
-            return {
-                "success": False,
-                "error": "session_id required"
-            }
-        
-        response = triz_workflow_continue(session_id, user_input)
-        
-        return {
-            "success": response.success,
-            "message": response.message,
-            "data": response.data,
-            "session_id": response.session_id,
-            "stage": response.stage.value if response.stage else None
-        }
-    
-    async def handle_workflow_reset(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Reset TRIZ workflow session"""
-        session_id = args.get("session_id", "")
-        
-        if not session_id:
-            return {
-                "success": False,
-                "error": "session_id required"
-            }
-        
-        response = triz_workflow_reset(session_id)
-        
-        return {
-            "success": response.success,
-            "message": response.message,
-            "data": response.data,
-            "session_id": response.session_id,
-            "stage": response.stage.value if response.stage else None
-        }
-    
-    async def handle_tool(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Handle /triz-tool command with subcommands"""
-        subcommand = args.get("subcommand", "").lower()
-        
-        if subcommand == "get-principle":
-            return await self.handle_get_principle(args)
-        elif subcommand == "contradiction-matrix":
-            return await self.handle_contradiction_matrix(args)
-        elif subcommand == "brainstorm":
-            return await self.handle_brainstorm(args)
-        else:
-            return {
-                "message": "Available tool commands",
-                "commands": [
-                    "/triz-tool get-principle [number] - Get TRIZ principle details",
-                    "/triz-tool contradiction-matrix [improving] [worsening] - Query matrix",
-                    "/triz-tool brainstorm [principle] [context] - Generate ideas"
-                ]
-            }
-    
-    async def handle_get_principle(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Get TRIZ principle by number"""
-        principle_number = args.get("number", 0)
-        
-        if not principle_number:
-            return {
-                "success": False,
-                "error": "principle number required (1-40)"
-            }
-        
-        try:
-            principle_number = int(principle_number)
-        except (ValueError, TypeError):
-            return {
-                "success": False,
-                "error": "principle number must be an integer (1-40)"
-            }
-        
-        response = triz_tool_get_principle(principle_number)
-        
-        return {
-            "success": response.success,
-            "message": response.message,
-            "data": response.data
-        }
-    
-    async def handle_contradiction_matrix(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Query contradiction matrix"""
-        improving = args.get("improving", 0)
-        worsening = args.get("worsening", 0)
-        
-        try:
-            improving = int(improving)
-            worsening = int(worsening)
-        except (ValueError, TypeError):
-            return {
-                "success": False,
-                "error": "Parameters must be integers (1-39)"
-            }
-        
-        response = triz_tool_contradiction_matrix(improving, worsening)
-        
-        return {
-            "success": response.success,
-            "message": response.message,
-            "data": response.data
-        }
-    
-    async def handle_brainstorm(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Brainstorm using TRIZ principle"""
-        principle_number = args.get("principle", 0)
-        context = args.get("context", "")
-        
-        try:
-            principle_number = int(principle_number)
-        except (ValueError, TypeError):
-            return {
-                "success": False,
-                "error": "Principle number must be an integer (1-40)"
-            }
-        
-        response = triz_tool_brainstorm(principle_number, context)
-        
-        return {
-            "success": response.success,
-            "message": response.message,
-            "data": response.data
-        }
-    
-    async def handle_solve(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Autonomous TRIZ problem solving"""
-        problem = args.get("problem", "")
-        context = args.get("context", {})
-        
-        if not problem:
-            return {
-                "success": False,
-                "error": "Problem description required"
-            }
-        
-        response = triz_solve_autonomous(problem, context)
-        
-        return {
-            "success": response.success,
-            "message": response.message,
-            "data": response.data
-        }
-    
-    async def handle_help(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Show help for TRIZ commands"""
-        return {
-            "message": "TRIZ Co-Pilot MCP Commands",
-            "commands": {
-                "workflow": [
-                    "/triz-workflow start - Begin guided TRIZ session",
-                    "/triz-workflow continue [session_id] [input] - Continue session",
-                    "/triz-workflow reset [session_id] - Reset to beginning"
-                ],
-                "tools": [
-                    "/triz-tool get-principle [1-40] - Get principle details",
-                    "/triz-tool contradiction-matrix [improving] [worsening] - Find principles",
-                    "/triz-tool brainstorm [principle] [context] - Generate ideas"
-                ],
-                "solve": [
-                    "/triz-solve [problem description] - Autonomous TRIZ analysis"
-                ]
+@app.list_tools()
+async def list_tools() -> list[Tool]:
+    """List all available TRIZ tools for Gemini"""
+    return [
+        Tool(
+            name="triz_workflow_start",
+            description="Start a guided TRIZ problem-solving workflow with step-by-step guidance through all 60 steps. This interactive workflow guides you through: problem formulation, contradiction identification (technical and physical), solution generation using TRIZ principles, materials research (if applicable - searches 44+ engineering books with 1,135 chunks), and implementation planning. The workflow adapts based on your problem type. For materials problems, it automatically performs deep research from materials engineering books with property extraction and comparison tables. ALL STEPS ARE LOGGED TO FILES for context recovery.",
+            inputSchema={
+                "type": "object",
+                "properties": {},
+                "required": [],
             },
-            "examples": [
-                "/triz-workflow start",
-                "/triz-tool get-principle 1",
-                "/triz-tool contradiction-matrix 1 14",
-                "/triz-solve 'Reduce weight while maintaining strength'"
-            ]
-        }
+        ),
+        Tool(
+            name="triz_workflow_continue",
+            description="Continue an existing TRIZ workflow session with user input. Each step is automatically saved to a log file so sessions can be recovered even if context is lost.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "session_id": {
+                        "type": "string",
+                        "description": "The session ID from workflow_start",
+                    },
+                    "user_input": {
+                        "type": "string",
+                        "description": "User's response to the current workflow prompt",
+                    },
+                },
+                "required": ["session_id", "user_input"],
+            },
+        ),
+        Tool(
+            name="triz_solve",
+            description="⚠️ DEPRECATED - USE triz_workflow_start INSTEAD. This autonomous solver is a SHORTCUT that bypasses proper TRIZ methodology. For correct TRIZ problem solving, you MUST use triz_workflow_start which guides you through 60 systematic steps.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "problem": {
+                        "type": "string",
+                        "description": "⚠️ DO NOT USE - Use triz_workflow_start instead for proper 60-step methodology",
+                    },
+                },
+                "required": ["problem"],
+            },
+        ),
+        Tool(
+            name="triz_get_principle",
+            description="Get detailed information about a specific TRIZ inventive principle by number",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "principle_number": {
+                        "type": "integer",
+                        "description": "TRIZ principle number (1-40)",
+                        "minimum": 1,
+                        "maximum": 40,
+                    },
+                },
+                "required": ["principle_number"],
+            },
+        ),
+        Tool(
+            name="triz_contradiction_matrix",
+            description="Query the TRIZ contradiction matrix for principle recommendations",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "improving_parameter": {
+                        "type": "integer",
+                        "description": "Parameter to improve (1-39)",
+                        "minimum": 1,
+                        "maximum": 39,
+                    },
+                    "worsening_parameter": {
+                        "type": "integer",
+                        "description": "Parameter that worsens (1-39)",
+                        "minimum": 1,
+                        "maximum": 39,
+                    },
+                },
+                "required": ["improving_parameter", "worsening_parameter"],
+            },
+        ),
+        Tool(
+            name="triz_brainstorm",
+            description="Generate contextual ideas by applying a specific TRIZ principle to a problem",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "principle_number": {
+                        "type": "integer",
+                        "description": "TRIZ principle number (1-40)",
+                        "minimum": 1,
+                        "maximum": 40,
+                    },
+                    "context": {
+                        "type": "string",
+                        "description": "Problem context for generating ideas",
+                    },
+                },
+                "required": ["principle_number", "context"],
+            },
+        ),
+        Tool(
+            name="triz_research_start",
+            description="✅ REQUIRED METHOD - Start guided TRIZ research session with 60-step iterative methodology. This is the ONLY acceptable way to solve TRIZ problems properly. Returns session_id and Step 1 research instructions. ALL STEPS ARE LOGGED TO FILES so you can recover from context loss.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "problem": {
+                        "type": "string",
+                        "description": "Detailed problem description. Include: what you're trying to achieve, current limitations, constraints, available resources, and success criteria.",
+                    }
+                },
+                "required": ["problem"],
+            },
+        ),
+        Tool(
+            name="triz_research_submit",
+            description="Submit research findings for current TRIZ research step and receive next step instructions. Each submission is logged to file for persistence.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "session_id": {
+                        "type": "string",
+                        "description": "Session ID from triz_research_start",
+                    },
+                    "findings": {
+                        "type": "object",
+                        "description": "Research findings dictionary with keys matching extract_requirements from current step instruction.",
+                    },
+                },
+                "required": ["session_id", "findings"],
+            },
+        ),
+        Tool(
+            name="triz_health_check",
+            description="Check the health and status of the TRIZ system",
+            inputSchema={
+                "type": "object",
+                "properties": {},
+                "required": [],
+            },
+        ),
+    ]
 
 
-async def run_server():
+@app.call_tool()
+async def call_tool(name: str, arguments: Any) -> Sequence[TextContent]:
+    """Handle tool invocation requests"""
+    try:
+        logger.info(f"Tool called: {name}", extra={"arguments": arguments})
+
+        # Route to appropriate handler
+        if name == "triz_workflow_start":
+            result = await run_sync(handle_workflow_start)
+
+        elif name == "triz_workflow_continue":
+            session_id = arguments.get("session_id")
+            user_input = arguments.get("user_input")
+            if not session_id or not user_input:
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: session_id and user_input are required",
+                    )
+                ]
+            result = await run_sync(handle_workflow_continue, session_id, user_input)
+
+        elif name == "triz_solve":
+            problem = arguments.get("problem")
+            if not problem:
+                return [
+                    TextContent(
+                        type="text", text="Error: problem description is required"
+                    )
+                ]
+            result = await run_sync(handle_solve, problem)
+
+        elif name == "triz_get_principle":
+            principle_number = arguments.get("principle_number")
+            if not principle_number:
+                return [
+                    TextContent(type="text", text="Error: principle_number is required")
+                ]
+            result = await run_sync(handle_get_principle, principle_number)
+
+        elif name == "triz_contradiction_matrix":
+            improving = arguments.get("improving_parameter")
+            worsening = arguments.get("worsening_parameter")
+            if not improving or not worsening:
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: improving_parameter and worsening_parameter are required",
+                    )
+                ]
+            result = await run_sync(handle_contradiction_matrix, improving, worsening)
+
+        elif name == "triz_brainstorm":
+            principle_number = arguments.get("principle_number")
+            context = arguments.get("context")
+            if not principle_number or not context:
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: principle_number and context are required",
+                    )
+                ]
+            result = await run_sync(handle_brainstorm, principle_number, context)
+
+        elif name == "triz_research_start":
+            from claude_tools.guided_handler import handle_research_start
+
+            problem = arguments.get("problem")
+            if not problem:
+                return [
+                    TextContent(
+                        type="text", text="Error: problem description is required"
+                    )
+                ]
+            result = await run_sync(handle_research_start, problem)
+
+        elif name == "triz_research_submit":
+            from claude_tools.guided_handler import handle_research_submit
+
+            session_id = arguments.get("session_id")
+            findings = arguments.get("findings")
+            if not session_id or not findings:
+                return [
+                    TextContent(
+                        type="text",
+                        text="Error: session_id and findings are required",
+                    )
+                ]
+            result = await run_sync(handle_research_submit, session_id, findings)
+
+        elif name == "triz_health_check":
+            from triz_tools.health_checks import check_system_health
+
+            result = await run_sync(check_system_health)
+
+        else:
+            return [TextContent(type="text", text=f"Error: Unknown tool '{name}'")]
+
+        # Format and return response
+        formatted = ClaudeResponseFormatter.format_tool_response(result)
+        logger.info(f"Tool completed: {name}", extra={"success": result.success})
+
+        return [TextContent(type="text", text=formatted)]
+
+    except Exception as e:
+        logger.error(f"Error calling tool {name}: {str(e)}", exc_info=True)
+        return [TextContent(type="text", text=f"Error: {str(e)}")]
+
+
+async def main():
     """Run the MCP server"""
-    server = TRIZMCPServer()
-    logger.info("TRIZ MCP Server started")
-    
-    # Read from stdin, write to stdout (MCP protocol)
-    while True:
-        try:
-            # Read JSON request from stdin
-            line = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.readline)
-            if not line:
-                break
-            
-            request = json.loads(line.strip())
-            response = await server.handle_request(request)
-            
-            # Write JSON response to stdout
-            print(json.dumps(response))
-            sys.stdout.flush()
-            
-        except json.JSONDecodeError as e:
-            error_response = {
-                "success": False,
-                "error": f"Invalid JSON: {str(e)}"
-            }
-            print(json.dumps(error_response))
-            sys.stdout.flush()
-        except KeyboardInterrupt:
-            logger.info("Server shutdown requested")
-            break
-        except Exception as e:
-            logger.error(f"Server error: {str(e)}")
-            error_response = {
-                "success": False,
-                "error": f"Server error: {str(e)}"
-            }
-            print(json.dumps(error_response))
-            sys.stdout.flush()
+    logger.info("Starting TRIZ Co-Pilot MCP Server for Gemini")
+
+    async with stdio_server() as (read_stream, write_stream):
+        await app.run(read_stream, write_stream, app.create_initialization_options())
 
 
 if __name__ == "__main__":
-    # Run the server
-    try:
-        asyncio.run(run_server())
-    except KeyboardInterrupt:
-        logger.info("TRIZ MCP Server stopped")
+    asyncio.run(main())

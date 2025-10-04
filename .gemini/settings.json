@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "triz": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/vladbordei/Documents/Development/triz2",
+        "run",
+        "python",
+        "src/mcp_server.py"
+      ]
+    }
+  }
+}

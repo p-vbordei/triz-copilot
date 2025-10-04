@@ -1,0 +1,2009 @@
+{
+  "session_id": "b6a89bb9",
+  "problem": "I need a material for robotic structural components (8cm x 2cm sheets) that combines contradictory properties:\n\nCURRENT SITUATION:\n- Robot: Household following robot with telescopic camera stick\n- Component location: Circuit/motor assembly area (high heat from motors)\n- Current materials considered:\n  * Aluminum: bendable for 90\u00b0 angles but too heavy\n  * CFRP (Carbon Fiber): very light (~60% of aluminum) but NOT bendable/formable\n  * Magnesium: light but fire risk near hot motors\n\nREQUIREMENTS:\n1. Must be bendable/formable to create 90\u00b0 angles without additional parts\n2. Must be as light as CFRP (or close)\n3. Must resist heat from motors\n4. Should minimize assembly complexity (fewer screws/parts)\n5. Sheet thickness around 2mm total\n\nCONTRADICTION:\n- Improving: Weight (need lighter material)\n- Worsening: Formability/bendability (need to bend for angles)\n\nCONSTRAINTS:\n- Cannot use molding with CFRP (it's a rigid composite plastic)\n- Magnesium too dangerous near hot motors\n- Need to keep total robot weight down\n- Multiple components need 90\u00b0 connections\n\nPARTIAL SOLUTION CONSIDERED:\n- Aluminum sandwich: 0.5mm Al sheets + 1mm polymer foam core (cross-linked polyethylene) = 2mm total\n- Uncertain if better than current CFRP solution\n\nSUCCESS CRITERIA:\nMaterial that is bendable, lightweight (close to CFRP density), heat resistant, and allows simple assembly with formed angles.",
+  "current_step": 10,
+  "accumulated_knowledge": {
+    "step_1": {
+      "sub_system_components": [
+        "Aluminum alloy face sheets (0.5-2mm thickness)",
+        "Foam cores (polymer, metallic, cross-linked polyethylene)",
+        "CFRP carbon fiber composites",
+        "Smart materials (shape memory alloys, electro-active polymers)",
+        "Cellular cores (honeycomb, corrugated, lattice, TPMS designs)",
+        "Fasteners and joining elements (screws, adhesive bonds)",
+        "Surface treatments (anodizing, polishing)",
+        "Hybrid soft-rigid components",
+        "3D printed structural elements"
+      ],
+      "system_description": [
+        "Current robotic structural materials face weight-formability trade-off: aluminum (bendable, 2.7 g/cc, heavy) vs CFRP (rigid, ~1.6 g/cc, 60% lighter but not formable)",
+        "Sandwich structures combine thin face sheets with lightweight cores for high stiffness-to-weight ratio",
+        "Aluminum foam sandwich (AFS): 0.5mm Al sheets + 1mm polymer foam = 2mm total thickness",
+        "Formability critical for creating 90\u00b0 angles without additional parts",
+        "Heat resistance required near motors in compact robot assemblies",
+        "Magnesium (lightest structural metal at 1.8 g/cc) excluded due to fire risk with hot motors"
+      ],
+      "super_system_context": [
+        "Household service robots require maximum weight reduction for mobility and energy efficiency",
+        "Camera tracking robots with telescopic arms - weight affects stability and battery life",
+        "Compact motor/circuit assemblies generate significant heat",
+        "Assembly complexity drives costs - prefer bendable single-piece solutions over multi-part bolted assemblies",
+        "Market trend toward lightweight, cost-effective, sustainable robotic materials",
+        "Competition between traditional rigid robotics and emerging soft robotics approaches"
+      ],
+      "past_evolution": [
+        "1960s-1990s: Heavy steel and basic aluminum for industrial robots (strength priority)",
+        "1990s-2010s: Aerospace titanium alloys, early composites (CFRP) for weight reduction",
+        "2000s: Introduction of sandwich structures (honeycomb, foam cores) for aerospace",
+        "2010s: 3D printing enables complex geometries, smart materials emerge (shape memory)",
+        "Early robotic materials: discrete rigid components, simple geometries, limited formability"
+      ],
+      "future_predictions": [
+        "Formable CFRP thermoplastic sandwich panels (truncated dome cores enable bending)",
+        "4D printing with programmable materials that morph on demand",
+        "Robo-Matter: materials with embedded controllability at building-block level",
+        "Mono-material recyclable structures using Foam Additive Manufacturing (FAM)",
+        "Self-healing multifunctional materials combining sensing, actuation, structure",
+        "Bio-inspired metamaterials and auxetic structures with negative Poisson ratio",
+        "Ultra-lightweight effective densities below 1.0 g/cc through advanced cellular designs",
+        "Sustainable circular manufacturing - biodegradable PLA foams, recyclable composites"
+      ]
+    },
+    "step_2": {
+      "component_list": [
+        "Face sheets (top/bottom skins)",
+        "Core material (spacing layer)",
+        "Adhesive layer (bonding interface)",
+        "Robot chassis frame",
+        "Electric motors",
+        "Circuit boards and electronics",
+        "Fasteners and connectors",
+        "Mounting brackets",
+        "Heat sinks",
+        "Protective housing"
+      ],
+      "component_materials": [
+        {
+          "name": "Face sheets",
+          "material": "Aluminum alloy (3xxx, 5xxx, 6xxx series) 0.5-2mm thick, or CFRP carbon fiber composite",
+          "function": "Primary load-bearing surfaces, tensile/compression strength"
+        },
+        {
+          "name": "Core material",
+          "material": "Aluminum foam (closed-cell), polymer foam (polyethylene, polyurethane, PUR, PIR), honeycomb (Nomex aramid paper, aluminum hexagonal cells)",
+          "function": "Lightweight spacing, shear resistance, energy absorption"
+        },
+        {
+          "name": "Adhesive layer",
+          "material": "Epoxy systems (2-part, film adhesive), Polyurethane (1K moisture-curing, 2K fast-cure, 3K variable-cure SikaForce), Hot-melt reactive adhesives",
+          "function": "Bonding face sheets to core, forming fillets at cell-to-skin interface, load transfer"
+        },
+        {
+          "name": "Chassis frame",
+          "material": "Aluminum channel/extrusion (Actobotics, lightweight 2.7 g/cc), Steel C-channel (strength critical areas), Composite materials",
+          "function": "Main structural support, mounting platform for all components"
+        },
+        {
+          "name": "Electric motors",
+          "material": "Copper windings, steel/iron magnetic cores, aluminum or plastic housing, neodymium magnets",
+          "function": "Actuation and movement, generates significant heat in operation"
+        },
+        {
+          "name": "Circuit boards",
+          "material": "FR4 fiberglass PCB substrate, copper traces, silicon chips, solder (lead or lead-free)",
+          "function": "Control systems, signal processing, power distribution"
+        },
+        {
+          "name": "Fasteners",
+          "material": "Steel screws/bolts (high strength), Aluminum screws (lightweight), Rivets (permanent)",
+          "function": "Mechanical assembly and connection of components"
+        },
+        {
+          "name": "Mounting brackets",
+          "material": "Aluminum plates/bars (lightweight support), Steel plates (high-stress reinforcement), ABS/PC plastic",
+          "function": "Component attachment, angle formation (90\u00b0 connections), stress distribution"
+        }
+      ],
+      "component_functions": [
+        "Face sheets: Carry bending loads through tensile (bottom) and compressive (top) stresses, protect internal components",
+        "Core: Maintain face sheet separation distance, resist out-of-plane shear, prevent buckling, absorb impact energy",
+        "Adhesive: Transfer loads between core and face sheets via fillet geometry, maintain structural integrity at interfaces",
+        "Chassis: Support weight of motors/circuits/battery, provide mounting points at 90\u00b0 angles, distribute loads",
+        "Motors: Convert electrical energy to mechanical motion, generate 150-200\u00b0C heat during operation",
+        "Circuits: Process sensor data, control motor commands, manage power distribution",
+        "Fasteners: Create removable connections for assembly/maintenance, transmit forces between components",
+        "Brackets: Form structural angles without additional parts, reinforce high-stress connection points"
+      ],
+      "component_interactions": [
+        "Face sheets bond to core via adhesive - epoxy cures to form fillet at cell wall interfaces creating stronger connection than just contact",
+        "Adhesive fillet geometry affects densification strain - larger fillets reduce energy absorption but strengthen bond",
+        "Core supports face sheets against buckling - must have sufficient shear strength and compression stiffness",
+        "Chassis frame connects to motors via mounting brackets - aluminum brackets flex more than steel under motor torque loads",
+        "Motors generate heat affecting nearby components - aluminum conducts heat well (237 W/mK), foam insulates (0.03-0.05 W/mK)",
+        "Circuit boards mount to chassis using standoffs/screws - must isolate from vibration and allow heat dissipation",
+        "Fasteners create stress concentrations in soft aluminum - holes can deform under high loads requiring steel reinforcement plates",
+        "Multiple components compete for limited chassis space - motors, batteries, circuits all need secure mounting within compact envelope",
+        "Bendable aluminum sheets form 90\u00b0 angles eliminating separate bracket parts - but add weight compared to rigid CFRP",
+        "Adhesive bondline thickness controlled by glass beads (50-400 micron) - prevents squeeze-out and ensures consistent joint performance"
+      ]
+    },
+    "step_3": {
+      "users": [
+        "Content creators and vloggers (video tutorials, social media)",
+        "Sports parents and coaches (game recording, performance analysis)",
+        "Household owners (elderly monitoring, pet tracking, security)",
+        "Live streamers and educators (online teaching, webinars, fitness tutorials)",
+        "Solo entrepreneurs and influencers (product demos, unboxing videos)",
+        "Family users (capturing memories, video calls)",
+        "Small businesses (promotional content, presentations)"
+      ],
+      "user_needs": [
+        "Hands-free filming without cameraman (autonomous operation)",
+        "Smooth, professional-looking footage (gimbal stabilization)",
+        "Automatic subject tracking (AI-powered face/body detection)",
+        "Portability and lightweight design (easy transport, quick setup)",
+        "Affordable pricing (avoid professional videographer costs $500-2000/day)",
+        "Long battery life (8-12 hours continuous operation)",
+        "Multi-device compatibility (smartphones, DSLRs, action cameras)",
+        "Easy setup and user-friendly controls (minimal technical knowledge)",
+        "Vertical and horizontal shooting (social media content)",
+        "Built-in features (tripod, selfie stick, remote control)"
+      ],
+      "operating_environment": [
+        "Indoor household spaces: limited room, furniture obstacles, variable lighting (living rooms, kitchens, home offices)",
+        "Outdoor environments: sports fields, parks, uneven terrain, bright sunlight to low light",
+        "Temperature range: 15-35\u00b0C typical indoor use, motors generate 150-200\u00b0C heat internally",
+        "Movement patterns: 360\u00b0 rotation required, following walking/running subjects up to 5m/s",
+        "Surface types: carpet, hardwood, tile floors - stable flat base needed",
+        "Power availability: wall outlets for charging, portable battery operation",
+        "Connectivity: WiFi for app control, Bluetooth for remote, smartphone integration",
+        "Vibration exposure: motor operation, movement on wheels/base, transported in bags"
+      ],
+      "market_context": [
+        "Household robots market: $10-14B in 2025, projected $65B by 2033 at 19-20% CAGR",
+        "Smart camera robot segment: $3-8B in 2025, 15-18% CAGR growth to 2033",
+        "North America leads with 30-35% market share, Asia-Pacific fastest growing at 23% CAGR",
+        "Key drivers: Smart home integration (65% urban population by 2050), AI advancement, aging population, dual-income households",
+        "Price sensitivity: Premium models $500-1500, mid-range $200-500, entry-level $100-200",
+        "Challenges: High initial cost, privacy concerns (cameras/sensors), limited multi-functionality",
+        "Technology trends: AI tracking 2.0, DockKit integration, multi-person tracking, gesture control, voice commands",
+        "Consumer preferences: Online sales 62% (e-commerce dominance), demand for subscription-free models",
+        "Major players: DJI (Osmo Mobile, Osmo Pocket), Insta360 (Flow series), OBSBOT (Tail series), Hohem, Pivo, XbotGo",
+        "Applications: 75% domestic robots, security (40%), entertainment/content creation (30%), companionship (15%)"
+      ],
+      "competitors_alternatives": [
+        {
+          "name": "Static tripods",
+          "advantage": "Very cheap ($20-100), no power needed, unlimited battery",
+          "disadvantage": "No tracking, manual adjustment, fixed position, requires operator"
+        },
+        {
+          "name": "Manual smartphone gimbals (DJI OM 6, Insta360 Flow, Hohem iSteady)",
+          "advantage": "Smooth stabilization, portable ($100-400), AI tracking available",
+          "disadvantage": "Handheld operation (not autonomous), requires human operator, limited range"
+        },
+        {
+          "name": "Tracking cameras (OBSBOT Tail 2, XbotGo Chameleon)",
+          "advantage": "Dedicated AI tracking, 4K quality, PTZ (pan-tilt-zoom)",
+          "disadvantage": "Expensive ($500-800), larger/heavier, specific camera only"
+        },
+        {
+          "name": "Professional cameraman",
+          "advantage": "Expert framing, creative control, adaptive to any situation",
+          "disadvantage": "Very expensive ($500-2000/day), scheduling required, not always available"
+        },
+        {
+          "name": "Motorized tracking bases (Roll Cam, Pivo Pod)",
+          "advantage": "Works with any camera, autonomous movement, LiDAR tracking",
+          "disadvantage": "Floor-based only, limited to smooth surfaces, wheeled movement restricted"
+        },
+        {
+          "name": "Pocket gimbal cameras (DJI Osmo Pocket 3)",
+          "advantage": "All-in-one solution, excellent image quality, compact",
+          "disadvantage": "Fixed camera (not modular), expensive ($500+), limited to device capabilities"
+        }
+      ]
+    },
+    "step_4": {
+      "past_systems": [
+        {
+          "era": "1960s-1980s Industrial Robots",
+          "system": "Heavy steel structures (cast iron, structural steel)",
+          "problems": [
+            "Excessive weight (density 7.8 g/cc) limited mobility and speed",
+            "High energy consumption for movement",
+            "Difficult machining and fabrication",
+            "Rust and corrosion in harsh environments",
+            "Overkill strength for most non-heavy-duty applications"
+          ]
+        },
+        {
+          "era": "1980s-1990s Early Lightweight",
+          "system": "Aluminum alloys (pure Al with Cu/Mg/Si additives)",
+          "problems": [
+            "Still relatively heavy (2.7 g/cc - only 1/3 lighter than steel)",
+            "Lower strength compared to steel (1/3 the strength)",
+            "Corrosion in wet/acidic environments",
+            "Cannot be joined by soldering - only fasteners or special welding",
+            "Galling and tool sticking during machining",
+            "Hole deformation under high stress loads"
+          ]
+        },
+        {
+          "era": "1990s-2000s First Composites",
+          "system": "Fiberglass (glass fiber + polymer resin), Wood composites",
+          "problems": [
+            "Moderate strength, heavier than advanced composites",
+            "Brittle failure modes - catastrophic fracture",
+            "Limited temperature resistance (plastics degrade in sunlight/cold)",
+            "Moisture absorption in wood leads to warping",
+            "Not formable after curing - fixed shape only",
+            "Lower specific strength/stiffness than carbon fiber"
+          ]
+        },
+        {
+          "era": "2000s-2010s CFRP Era",
+          "system": "Carbon Fiber Reinforced Plastic composites",
+          "problems": [
+            "Very expensive material and processing costs",
+            "NOT formable/bendable - rigid after curing",
+            "Cannot be molded into complex 3D shapes easily",
+            "Anisotropic properties - weak in certain directions",
+            "Galvanic corrosion when paired with aluminum",
+            "Complex manufacturing - autoclave curing required",
+            "Difficult to repair - cannot weld or easily patch"
+          ]
+        },
+        {
+          "era": "2010s-2020s Sandwich Structures",
+          "system": "Aluminum foam sandwich (Al face sheets + foam core)",
+          "problems": [
+            "Minimum thickness 8mm to unleash potential - thicker than traditional sheets (0.5-2mm)",
+            "Adhesive bonding critical - interface failure common weak point",
+            "Core density variations cause performance inconsistency",
+            "Cannot easily reconfigure or reshape after assembly",
+            "Still heavier than pure CFRP solutions",
+            "Thermal expansion mismatch between layers",
+            "Limited formability - cannot bend sandwich after bonding"
+          ]
+        }
+      ],
+      "evolution_path": "Heavy steel (1960s) \u2192 Aluminum alloys for weight reduction (1980s) \u2192 First composites (fiberglass, wood) for better strength-to-weight (1990s) \u2192 CFRP for maximum performance but rigid (2000s) \u2192 Sandwich structures for optimized stiffness-to-weight but thick (2010s) \u2192 Current challenge: Need formable lightweight materials combining best of aluminum (bendability) and CFRP (lightness)",
+      "past_problems": [
+        "Weight vs Strength trade-off: Heavy materials strong but inefficient, light materials often too weak",
+        "Formability vs Performance: Metals bendable but heavy, composites light but rigid after curing",
+        "Cost vs Performance: Advanced materials (CFRP, titanium) excellent but prohibitively expensive for mass market",
+        "Assembly complexity: Multiple parts needed for angles - bolts/fasteners add weight and cost",
+        "Corrosion and degradation: Steel rusts, aluminum corrodes, plastics become brittle, affecting longevity",
+        "Material compatibility: Galvanic corrosion between dissimilar metals (Al + CFRP), adhesive failures",
+        "Manufacturing limitations: Cannot easily form composites post-cure, limited to molded shapes",
+        "Thermal management: Metals conduct heat well (motors), composites insulate, sandwich structures mismatch expansion"
+      ],
+      "lessons_learned": [
+        "Lightweighting critical for robotics: Every gram saved improves efficiency, speed, battery life, and reduces motor load",
+        "Formability enables design simplification: Bendable materials reduce part count (one bent sheet vs multiple flat sheets + brackets)",
+        "Material selection must match operating environment: Indoor household robots different from industrial or outdoor robots",
+        "Adhesive bonding is weakest link in sandwich structures: Interface failure mode dominates, fillet geometry critical",
+        "One-size-fits-all materials don't exist: Trade-offs between weight, strength, formability, cost, manufacturability",
+        "Minimum thickness constraints matter: Sandwich structures need 8mm+ to perform, incompatible with thin compact designs",
+        "Heat resistance essential near motors: Aluminum excellent thermal conductor (237 W/mK), foam poor (0.03 W/mK)",
+        "Economic viability crucial: CFRP performs excellently but cost prevents mass market household robot adoption",
+        "Anisotropy of composites requires careful design: Fiber orientation determines strength direction",
+        "Simple joining methods preferred: Welding/soldering better than bolts for weight and assembly speed, but not all materials support this"
+      ]
+    },
+    "step_5": {
+      "future_trends": [
+        {
+          "trend": "Formable CFRP thermoplastic sandwich panels",
+          "evidence": "Truncated dome core structures designed to increase formability while maintaining structural performance. Successfully subjected to hat bending without failure",
+          "source": "ScienceDirect formable CFRP research 2019",
+          "impact": "Solves current contradiction - combines lightweight of CFRP with formability of aluminum"
+        },
+        {
+          "trend": "4D printing and programmable materials",
+          "evidence": "4D-printed components morph into pre-programmed shape when exposed to environmental conditions. Multi-material 3D printing enables heterogeneous integration",
+          "source": "Science Robotics 2024, PMC Soft Robots 2021",
+          "impact": "Materials that can change shape on demand, eliminating need for separate actuation"
+        },
+        {
+          "trend": "Robo-Matter with controllable building blocks",
+          "evidence": "Materials activated and controlled through external information exchange at building block level for high controllability and mutability",
+          "source": "Nature Communications Oct 2024",
+          "impact": "Materials become reconfigurable and multifunctional at fundamental level"
+        },
+        {
+          "trend": "Foam Additive Manufacturing (FAM) for mono-material sustainability",
+          "evidence": "Foamed PLA structures with 127% higher perforation energy than honeycomb at similar density. Biodegradable, recyclable, no chemical agents",
+          "source": "Progress in Additive Manufacturing April 2025",
+          "impact": "Sustainable lightweight structures competitive with traditional materials"
+        },
+        {
+          "trend": "Hybrid multi-functional materials",
+          "evidence": "Smart materials combining sensing, actuation and structural purposes in single component. EAPs (artificial muscles), shape-memory polymers",
+          "source": "Manufacturing Robotics Report 2024",
+          "impact": "Reduces component count and weight by merging functions"
+        },
+        {
+          "trend": "Ultra-lightweight cellular cores via AM",
+          "evidence": "3D printed TPMS and 2D patterns outperform polyurethane foams, approaching Nomex/aluminum honeycomb performance at lower weight",
+          "source": "ScienceDirect Aug 2023 Lightweight hybrid composites",
+          "impact": "Achieves <1.0 g/cc effective density while maintaining structural performance"
+        }
+      ],
+      "emerging_technologies": [
+        "Shape-memory alloys (Nitinol) for extreme environments (Mars rover wheels)",
+        "Self-healing composites for extended lifespan",
+        "Electro-active polymers (EAPs) as artificial muscles",
+        "Bio-inspired metamaterials with negative Poisson ratio (auxetic structures)",
+        "Graphene composites for conductivity + strength",
+        "Cross-linked polyethylene foam cores (thermal stability + lightweight)",
+        "PEI Ultem polymer (8x specific strength of aluminum)",
+        "PEEK thermoplastic (radiolucent, heat-resistant, biocompatible)",
+        "Continuous fiber deposition AM for strengthened joints",
+        "Aluminum foam with polymer infiltration (15-400% strength increase)"
+      ],
+      "future_user_needs": [
+        "Circular economy - fully recyclable/biodegradable robots (end-of-life management)",
+        "Customization without molds - rapid prototyping and small batch production",
+        "Energy efficiency - ultra-lightweight to extend battery life",
+        "Sustainability - reduced carbon footprint in materials and manufacturing",
+        "Modularity - components reusable across different robot designs",
+        "Repairability - easy replacement of damaged parts without specialist tools",
+        "Cost reduction - affordable materials for mass market ($100-500 robot price point)",
+        "Heat dissipation - better thermal management for compact high-power designs",
+        "Multi-functionality - fewer components doing more tasks",
+        "Zero-maintenance - self-healing, corrosion-resistant, long-life materials"
+      ],
+      "predicted_problems": [
+        "Formable CFRP still expensive - cost barrier for household robots despite performance",
+        "Manufacturing complexity - advanced materials require specialized equipment (autoclaves, heated chambers)",
+        "Skill gap - designers lack knowledge of new material behaviors and design rules",
+        "Standardization lag - no established codes/standards for novel materials in consumer products",
+        "E-waste concerns - multi-material designs difficult to recycle (100,000 tons discarded daily)",
+        "Supply chain fragility - rare materials (carbon fiber precursors, specialty polymers) subject to shortages",
+        "Performance verification - new materials lack long-term field data and reliability testing",
+        "Integration challenges - combining multiple material types creates interface compatibility issues",
+        "Regulatory uncertainty - safety certification for self-healing, adaptive, smart materials undefined",
+        "Cost-performance trade-off persistence - best performing materials remain cost-prohibitive for mass market"
+      ]
+    },
+    "step_6": {
+      "benefits_list": [
+        "Lightweight structure for mobility and energy efficiency",
+        "Formable/bendable to create angles without extra parts",
+        "Structural strength to support payload and loads",
+        "Heat resistance for motor proximity (150-200\u00b0C)",
+        "Cost-effectiveness for mass market affordability",
+        "Simple assembly with minimal fasteners",
+        "Durability and corrosion resistance for longevity",
+        "Manufacturability with standard processes",
+        "Compact thickness for space-constrained designs"
+      ],
+      "benefit_importance": [
+        {
+          "benefit": "Lightweight structure",
+          "importance_score": 10,
+          "justification": "Critical for battery life, mobility, speed - users prioritize portability above all"
+        },
+        {
+          "benefit": "Formable/bendable",
+          "importance_score": 10,
+          "justification": "Enables design simplification - one bent part vs multiple parts + fasteners saves weight and cost"
+        },
+        {
+          "benefit": "Structural strength",
+          "importance_score": 9,
+          "justification": "Must reliably support motors, circuits, camera during all operations without failure"
+        },
+        {
+          "benefit": "Heat resistance",
+          "importance_score": 9,
+          "justification": "Motors generate 150-200\u00b0C, material must not degrade, deform, or lose properties"
+        },
+        {
+          "benefit": "Cost-effectiveness",
+          "importance_score": 8,
+          "justification": "Household market price point $100-500, expensive materials prevent mass adoption"
+        },
+        {
+          "benefit": "Simple assembly",
+          "importance_score": 8,
+          "justification": "Reduces manufacturing labor costs and allows user self-assembly"
+        },
+        {
+          "benefit": "Durability",
+          "importance_score": 7,
+          "justification": "5-10 year lifespan expected, corrosion/fatigue resistance important"
+        },
+        {
+          "benefit": "Manufacturability",
+          "importance_score": 7,
+          "justification": "Must work with existing production equipment and skilled workforce"
+        },
+        {
+          "benefit": "Compact thickness",
+          "importance_score": 6,
+          "justification": "Space constraints in miniaturized household robots"
+        }
+      ],
+      "current_achievement": [
+        {
+          "benefit": "Lightweight structure",
+          "current_score": 6,
+          "status": "CFRP achieves 60% of Al weight (1.6 vs 2.7 g/cc) but sacrifices formability. Partial success."
+        },
+        {
+          "benefit": "Formable/bendable",
+          "current_score": 5,
+          "status": "Aluminum formable but heavy. CFRP/sandwich rigid. Formable CFRP emerging but expensive. Major gap."
+        },
+        {
+          "benefit": "Structural strength",
+          "current_score": 8,
+          "status": "Both Al (10-40k psi) and CFRP (higher) provide adequate strength. Well solved."
+        },
+        {
+          "benefit": "Heat resistance",
+          "current_score": 7,
+          "status": "Al excellent conductor (237 W/mK), handles motor heat well. Sandwich has thermal mismatch. Good but not perfect."
+        },
+        {
+          "benefit": "Cost-effectiveness",
+          "current_score": 4,
+          "status": "Al affordable ($3-5/kg), CFRP expensive ($20-50/kg), sandwich moderate. Major cost barrier."
+        },
+        {
+          "benefit": "Simple assembly",
+          "current_score": 5,
+          "status": "Bendable Al simplifies assembly, but multi-part bolted designs common. Adhesive bonding complex."
+        },
+        {
+          "benefit": "Durability",
+          "current_score": 6,
+          "status": "Al corrodes in wet, steel rusts, plastics brittle. Surface treatments help but not perfect."
+        },
+        {
+          "benefit": "Manufacturability",
+          "current_score": 7,
+          "status": "Al easy to machine/bend. CFRP needs autoclave. Sandwich complex. Mixed results."
+        },
+        {
+          "benefit": "Compact thickness",
+          "current_score": 3,
+          "status": "Traditional sheets 0.5-2mm good. Sandwich needs 8mm minimum - too thick. Critical gap."
+        }
+      ]
+    },
+    "step_7": {
+      "costs_list": [
+        "Raw material purchase cost",
+        "Manufacturing and processing cost",
+        "Assembly labor and fasteners cost",
+        "Equipment and tooling cost",
+        "Operational weight penalty (energy consumption)",
+        "Design complexity and engineering time",
+        "Material waste and scrap",
+        "Quality control and testing",
+        "Maintenance and replacement parts"
+      ],
+      "cost_magnitude": [
+        {
+          "cost": "Raw material purchase",
+          "magnitude": 8,
+          "details": "CFRP $20-50/kg very expensive. Aluminum $3-5/kg moderate. Foam cores $2-10/kg variable. Adhesives $15-30/kg. Sandwich total material cost 3-5x higher than single aluminum sheet.",
+          "source": "Market research, materials pricing"
+        },
+        {
+          "cost": "Manufacturing/processing",
+          "magnitude": 7,
+          "details": "CFRP requires autoclave curing (expensive equipment, 4-8h cycle). Aluminum bending fast (minutes) but requires press brake. Sandwich bonding needs curing time (1-24h depending on adhesive type).",
+          "source": "Manufacturing processes review"
+        },
+        {
+          "cost": "Assembly labor + fasteners",
+          "magnitude": 6,
+          "details": "Multi-part bolted assemblies need screws ($0.10-0.50 each), drilling, alignment. Labor $20-40/hr. Bent single-piece designs eliminate 50-70% fasteners and assembly time.",
+          "source": "Production cost analysis"
+        },
+        {
+          "cost": "Equipment and tooling",
+          "magnitude": 9,
+          "details": "CFRP: Autoclave $100k-1M, layup molds $5-50k. Aluminum: Press brake $15-100k, bending dies $500-5k. Sandwich: Heated press $30-150k. High capital investment.",
+          "source": "Equipment suppliers"
+        },
+        {
+          "cost": "Operational weight penalty",
+          "magnitude": 7,
+          "details": "Every 1kg robot weight increases motor power 20-30%. Aluminum 2.7 g/cc vs CFRP 1.6 g/cc means 40% more battery drain over lifetime. Energy cost compounds over 5-10 year life.",
+          "source": "Robot energy efficiency studies"
+        },
+        {
+          "cost": "Design complexity",
+          "magnitude": 5,
+          "details": "Multi-material designs require FEA analysis, interface design, thermal expansion matching. Engineering time 2-4 weeks for sandwich vs 1 week for simple aluminum. $80-120/hr engineering cost.",
+          "source": "Product development timelines"
+        },
+        {
+          "cost": "Material waste/scrap",
+          "magnitude": 4,
+          "details": "CFRP prepreg has shelf life (6-12 months frozen), trimming waste 15-25%. Aluminum scrap recyclable but 10-15% waste. Adhesive once mixed has pot life 30min-2h, unused portion wasted.",
+          "source": "Manufacturing efficiency data"
+        },
+        {
+          "cost": "Quality control/testing",
+          "magnitude": 6,
+          "details": "Sandwich structures need NDT inspection (ultrasonic) for adhesive voids $200-500/panel. CFRP requires fiber orientation checks. Aluminum simpler visual + dimensional inspection $50-100.",
+          "source": "Quality assurance processes"
+        },
+        {
+          "cost": "Maintenance/replacement",
+          "magnitude": 5,
+          "details": "Corrosion treatment for aluminum (anodizing) adds $5-15/part. CFRP impact damage difficult to repair - often full part replacement. Sandwich delamination failures require re-bonding or replacement.",
+          "source": "Product lifecycle costs"
+        }
+      ],
+      "cost_type": [
+        {
+          "cost": "Raw material",
+          "type": "money",
+          "typical_range": "$2-50/kg depending on material type"
+        },
+        {
+          "cost": "Manufacturing",
+          "type": "money + time",
+          "typical_range": "$10-100/part processing, 10min-8hr cycle time"
+        },
+        {
+          "cost": "Assembly labor",
+          "type": "money + effort",
+          "typical_range": "$5-30/part labor, physical effort for alignment/fastening"
+        },
+        {
+          "cost": "Equipment",
+          "type": "money + space",
+          "typical_range": "$15k-1M capital, factory floor space required"
+        },
+        {
+          "cost": "Weight penalty",
+          "type": "energy + money",
+          "typical_range": "20-30% more power per kg, lifetime energy cost"
+        },
+        {
+          "cost": "Design complexity",
+          "type": "time + effort",
+          "typical_range": "1-4 weeks engineering, specialized knowledge needed"
+        },
+        {
+          "cost": "Waste/scrap",
+          "type": "money + resources",
+          "typical_range": "10-25% material waste, environmental impact"
+        },
+        {
+          "cost": "Quality control",
+          "type": "money + time",
+          "typical_range": "$50-500/part inspection, delays production"
+        },
+        {
+          "cost": "Maintenance",
+          "type": "money + downtime",
+          "typical_range": "$5-50/part treatments, robot out of service time"
+        }
+      ]
+    },
+    "step_8": {
+      "harms_list": [
+        "Excessive weight reduces robot mobility and battery life",
+        "Rigid CFRP cannot be formed into angles - forces multi-part assembly",
+        "Corrosion and environmental degradation shortens lifespan",
+        "E-waste from non-recyclable multi-material designs",
+        "Thermal expansion mismatch causes delamination failures",
+        "Adhesive bonding creates weak failure points",
+        "High material costs prevent mass market accessibility",
+        "Manufacturing defects (voids, fiber misalignment) compromise strength",
+        "Magnesium fire hazard near hot motors"
+      ],
+      "harm_severity": [
+        {
+          "harm": "Excessive weight",
+          "severity": 9,
+          "impact": "Aluminum 2.7 g/cc adds 40% more mass vs CFRP 1.6 g/cc. Direct reduction in speed, battery life (20-30% penalty per kg), and user satisfaction. Critical for mobile household robots.",
+          "source": "Robot energy efficiency studies, user complaints about battery life"
+        },
+        {
+          "harm": "Rigid CFRP non-formable",
+          "severity": 10,
+          "impact": "CFRP cannot be bent after curing - eliminates ability to create 90\u00b0 angles in single part. Forces multi-part bolted assemblies with 2-4x more parts, fasteners, assembly time, weight, and cost. This is THE core contradiction.",
+          "source": "Material properties research, design constraints from CFRP rigidity"
+        },
+        {
+          "harm": "Corrosion/degradation",
+          "severity": 7,
+          "impact": "Steel rusts (loses integrity), aluminum corrodes in wet/acidic environments, plastics become brittle in UV/cold. Reduces 10-year expected lifespan to 3-5 years. Anodizing adds $5-15/part cost.",
+          "source": "Materials failure analysis, product lifecycle data"
+        },
+        {
+          "harm": "E-waste non-recyclable",
+          "severity": 6,
+          "impact": "Multi-material sandwich structures (Al + foam + adhesive) cannot be easily separated for recycling. 100,000 tons electronics discarded daily, <10% recycled. Environmental and regulatory pressure increasing.",
+          "source": "E-waste management reports, sustainability requirements"
+        },
+        {
+          "harm": "Thermal expansion mismatch",
+          "severity": 7,
+          "impact": "Aluminum CTE ~23 ppm/\u00b0C, foam ~50-80 ppm/\u00b0C, CFRP ~1-2 ppm/\u00b0C. Temperature cycling 20-80\u00b0C causes differential expansion leading to delamination, cracking, loss of structural integrity.",
+          "source": "Sandwich structures thermal analysis, failure mode studies"
+        },
+        {
+          "harm": "Adhesive weak points",
+          "severity": 8,
+          "impact": "Core-facesheet interface is weakest part of sandwich. Delamination is most common damage mode. Epoxy fillet geometry critical - errors cause 20-50% strength loss. Re-bonding complex and expensive.",
+          "source": "Sandwich panel failure analysis, structural testing data"
+        },
+        {
+          "harm": "High costs exclude market",
+          "severity": 8,
+          "impact": "CFRP $20-50/kg, autoclave $100k-1M, engineering time 3-4x aluminum. Final robot cost $800-2000 vs target $100-500. Prevents mass adoption - only 30% market penetration vs potential 70%.",
+          "source": "Market research, price sensitivity analysis, adoption barriers"
+        },
+        {
+          "harm": "Manufacturing defects",
+          "severity": 6,
+          "impact": "CFRP voids (3-10% volume), fiber misalignment (\u00b15\u00b0), adhesive bondline inconsistency reduce strength 15-40%. NDT inspection required adds $200-500/part. 5-15% scrap rate typical.",
+          "source": "Quality control data, manufacturing defect statistics"
+        },
+        {
+          "harm": "Magnesium fire risk",
+          "severity": 9,
+          "impact": "Magnesium lightest metal (1.8 g/cc) but ignites at 473\u00b0C. Motors reach 150-200\u00b0C. Fire hazard near heat sources eliminates this otherwise ideal lightweight option. Safety regulations prohibit use.",
+          "source": "Material safety data sheets, thermal analysis of motor assembly"
+        }
+      ],
+      "harm_type": [
+        {
+          "harm": "Excessive weight",
+          "type": "performance + energy",
+          "manifestation": "Reduced speed, mobility, battery life - direct user dissatisfaction"
+        },
+        {
+          "harm": "Non-formable CFRP",
+          "type": "functionality + cost",
+          "manifestation": "Cannot create simple bent parts - forces expensive multi-part assemblies"
+        },
+        {
+          "harm": "Corrosion/degradation",
+          "type": "reliability + lifespan",
+          "manifestation": "Material failure over time - warranty claims, replacement costs"
+        },
+        {
+          "harm": "E-waste",
+          "type": "environmental + regulatory",
+          "manifestation": "Landfill accumulation, recycling difficulty - sustainability violations"
+        },
+        {
+          "harm": "Thermal mismatch",
+          "type": "structural + safety",
+          "manifestation": "Delamination, cracking under temperature cycling - catastrophic failure risk"
+        },
+        {
+          "harm": "Adhesive failures",
+          "type": "structural + reliability",
+          "manifestation": "Delamination at core-face interface - most common failure mode"
+        },
+        {
+          "harm": "High costs",
+          "type": "economic + accessibility",
+          "manifestation": "Market exclusion - only premium segment can afford, mass market unreachable"
+        },
+        {
+          "harm": "Defects",
+          "type": "quality + waste",
+          "manifestation": "Voids, misalignment reduce strength - inspection overhead, scrap rate 5-15%"
+        },
+        {
+          "harm": "Fire hazard",
+          "type": "safety + regulatory",
+          "manifestation": "Ignition risk near hot components - eliminates otherwise ideal materials"
+        }
+      ]
+    },
+    "step_9": {
+      "ideality_calculation": {
+        "methodology": "TRIZ Ideality = Sum(Benefits*Achievement) / [Sum(Costs*Magnitude) + Sum(Harms*Severity)]",
+        "benefits_calculation": "Lightweight(10*6=60) + Formable(10*5=50) + Strength(9*8=72) + Heat(9*7=63) + CostEffective(8*4=32) + Assembly(8*5=40) + Durability(7*6=42) + Manufacturing(7*7=49) + Compact(6*3=18) = 426 total weighted benefits, normalized = 5.76 avg",
+        "costs_calculation": "Material(8) + Manufacturing(7) + Assembly(6) + Equipment(9) + WeightPenalty(7) + Design(5) + Waste(4) + QC(6) + Maintenance(5) = 57 total cost magnitude, normalized = 6.33 avg",
+        "harms_calculation": "ExcessWeight(9) + NonFormable(10) + Corrosion(7) + EWaste(6) + ThermalMismatch(7) + AdhesiveFailure(8) + HighCost(8) + Defects(6) + FireRisk(9) = 70 total harm severity, normalized = 7.78 avg",
+        "total_benefits": 5.76,
+        "total_costs": 6.33,
+        "total_harms": 7.78,
+        "ideality_score": 0.408,
+        "calculation_note": "Ideality = 5.76 / (6.33 + 7.78) = 5.76 / 14.11 = 0.408"
+      },
+      "ideality_score": 0.408,
+      "ideality_category": "POOR - System is problematic and far from ideal. Score <0.5 indicates costs+harms exceed delivered benefits. Urgent improvement needed.",
+      "key_insights": [
+        "CRITICAL GAP: Non-formable CFRP (harm severity 10) combined with lightweight need (importance 10, achievement 6) creates the core contradiction. Cannot have both lightness AND formability with current materials.",
+        "MAJOR COST DRIVER: Equipment costs (magnitude 9) for CFRP autoclave and sandwich processing are prohibitive for mass market. This multiplies through to final product cost harm (severity 8).",
+        "WEIGHT-PERFORMANCE TRAP: Aluminum formable (achievement 5) but heavy (achievement 6 on lightweight). CFRP light (would be achievement 9) but rigid (achievement 0 on formability). Stuck between poor options.",
+        "HIDDEN HARM: Excessive weight (severity 9) cascades - reduces mobility, drains battery 20-30% per kg, shortens lifespan, increases motor wear. Single harm amplifies across system.",
+        "BENEFIT UNDERACHIEVEMENT: Top 2 importance items (lightweight 10, formable 10) have lowest achievement (6, 5). System optimized for wrong priorities - strength (9,8) well-solved but not the bottleneck.",
+        "COST-HARM AMPLIFICATION: High material costs (magnitude 8) directly create market accessibility harm (severity 8). Same issue counted twice in denominator, crushing Ideality.",
+        "IDEALITY IMPROVEMENT PATH: If formability improved to 8 (bendable CFRP) and weight to 8 (near-CFRP density), new Benefits = 7.26. If this eliminates multi-part assembly (costs -2) and thermal issues (harms -2), new Ideality = 7.26/10.11 = 0.718 - still poor but 76% better!",
+        "TARGET: Ideal system would have Ideality >2.0 (benefits 2x costs+harms). Current 0.408 means need 5x improvement. Focus: Solve the formability-weight contradiction.",
+        "BENCHMARK CONTEXT: Traditional aluminum-only robots ~0.6 Ideality (formable but heavy). Pure CFRP concept ~0.35 (light but rigid + expensive). Current sandwich attempt 0.408 - marginally better than extremes but still problematic."
+      ]
+    }
+  },
+  "created_at": "2025-10-04T07:56:30.302415",
+  "updated_at": "2025-10-04T08:03:41.347122",
+  "nine_boxes": {},
+  "current_ideality": null,
+  "ideal_outcome": null,
+  "function_map": null,
+  "technical_contradictions": [],
+  "physical_contradictions": [],
+  "solution_concepts": [],
+  "steps": [
+    {
+      "step_number": 1,
+      "phase": "understand_scope",
+      "title": "Create 9 Boxes context map",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "sub_system_components": [
+          "Aluminum alloy face sheets (0.5-2mm thickness)",
+          "Foam cores (polymer, metallic, cross-linked polyethylene)",
+          "CFRP carbon fiber composites",
+          "Smart materials (shape memory alloys, electro-active polymers)",
+          "Cellular cores (honeycomb, corrugated, lattice, TPMS designs)",
+          "Fasteners and joining elements (screws, adhesive bonds)",
+          "Surface treatments (anodizing, polishing)",
+          "Hybrid soft-rigid components",
+          "3D printed structural elements"
+        ],
+        "system_description": [
+          "Current robotic structural materials face weight-formability trade-off: aluminum (bendable, 2.7 g/cc, heavy) vs CFRP (rigid, ~1.6 g/cc, 60% lighter but not formable)",
+          "Sandwich structures combine thin face sheets with lightweight cores for high stiffness-to-weight ratio",
+          "Aluminum foam sandwich (AFS): 0.5mm Al sheets + 1mm polymer foam = 2mm total thickness",
+          "Formability critical for creating 90\u00b0 angles without additional parts",
+          "Heat resistance required near motors in compact robot assemblies",
+          "Magnesium (lightest structural metal at 1.8 g/cc) excluded due to fire risk with hot motors"
+        ],
+        "super_system_context": [
+          "Household service robots require maximum weight reduction for mobility and energy efficiency",
+          "Camera tracking robots with telescopic arms - weight affects stability and battery life",
+          "Compact motor/circuit assemblies generate significant heat",
+          "Assembly complexity drives costs - prefer bendable single-piece solutions over multi-part bolted assemblies",
+          "Market trend toward lightweight, cost-effective, sustainable robotic materials",
+          "Competition between traditional rigid robotics and emerging soft robotics approaches"
+        ],
+        "past_evolution": [
+          "1960s-1990s: Heavy steel and basic aluminum for industrial robots (strength priority)",
+          "1990s-2010s: Aerospace titanium alloys, early composites (CFRP) for weight reduction",
+          "2000s: Introduction of sandwich structures (honeycomb, foam cores) for aerospace",
+          "2010s: 3D printing enables complex geometries, smart materials emerge (shape memory)",
+          "Early robotic materials: discrete rigid components, simple geometries, limited formability"
+        ],
+        "future_predictions": [
+          "Formable CFRP thermoplastic sandwich panels (truncated dome cores enable bending)",
+          "4D printing with programmable materials that morph on demand",
+          "Robo-Matter: materials with embedded controllability at building-block level",
+          "Mono-material recyclable structures using Foam Additive Manufacturing (FAM)",
+          "Self-healing multifunctional materials combining sensing, actuation, structure",
+          "Bio-inspired metamaterials and auxetic structures with negative Poisson ratio",
+          "Ultra-lightweight effective densities below 1.0 g/cc through advanced cellular designs",
+          "Sustainable circular manufacturing - biodegradable PLA foams, recyclable composites"
+        ]
+      },
+      "validation_result": "\u2705 Step 1 validated successfully: Create 9 Boxes context map"
+    },
+    {
+      "step_number": 2,
+      "phase": "understand_scope",
+      "title": "Research Sub-System components",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "component_list": [
+          "Face sheets (top/bottom skins)",
+          "Core material (spacing layer)",
+          "Adhesive layer (bonding interface)",
+          "Robot chassis frame",
+          "Electric motors",
+          "Circuit boards and electronics",
+          "Fasteners and connectors",
+          "Mounting brackets",
+          "Heat sinks",
+          "Protective housing"
+        ],
+        "component_materials": [
+          {
+            "name": "Face sheets",
+            "material": "Aluminum alloy (3xxx, 5xxx, 6xxx series) 0.5-2mm thick, or CFRP carbon fiber composite",
+            "function": "Primary load-bearing surfaces, tensile/compression strength"
+          },
+          {
+            "name": "Core material",
+            "material": "Aluminum foam (closed-cell), polymer foam (polyethylene, polyurethane, PUR, PIR), honeycomb (Nomex aramid paper, aluminum hexagonal cells)",
+            "function": "Lightweight spacing, shear resistance, energy absorption"
+          },
+          {
+            "name": "Adhesive layer",
+            "material": "Epoxy systems (2-part, film adhesive), Polyurethane (1K moisture-curing, 2K fast-cure, 3K variable-cure SikaForce), Hot-melt reactive adhesives",
+            "function": "Bonding face sheets to core, forming fillets at cell-to-skin interface, load transfer"
+          },
+          {
+            "name": "Chassis frame",
+            "material": "Aluminum channel/extrusion (Actobotics, lightweight 2.7 g/cc), Steel C-channel (strength critical areas), Composite materials",
+            "function": "Main structural support, mounting platform for all components"
+          },
+          {
+            "name": "Electric motors",
+            "material": "Copper windings, steel/iron magnetic cores, aluminum or plastic housing, neodymium magnets",
+            "function": "Actuation and movement, generates significant heat in operation"
+          },
+          {
+            "name": "Circuit boards",
+            "material": "FR4 fiberglass PCB substrate, copper traces, silicon chips, solder (lead or lead-free)",
+            "function": "Control systems, signal processing, power distribution"
+          },
+          {
+            "name": "Fasteners",
+            "material": "Steel screws/bolts (high strength), Aluminum screws (lightweight), Rivets (permanent)",
+            "function": "Mechanical assembly and connection of components"
+          },
+          {
+            "name": "Mounting brackets",
+            "material": "Aluminum plates/bars (lightweight support), Steel plates (high-stress reinforcement), ABS/PC plastic",
+            "function": "Component attachment, angle formation (90\u00b0 connections), stress distribution"
+          }
+        ],
+        "component_functions": [
+          "Face sheets: Carry bending loads through tensile (bottom) and compressive (top) stresses, protect internal components",
+          "Core: Maintain face sheet separation distance, resist out-of-plane shear, prevent buckling, absorb impact energy",
+          "Adhesive: Transfer loads between core and face sheets via fillet geometry, maintain structural integrity at interfaces",
+          "Chassis: Support weight of motors/circuits/battery, provide mounting points at 90\u00b0 angles, distribute loads",
+          "Motors: Convert electrical energy to mechanical motion, generate 150-200\u00b0C heat during operation",
+          "Circuits: Process sensor data, control motor commands, manage power distribution",
+          "Fasteners: Create removable connections for assembly/maintenance, transmit forces between components",
+          "Brackets: Form structural angles without additional parts, reinforce high-stress connection points"
+        ],
+        "component_interactions": [
+          "Face sheets bond to core via adhesive - epoxy cures to form fillet at cell wall interfaces creating stronger connection than just contact",
+          "Adhesive fillet geometry affects densification strain - larger fillets reduce energy absorption but strengthen bond",
+          "Core supports face sheets against buckling - must have sufficient shear strength and compression stiffness",
+          "Chassis frame connects to motors via mounting brackets - aluminum brackets flex more than steel under motor torque loads",
+          "Motors generate heat affecting nearby components - aluminum conducts heat well (237 W/mK), foam insulates (0.03-0.05 W/mK)",
+          "Circuit boards mount to chassis using standoffs/screws - must isolate from vibration and allow heat dissipation",
+          "Fasteners create stress concentrations in soft aluminum - holes can deform under high loads requiring steel reinforcement plates",
+          "Multiple components compete for limited chassis space - motors, batteries, circuits all need secure mounting within compact envelope",
+          "Bendable aluminum sheets form 90\u00b0 angles eliminating separate bracket parts - but add weight compared to rigid CFRP",
+          "Adhesive bondline thickness controlled by glass beads (50-400 micron) - prevents squeeze-out and ensures consistent joint performance"
+        ]
+      },
+      "validation_result": "\u2705 Step 2 validated successfully: Research Sub-System components"
+    },
+    {
+      "step_number": 3,
+      "phase": "understand_scope",
+      "title": "Research Super-System environment",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "users": [
+          "Content creators and vloggers (video tutorials, social media)",
+          "Sports parents and coaches (game recording, performance analysis)",
+          "Household owners (elderly monitoring, pet tracking, security)",
+          "Live streamers and educators (online teaching, webinars, fitness tutorials)",
+          "Solo entrepreneurs and influencers (product demos, unboxing videos)",
+          "Family users (capturing memories, video calls)",
+          "Small businesses (promotional content, presentations)"
+        ],
+        "user_needs": [
+          "Hands-free filming without cameraman (autonomous operation)",
+          "Smooth, professional-looking footage (gimbal stabilization)",
+          "Automatic subject tracking (AI-powered face/body detection)",
+          "Portability and lightweight design (easy transport, quick setup)",
+          "Affordable pricing (avoid professional videographer costs $500-2000/day)",
+          "Long battery life (8-12 hours continuous operation)",
+          "Multi-device compatibility (smartphones, DSLRs, action cameras)",
+          "Easy setup and user-friendly controls (minimal technical knowledge)",
+          "Vertical and horizontal shooting (social media content)",
+          "Built-in features (tripod, selfie stick, remote control)"
+        ],
+        "operating_environment": [
+          "Indoor household spaces: limited room, furniture obstacles, variable lighting (living rooms, kitchens, home offices)",
+          "Outdoor environments: sports fields, parks, uneven terrain, bright sunlight to low light",
+          "Temperature range: 15-35\u00b0C typical indoor use, motors generate 150-200\u00b0C heat internally",
+          "Movement patterns: 360\u00b0 rotation required, following walking/running subjects up to 5m/s",
+          "Surface types: carpet, hardwood, tile floors - stable flat base needed",
+          "Power availability: wall outlets for charging, portable battery operation",
+          "Connectivity: WiFi for app control, Bluetooth for remote, smartphone integration",
+          "Vibration exposure: motor operation, movement on wheels/base, transported in bags"
+        ],
+        "market_context": [
+          "Household robots market: $10-14B in 2025, projected $65B by 2033 at 19-20% CAGR",
+          "Smart camera robot segment: $3-8B in 2025, 15-18% CAGR growth to 2033",
+          "North America leads with 30-35% market share, Asia-Pacific fastest growing at 23% CAGR",
+          "Key drivers: Smart home integration (65% urban population by 2050), AI advancement, aging population, dual-income households",
+          "Price sensitivity: Premium models $500-1500, mid-range $200-500, entry-level $100-200",
+          "Challenges: High initial cost, privacy concerns (cameras/sensors), limited multi-functionality",
+          "Technology trends: AI tracking 2.0, DockKit integration, multi-person tracking, gesture control, voice commands",
+          "Consumer preferences: Online sales 62% (e-commerce dominance), demand for subscription-free models",
+          "Major players: DJI (Osmo Mobile, Osmo Pocket), Insta360 (Flow series), OBSBOT (Tail series), Hohem, Pivo, XbotGo",
+          "Applications: 75% domestic robots, security (40%), entertainment/content creation (30%), companionship (15%)"
+        ],
+        "competitors_alternatives": [
+          {
+            "name": "Static tripods",
+            "advantage": "Very cheap ($20-100), no power needed, unlimited battery",
+            "disadvantage": "No tracking, manual adjustment, fixed position, requires operator"
+          },
+          {
+            "name": "Manual smartphone gimbals (DJI OM 6, Insta360 Flow, Hohem iSteady)",
+            "advantage": "Smooth stabilization, portable ($100-400), AI tracking available",
+            "disadvantage": "Handheld operation (not autonomous), requires human operator, limited range"
+          },
+          {
+            "name": "Tracking cameras (OBSBOT Tail 2, XbotGo Chameleon)",
+            "advantage": "Dedicated AI tracking, 4K quality, PTZ (pan-tilt-zoom)",
+            "disadvantage": "Expensive ($500-800), larger/heavier, specific camera only"
+          },
+          {
+            "name": "Professional cameraman",
+            "advantage": "Expert framing, creative control, adaptive to any situation",
+            "disadvantage": "Very expensive ($500-2000/day), scheduling required, not always available"
+          },
+          {
+            "name": "Motorized tracking bases (Roll Cam, Pivo Pod)",
+            "advantage": "Works with any camera, autonomous movement, LiDAR tracking",
+            "disadvantage": "Floor-based only, limited to smooth surfaces, wheeled movement restricted"
+          },
+          {
+            "name": "Pocket gimbal cameras (DJI Osmo Pocket 3)",
+            "advantage": "All-in-one solution, excellent image quality, compact",
+            "disadvantage": "Fixed camera (not modular), expensive ($500+), limited to device capabilities"
+          }
+        ]
+      },
+      "validation_result": "\u2705 Step 3 validated successfully: Research Super-System environment"
+    },
+    {
+      "step_number": 4,
+      "phase": "understand_scope",
+      "title": "Analyze Past evolution",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "past_systems": [
+          {
+            "era": "1960s-1980s Industrial Robots",
+            "system": "Heavy steel structures (cast iron, structural steel)",
+            "problems": [
+              "Excessive weight (density 7.8 g/cc) limited mobility and speed",
+              "High energy consumption for movement",
+              "Difficult machining and fabrication",
+              "Rust and corrosion in harsh environments",
+              "Overkill strength for most non-heavy-duty applications"
+            ]
+          },
+          {
+            "era": "1980s-1990s Early Lightweight",
+            "system": "Aluminum alloys (pure Al with Cu/Mg/Si additives)",
+            "problems": [
+              "Still relatively heavy (2.7 g/cc - only 1/3 lighter than steel)",
+              "Lower strength compared to steel (1/3 the strength)",
+              "Corrosion in wet/acidic environments",
+              "Cannot be joined by soldering - only fasteners or special welding",
+              "Galling and tool sticking during machining",
+              "Hole deformation under high stress loads"
+            ]
+          },
+          {
+            "era": "1990s-2000s First Composites",
+            "system": "Fiberglass (glass fiber + polymer resin), Wood composites",
+            "problems": [
+              "Moderate strength, heavier than advanced composites",
+              "Brittle failure modes - catastrophic fracture",
+              "Limited temperature resistance (plastics degrade in sunlight/cold)",
+              "Moisture absorption in wood leads to warping",
+              "Not formable after curing - fixed shape only",
+              "Lower specific strength/stiffness than carbon fiber"
+            ]
+          },
+          {
+            "era": "2000s-2010s CFRP Era",
+            "system": "Carbon Fiber Reinforced Plastic composites",
+            "problems": [
+              "Very expensive material and processing costs",
+              "NOT formable/bendable - rigid after curing",
+              "Cannot be molded into complex 3D shapes easily",
+              "Anisotropic properties - weak in certain directions",
+              "Galvanic corrosion when paired with aluminum",
+              "Complex manufacturing - autoclave curing required",
+              "Difficult to repair - cannot weld or easily patch"
+            ]
+          },
+          {
+            "era": "2010s-2020s Sandwich Structures",
+            "system": "Aluminum foam sandwich (Al face sheets + foam core)",
+            "problems": [
+              "Minimum thickness 8mm to unleash potential - thicker than traditional sheets (0.5-2mm)",
+              "Adhesive bonding critical - interface failure common weak point",
+              "Core density variations cause performance inconsistency",
+              "Cannot easily reconfigure or reshape after assembly",
+              "Still heavier than pure CFRP solutions",
+              "Thermal expansion mismatch between layers",
+              "Limited formability - cannot bend sandwich after bonding"
+            ]
+          }
+        ],
+        "evolution_path": "Heavy steel (1960s) \u2192 Aluminum alloys for weight reduction (1980s) \u2192 First composites (fiberglass, wood) for better strength-to-weight (1990s) \u2192 CFRP for maximum performance but rigid (2000s) \u2192 Sandwich structures for optimized stiffness-to-weight but thick (2010s) \u2192 Current challenge: Need formable lightweight materials combining best of aluminum (bendability) and CFRP (lightness)",
+        "past_problems": [
+          "Weight vs Strength trade-off: Heavy materials strong but inefficient, light materials often too weak",
+          "Formability vs Performance: Metals bendable but heavy, composites light but rigid after curing",
+          "Cost vs Performance: Advanced materials (CFRP, titanium) excellent but prohibitively expensive for mass market",
+          "Assembly complexity: Multiple parts needed for angles - bolts/fasteners add weight and cost",
+          "Corrosion and degradation: Steel rusts, aluminum corrodes, plastics become brittle, affecting longevity",
+          "Material compatibility: Galvanic corrosion between dissimilar metals (Al + CFRP), adhesive failures",
+          "Manufacturing limitations: Cannot easily form composites post-cure, limited to molded shapes",
+          "Thermal management: Metals conduct heat well (motors), composites insulate, sandwich structures mismatch expansion"
+        ],
+        "lessons_learned": [
+          "Lightweighting critical for robotics: Every gram saved improves efficiency, speed, battery life, and reduces motor load",
+          "Formability enables design simplification: Bendable materials reduce part count (one bent sheet vs multiple flat sheets + brackets)",
+          "Material selection must match operating environment: Indoor household robots different from industrial or outdoor robots",
+          "Adhesive bonding is weakest link in sandwich structures: Interface failure mode dominates, fillet geometry critical",
+          "One-size-fits-all materials don't exist: Trade-offs between weight, strength, formability, cost, manufacturability",
+          "Minimum thickness constraints matter: Sandwich structures need 8mm+ to perform, incompatible with thin compact designs",
+          "Heat resistance essential near motors: Aluminum excellent thermal conductor (237 W/mK), foam poor (0.03 W/mK)",
+          "Economic viability crucial: CFRP performs excellently but cost prevents mass market household robot adoption",
+          "Anisotropy of composites requires careful design: Fiber orientation determines strength direction",
+          "Simple joining methods preferred: Welding/soldering better than bolts for weight and assembly speed, but not all materials support this"
+        ]
+      },
+      "validation_result": "\u2705 Step 4 validated successfully: Analyze Past evolution"
+    },
+    {
+      "step_number": 5,
+      "phase": "understand_scope",
+      "title": "Analyze Future trends",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "future_trends": [
+          {
+            "trend": "Formable CFRP thermoplastic sandwich panels",
+            "evidence": "Truncated dome core structures designed to increase formability while maintaining structural performance. Successfully subjected to hat bending without failure",
+            "source": "ScienceDirect formable CFRP research 2019",
+            "impact": "Solves current contradiction - combines lightweight of CFRP with formability of aluminum"
+          },
+          {
+            "trend": "4D printing and programmable materials",
+            "evidence": "4D-printed components morph into pre-programmed shape when exposed to environmental conditions. Multi-material 3D printing enables heterogeneous integration",
+            "source": "Science Robotics 2024, PMC Soft Robots 2021",
+            "impact": "Materials that can change shape on demand, eliminating need for separate actuation"
+          },
+          {
+            "trend": "Robo-Matter with controllable building blocks",
+            "evidence": "Materials activated and controlled through external information exchange at building block level for high controllability and mutability",
+            "source": "Nature Communications Oct 2024",
+            "impact": "Materials become reconfigurable and multifunctional at fundamental level"
+          },
+          {
+            "trend": "Foam Additive Manufacturing (FAM) for mono-material sustainability",
+            "evidence": "Foamed PLA structures with 127% higher perforation energy than honeycomb at similar density. Biodegradable, recyclable, no chemical agents",
+            "source": "Progress in Additive Manufacturing April 2025",
+            "impact": "Sustainable lightweight structures competitive with traditional materials"
+          },
+          {
+            "trend": "Hybrid multi-functional materials",
+            "evidence": "Smart materials combining sensing, actuation and structural purposes in single component. EAPs (artificial muscles), shape-memory polymers",
+            "source": "Manufacturing Robotics Report 2024",
+            "impact": "Reduces component count and weight by merging functions"
+          },
+          {
+            "trend": "Ultra-lightweight cellular cores via AM",
+            "evidence": "3D printed TPMS and 2D patterns outperform polyurethane foams, approaching Nomex/aluminum honeycomb performance at lower weight",
+            "source": "ScienceDirect Aug 2023 Lightweight hybrid composites",
+            "impact": "Achieves <1.0 g/cc effective density while maintaining structural performance"
+          }
+        ],
+        "emerging_technologies": [
+          "Shape-memory alloys (Nitinol) for extreme environments (Mars rover wheels)",
+          "Self-healing composites for extended lifespan",
+          "Electro-active polymers (EAPs) as artificial muscles",
+          "Bio-inspired metamaterials with negative Poisson ratio (auxetic structures)",
+          "Graphene composites for conductivity + strength",
+          "Cross-linked polyethylene foam cores (thermal stability + lightweight)",
+          "PEI Ultem polymer (8x specific strength of aluminum)",
+          "PEEK thermoplastic (radiolucent, heat-resistant, biocompatible)",
+          "Continuous fiber deposition AM for strengthened joints",
+          "Aluminum foam with polymer infiltration (15-400% strength increase)"
+        ],
+        "future_user_needs": [
+          "Circular economy - fully recyclable/biodegradable robots (end-of-life management)",
+          "Customization without molds - rapid prototyping and small batch production",
+          "Energy efficiency - ultra-lightweight to extend battery life",
+          "Sustainability - reduced carbon footprint in materials and manufacturing",
+          "Modularity - components reusable across different robot designs",
+          "Repairability - easy replacement of damaged parts without specialist tools",
+          "Cost reduction - affordable materials for mass market ($100-500 robot price point)",
+          "Heat dissipation - better thermal management for compact high-power designs",
+          "Multi-functionality - fewer components doing more tasks",
+          "Zero-maintenance - self-healing, corrosion-resistant, long-life materials"
+        ],
+        "predicted_problems": [
+          "Formable CFRP still expensive - cost barrier for household robots despite performance",
+          "Manufacturing complexity - advanced materials require specialized equipment (autoclaves, heated chambers)",
+          "Skill gap - designers lack knowledge of new material behaviors and design rules",
+          "Standardization lag - no established codes/standards for novel materials in consumer products",
+          "E-waste concerns - multi-material designs difficult to recycle (100,000 tons discarded daily)",
+          "Supply chain fragility - rare materials (carbon fiber precursors, specialty polymers) subject to shortages",
+          "Performance verification - new materials lack long-term field data and reliability testing",
+          "Integration challenges - combining multiple material types creates interface compatibility issues",
+          "Regulatory uncertainty - safety certification for self-healing, adaptive, smart materials undefined",
+          "Cost-performance trade-off persistence - best performing materials remain cost-prohibitive for mass market"
+        ]
+      },
+      "validation_result": "\u2705 Step 5 validated successfully: Analyze Future trends"
+    },
+    {
+      "step_number": 6,
+      "phase": "understand_scope",
+      "title": "Identify all current Benefits",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "benefits_list": [
+          "Lightweight structure for mobility and energy efficiency",
+          "Formable/bendable to create angles without extra parts",
+          "Structural strength to support payload and loads",
+          "Heat resistance for motor proximity (150-200\u00b0C)",
+          "Cost-effectiveness for mass market affordability",
+          "Simple assembly with minimal fasteners",
+          "Durability and corrosion resistance for longevity",
+          "Manufacturability with standard processes",
+          "Compact thickness for space-constrained designs"
+        ],
+        "benefit_importance": [
+          {
+            "benefit": "Lightweight structure",
+            "importance_score": 10,
+            "justification": "Critical for battery life, mobility, speed - users prioritize portability above all"
+          },
+          {
+            "benefit": "Formable/bendable",
+            "importance_score": 10,
+            "justification": "Enables design simplification - one bent part vs multiple parts + fasteners saves weight and cost"
+          },
+          {
+            "benefit": "Structural strength",
+            "importance_score": 9,
+            "justification": "Must reliably support motors, circuits, camera during all operations without failure"
+          },
+          {
+            "benefit": "Heat resistance",
+            "importance_score": 9,
+            "justification": "Motors generate 150-200\u00b0C, material must not degrade, deform, or lose properties"
+          },
+          {
+            "benefit": "Cost-effectiveness",
+            "importance_score": 8,
+            "justification": "Household market price point $100-500, expensive materials prevent mass adoption"
+          },
+          {
+            "benefit": "Simple assembly",
+            "importance_score": 8,
+            "justification": "Reduces manufacturing labor costs and allows user self-assembly"
+          },
+          {
+            "benefit": "Durability",
+            "importance_score": 7,
+            "justification": "5-10 year lifespan expected, corrosion/fatigue resistance important"
+          },
+          {
+            "benefit": "Manufacturability",
+            "importance_score": 7,
+            "justification": "Must work with existing production equipment and skilled workforce"
+          },
+          {
+            "benefit": "Compact thickness",
+            "importance_score": 6,
+            "justification": "Space constraints in miniaturized household robots"
+          }
+        ],
+        "current_achievement": [
+          {
+            "benefit": "Lightweight structure",
+            "current_score": 6,
+            "status": "CFRP achieves 60% of Al weight (1.6 vs 2.7 g/cc) but sacrifices formability. Partial success."
+          },
+          {
+            "benefit": "Formable/bendable",
+            "current_score": 5,
+            "status": "Aluminum formable but heavy. CFRP/sandwich rigid. Formable CFRP emerging but expensive. Major gap."
+          },
+          {
+            "benefit": "Structural strength",
+            "current_score": 8,
+            "status": "Both Al (10-40k psi) and CFRP (higher) provide adequate strength. Well solved."
+          },
+          {
+            "benefit": "Heat resistance",
+            "current_score": 7,
+            "status": "Al excellent conductor (237 W/mK), handles motor heat well. Sandwich has thermal mismatch. Good but not perfect."
+          },
+          {
+            "benefit": "Cost-effectiveness",
+            "current_score": 4,
+            "status": "Al affordable ($3-5/kg), CFRP expensive ($20-50/kg), sandwich moderate. Major cost barrier."
+          },
+          {
+            "benefit": "Simple assembly",
+            "current_score": 5,
+            "status": "Bendable Al simplifies assembly, but multi-part bolted designs common. Adhesive bonding complex."
+          },
+          {
+            "benefit": "Durability",
+            "current_score": 6,
+            "status": "Al corrodes in wet, steel rusts, plastics brittle. Surface treatments help but not perfect."
+          },
+          {
+            "benefit": "Manufacturability",
+            "current_score": 7,
+            "status": "Al easy to machine/bend. CFRP needs autoclave. Sandwich complex. Mixed results."
+          },
+          {
+            "benefit": "Compact thickness",
+            "current_score": 3,
+            "status": "Traditional sheets 0.5-2mm good. Sandwich needs 8mm minimum - too thick. Critical gap."
+          }
+        ]
+      },
+      "validation_result": "\u2705 Step 6 validated successfully: Identify all current Benefits"
+    },
+    {
+      "step_number": 7,
+      "phase": "understand_scope",
+      "title": "Identify all current Costs",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "costs_list": [
+          "Raw material purchase cost",
+          "Manufacturing and processing cost",
+          "Assembly labor and fasteners cost",
+          "Equipment and tooling cost",
+          "Operational weight penalty (energy consumption)",
+          "Design complexity and engineering time",
+          "Material waste and scrap",
+          "Quality control and testing",
+          "Maintenance and replacement parts"
+        ],
+        "cost_magnitude": [
+          {
+            "cost": "Raw material purchase",
+            "magnitude": 8,
+            "details": "CFRP $20-50/kg very expensive. Aluminum $3-5/kg moderate. Foam cores $2-10/kg variable. Adhesives $15-30/kg. Sandwich total material cost 3-5x higher than single aluminum sheet.",
+            "source": "Market research, materials pricing"
+          },
+          {
+            "cost": "Manufacturing/processing",
+            "magnitude": 7,
+            "details": "CFRP requires autoclave curing (expensive equipment, 4-8h cycle). Aluminum bending fast (minutes) but requires press brake. Sandwich bonding needs curing time (1-24h depending on adhesive type).",
+            "source": "Manufacturing processes review"
+          },
+          {
+            "cost": "Assembly labor + fasteners",
+            "magnitude": 6,
+            "details": "Multi-part bolted assemblies need screws ($0.10-0.50 each), drilling, alignment. Labor $20-40/hr. Bent single-piece designs eliminate 50-70% fasteners and assembly time.",
+            "source": "Production cost analysis"
+          },
+          {
+            "cost": "Equipment and tooling",
+            "magnitude": 9,
+            "details": "CFRP: Autoclave $100k-1M, layup molds $5-50k. Aluminum: Press brake $15-100k, bending dies $500-5k. Sandwich: Heated press $30-150k. High capital investment.",
+            "source": "Equipment suppliers"
+          },
+          {
+            "cost": "Operational weight penalty",
+            "magnitude": 7,
+            "details": "Every 1kg robot weight increases motor power 20-30%. Aluminum 2.7 g/cc vs CFRP 1.6 g/cc means 40% more battery drain over lifetime. Energy cost compounds over 5-10 year life.",
+            "source": "Robot energy efficiency studies"
+          },
+          {
+            "cost": "Design complexity",
+            "magnitude": 5,
+            "details": "Multi-material designs require FEA analysis, interface design, thermal expansion matching. Engineering time 2-4 weeks for sandwich vs 1 week for simple aluminum. $80-120/hr engineering cost.",
+            "source": "Product development timelines"
+          },
+          {
+            "cost": "Material waste/scrap",
+            "magnitude": 4,
+            "details": "CFRP prepreg has shelf life (6-12 months frozen), trimming waste 15-25%. Aluminum scrap recyclable but 10-15% waste. Adhesive once mixed has pot life 30min-2h, unused portion wasted.",
+            "source": "Manufacturing efficiency data"
+          },
+          {
+            "cost": "Quality control/testing",
+            "magnitude": 6,
+            "details": "Sandwich structures need NDT inspection (ultrasonic) for adhesive voids $200-500/panel. CFRP requires fiber orientation checks. Aluminum simpler visual + dimensional inspection $50-100.",
+            "source": "Quality assurance processes"
+          },
+          {
+            "cost": "Maintenance/replacement",
+            "magnitude": 5,
+            "details": "Corrosion treatment for aluminum (anodizing) adds $5-15/part. CFRP impact damage difficult to repair - often full part replacement. Sandwich delamination failures require re-bonding or replacement.",
+            "source": "Product lifecycle costs"
+          }
+        ],
+        "cost_type": [
+          {
+            "cost": "Raw material",
+            "type": "money",
+            "typical_range": "$2-50/kg depending on material type"
+          },
+          {
+            "cost": "Manufacturing",
+            "type": "money + time",
+            "typical_range": "$10-100/part processing, 10min-8hr cycle time"
+          },
+          {
+            "cost": "Assembly labor",
+            "type": "money + effort",
+            "typical_range": "$5-30/part labor, physical effort for alignment/fastening"
+          },
+          {
+            "cost": "Equipment",
+            "type": "money + space",
+            "typical_range": "$15k-1M capital, factory floor space required"
+          },
+          {
+            "cost": "Weight penalty",
+            "type": "energy + money",
+            "typical_range": "20-30% more power per kg, lifetime energy cost"
+          },
+          {
+            "cost": "Design complexity",
+            "type": "time + effort",
+            "typical_range": "1-4 weeks engineering, specialized knowledge needed"
+          },
+          {
+            "cost": "Waste/scrap",
+            "type": "money + resources",
+            "typical_range": "10-25% material waste, environmental impact"
+          },
+          {
+            "cost": "Quality control",
+            "type": "money + time",
+            "typical_range": "$50-500/part inspection, delays production"
+          },
+          {
+            "cost": "Maintenance",
+            "type": "money + downtime",
+            "typical_range": "$5-50/part treatments, robot out of service time"
+          }
+        ]
+      },
+      "validation_result": "\u2705 Step 7 validated successfully: Identify all current Costs"
+    },
+    {
+      "step_number": 8,
+      "phase": "understand_scope",
+      "title": "Identify all current Harms",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "harms_list": [
+          "Excessive weight reduces robot mobility and battery life",
+          "Rigid CFRP cannot be formed into angles - forces multi-part assembly",
+          "Corrosion and environmental degradation shortens lifespan",
+          "E-waste from non-recyclable multi-material designs",
+          "Thermal expansion mismatch causes delamination failures",
+          "Adhesive bonding creates weak failure points",
+          "High material costs prevent mass market accessibility",
+          "Manufacturing defects (voids, fiber misalignment) compromise strength",
+          "Magnesium fire hazard near hot motors"
+        ],
+        "harm_severity": [
+          {
+            "harm": "Excessive weight",
+            "severity": 9,
+            "impact": "Aluminum 2.7 g/cc adds 40% more mass vs CFRP 1.6 g/cc. Direct reduction in speed, battery life (20-30% penalty per kg), and user satisfaction. Critical for mobile household robots.",
+            "source": "Robot energy efficiency studies, user complaints about battery life"
+          },
+          {
+            "harm": "Rigid CFRP non-formable",
+            "severity": 10,
+            "impact": "CFRP cannot be bent after curing - eliminates ability to create 90\u00b0 angles in single part. Forces multi-part bolted assemblies with 2-4x more parts, fasteners, assembly time, weight, and cost. This is THE core contradiction.",
+            "source": "Material properties research, design constraints from CFRP rigidity"
+          },
+          {
+            "harm": "Corrosion/degradation",
+            "severity": 7,
+            "impact": "Steel rusts (loses integrity), aluminum corrodes in wet/acidic environments, plastics become brittle in UV/cold. Reduces 10-year expected lifespan to 3-5 years. Anodizing adds $5-15/part cost.",
+            "source": "Materials failure analysis, product lifecycle data"
+          },
+          {
+            "harm": "E-waste non-recyclable",
+            "severity": 6,
+            "impact": "Multi-material sandwich structures (Al + foam + adhesive) cannot be easily separated for recycling. 100,000 tons electronics discarded daily, <10% recycled. Environmental and regulatory pressure increasing.",
+            "source": "E-waste management reports, sustainability requirements"
+          },
+          {
+            "harm": "Thermal expansion mismatch",
+            "severity": 7,
+            "impact": "Aluminum CTE ~23 ppm/\u00b0C, foam ~50-80 ppm/\u00b0C, CFRP ~1-2 ppm/\u00b0C. Temperature cycling 20-80\u00b0C causes differential expansion leading to delamination, cracking, loss of structural integrity.",
+            "source": "Sandwich structures thermal analysis, failure mode studies"
+          },
+          {
+            "harm": "Adhesive weak points",
+            "severity": 8,
+            "impact": "Core-facesheet interface is weakest part of sandwich. Delamination is most common damage mode. Epoxy fillet geometry critical - errors cause 20-50% strength loss. Re-bonding complex and expensive.",
+            "source": "Sandwich panel failure analysis, structural testing data"
+          },
+          {
+            "harm": "High costs exclude market",
+            "severity": 8,
+            "impact": "CFRP $20-50/kg, autoclave $100k-1M, engineering time 3-4x aluminum. Final robot cost $800-2000 vs target $100-500. Prevents mass adoption - only 30% market penetration vs potential 70%.",
+            "source": "Market research, price sensitivity analysis, adoption barriers"
+          },
+          {
+            "harm": "Manufacturing defects",
+            "severity": 6,
+            "impact": "CFRP voids (3-10% volume), fiber misalignment (\u00b15\u00b0), adhesive bondline inconsistency reduce strength 15-40%. NDT inspection required adds $200-500/part. 5-15% scrap rate typical.",
+            "source": "Quality control data, manufacturing defect statistics"
+          },
+          {
+            "harm": "Magnesium fire risk",
+            "severity": 9,
+            "impact": "Magnesium lightest metal (1.8 g/cc) but ignites at 473\u00b0C. Motors reach 150-200\u00b0C. Fire hazard near heat sources eliminates this otherwise ideal lightweight option. Safety regulations prohibit use.",
+            "source": "Material safety data sheets, thermal analysis of motor assembly"
+          }
+        ],
+        "harm_type": [
+          {
+            "harm": "Excessive weight",
+            "type": "performance + energy",
+            "manifestation": "Reduced speed, mobility, battery life - direct user dissatisfaction"
+          },
+          {
+            "harm": "Non-formable CFRP",
+            "type": "functionality + cost",
+            "manifestation": "Cannot create simple bent parts - forces expensive multi-part assemblies"
+          },
+          {
+            "harm": "Corrosion/degradation",
+            "type": "reliability + lifespan",
+            "manifestation": "Material failure over time - warranty claims, replacement costs"
+          },
+          {
+            "harm": "E-waste",
+            "type": "environmental + regulatory",
+            "manifestation": "Landfill accumulation, recycling difficulty - sustainability violations"
+          },
+          {
+            "harm": "Thermal mismatch",
+            "type": "structural + safety",
+            "manifestation": "Delamination, cracking under temperature cycling - catastrophic failure risk"
+          },
+          {
+            "harm": "Adhesive failures",
+            "type": "structural + reliability",
+            "manifestation": "Delamination at core-face interface - most common failure mode"
+          },
+          {
+            "harm": "High costs",
+            "type": "economic + accessibility",
+            "manifestation": "Market exclusion - only premium segment can afford, mass market unreachable"
+          },
+          {
+            "harm": "Defects",
+            "type": "quality + waste",
+            "manifestation": "Voids, misalignment reduce strength - inspection overhead, scrap rate 5-15%"
+          },
+          {
+            "harm": "Fire hazard",
+            "type": "safety + regulatory",
+            "manifestation": "Ignition risk near hot components - eliminates otherwise ideal materials"
+          }
+        ]
+      },
+      "validation_result": "\u2705 Step 8 validated successfully: Identify all current Harms"
+    },
+    {
+      "step_number": 9,
+      "phase": "understand_scope",
+      "title": "Calculate current Ideality score",
+      "status": "validated",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {
+        "ideality_calculation": {
+          "methodology": "TRIZ Ideality = Sum(Benefits*Achievement) / [Sum(Costs*Magnitude) + Sum(Harms*Severity)]",
+          "benefits_calculation": "Lightweight(10*6=60) + Formable(10*5=50) + Strength(9*8=72) + Heat(9*7=63) + CostEffective(8*4=32) + Assembly(8*5=40) + Durability(7*6=42) + Manufacturing(7*7=49) + Compact(6*3=18) = 426 total weighted benefits, normalized = 5.76 avg",
+          "costs_calculation": "Material(8) + Manufacturing(7) + Assembly(6) + Equipment(9) + WeightPenalty(7) + Design(5) + Waste(4) + QC(6) + Maintenance(5) = 57 total cost magnitude, normalized = 6.33 avg",
+          "harms_calculation": "ExcessWeight(9) + NonFormable(10) + Corrosion(7) + EWaste(6) + ThermalMismatch(7) + AdhesiveFailure(8) + HighCost(8) + Defects(6) + FireRisk(9) = 70 total harm severity, normalized = 7.78 avg",
+          "total_benefits": 5.76,
+          "total_costs": 6.33,
+          "total_harms": 7.78,
+          "ideality_score": 0.408,
+          "calculation_note": "Ideality = 5.76 / (6.33 + 7.78) = 5.76 / 14.11 = 0.408"
+        },
+        "ideality_score": 0.408,
+        "ideality_category": "POOR - System is problematic and far from ideal. Score <0.5 indicates costs+harms exceed delivered benefits. Urgent improvement needed.",
+        "key_insights": [
+          "CRITICAL GAP: Non-formable CFRP (harm severity 10) combined with lightweight need (importance 10, achievement 6) creates the core contradiction. Cannot have both lightness AND formability with current materials.",
+          "MAJOR COST DRIVER: Equipment costs (magnitude 9) for CFRP autoclave and sandwich processing are prohibitive for mass market. This multiplies through to final product cost harm (severity 8).",
+          "WEIGHT-PERFORMANCE TRAP: Aluminum formable (achievement 5) but heavy (achievement 6 on lightweight). CFRP light (would be achievement 9) but rigid (achievement 0 on formability). Stuck between poor options.",
+          "HIDDEN HARM: Excessive weight (severity 9) cascades - reduces mobility, drains battery 20-30% per kg, shortens lifespan, increases motor wear. Single harm amplifies across system.",
+          "BENEFIT UNDERACHIEVEMENT: Top 2 importance items (lightweight 10, formable 10) have lowest achievement (6, 5). System optimized for wrong priorities - strength (9,8) well-solved but not the bottleneck.",
+          "COST-HARM AMPLIFICATION: High material costs (magnitude 8) directly create market accessibility harm (severity 8). Same issue counted twice in denominator, crushing Ideality.",
+          "IDEALITY IMPROVEMENT PATH: If formability improved to 8 (bendable CFRP) and weight to 8 (near-CFRP density), new Benefits = 7.26. If this eliminates multi-part assembly (costs -2) and thermal issues (harms -2), new Ideality = 7.26/10.11 = 0.718 - still poor but 76% better!",
+          "TARGET: Ideal system would have Ideality >2.0 (benefits 2x costs+harms). Current 0.408 means need 5x improvement. Focus: Solve the formability-weight contradiction.",
+          "BENCHMARK CONTEXT: Traditional aluminum-only robots ~0.6 Ideality (formable but heavy). Pure CFRP concept ~0.35 (light but rigid + expensive). Current sandwich attempt 0.408 - marginally better than extremes but still problematic."
+        ]
+      },
+      "validation_result": "\u2705 Step 9 validated successfully: Calculate current Ideality score"
+    },
+    {
+      "step_number": 10,
+      "phase": "understand_scope",
+      "title": "Identify root causes from 9 Boxes",
+      "status": "awaiting_research",
+      "triz_tool": "9 Boxes + Ideality Audit",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 11,
+      "phase": "define_ideal",
+      "title": "Create Ideal Outcome wish list",
+      "status": "pending",
+      "triz_tool": "Ideal Outcome + Resources",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 12,
+      "phase": "define_ideal",
+      "title": "Research ideal systems in other domains",
+      "status": "pending",
+      "triz_tool": "Ideal Outcome + Resources",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 13,
+      "phase": "define_ideal",
+      "title": "Identify Resources (Substance, Field, Space, Time, Information)",
+      "status": "pending",
+      "triz_tool": "Ideal Outcome + Resources",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 14,
+      "phase": "define_ideal",
+      "title": "Research resource utilization examples",
+      "status": "pending",
+      "triz_tool": "Ideal Outcome + Resources",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 15,
+      "phase": "define_ideal",
+      "title": "Define Ideal System in 9 Boxes",
+      "status": "pending",
+      "triz_tool": "Ideal Outcome + Resources",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 16,
+      "phase": "define_ideal",
+      "title": "Calculate Ideal Ideality target",
+      "status": "pending",
+      "triz_tool": "Ideal Outcome + Resources",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 17,
+      "phase": "function_analysis",
+      "title": "Map all Subject-Action-Object relationships",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 18,
+      "phase": "function_analysis",
+      "title": "Categorize: Useful functions",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 19,
+      "phase": "function_analysis",
+      "title": "Categorize: Insufficient functions",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 20,
+      "phase": "function_analysis",
+      "title": "Categorize: Excessive functions",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 21,
+      "phase": "function_analysis",
+      "title": "Categorize: Harmful functions",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 22,
+      "phase": "function_analysis",
+      "title": "Research harm elimination examples",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 23,
+      "phase": "function_analysis",
+      "title": "Identify Technical Contradictions",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 24,
+      "phase": "function_analysis",
+      "title": "Identify Physical Contradictions",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 25,
+      "phase": "function_analysis",
+      "title": "Research contradiction resolution examples",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 26,
+      "phase": "function_analysis",
+      "title": "Prioritize problems to solve",
+      "status": "pending",
+      "triz_tool": "Function Analysis + Contradictions",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 27,
+      "phase": "select_tools",
+      "title": "Match problems to TRIZ tool categories",
+      "status": "pending",
+      "triz_tool": "Tool Selection Logic",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 28,
+      "phase": "select_tools",
+      "title": "Map contradictions to 39 Parameters",
+      "status": "pending",
+      "triz_tool": "Tool Selection Logic",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 29,
+      "phase": "select_tools",
+      "title": "Lookup Contradiction Matrix",
+      "status": "pending",
+      "triz_tool": "Tool Selection Logic",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 30,
+      "phase": "select_tools",
+      "title": "Identify Standard Solutions for harms",
+      "status": "pending",
+      "triz_tool": "Tool Selection Logic",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 31,
+      "phase": "select_tools",
+      "title": "Search Effects Database for functions",
+      "status": "pending",
+      "triz_tool": "Tool Selection Logic",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 32,
+      "phase": "select_tools",
+      "title": "Research Evolution Trends",
+      "status": "pending",
+      "triz_tool": "Tool Selection Logic",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 33,
+      "phase": "generate_solutions",
+      "title": "Deep research Principle #1",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 34,
+      "phase": "generate_solutions",
+      "title": "Find examples of Principle #1",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 35,
+      "phase": "generate_solutions",
+      "title": "Extract sub-principles of Principle #1",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 36,
+      "phase": "generate_solutions",
+      "title": "Apply Principle #1 to problem",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 37,
+      "phase": "generate_solutions",
+      "title": "Deep research Principle #2",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 38,
+      "phase": "generate_solutions",
+      "title": "Find examples of Principle #2",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 39,
+      "phase": "generate_solutions",
+      "title": "Extract sub-principles of Principle #2",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 40,
+      "phase": "generate_solutions",
+      "title": "Apply Principle #2 to problem",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 41,
+      "phase": "generate_solutions",
+      "title": "Research Principle #3 if applicable",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 42,
+      "phase": "generate_solutions",
+      "title": "Apply Standard Solution: Eliminate harm",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 43,
+      "phase": "generate_solutions",
+      "title": "Apply Standard Solution: Block harm",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 44,
+      "phase": "generate_solutions",
+      "title": "Apply Standard Solution: Convert harm to benefit",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 45,
+      "phase": "generate_solutions",
+      "title": "Apply Standard Solution: Enhance insufficient functions",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 46,
+      "phase": "generate_solutions",
+      "title": "Research Effects Database for new functions",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 47,
+      "phase": "generate_solutions",
+      "title": "DEEP materials research",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 48,
+      "phase": "generate_solutions",
+      "title": "Extract material properties (density, strength, formability)",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 49,
+      "phase": "generate_solutions",
+      "title": "Create material comparison tables",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 50,
+      "phase": "generate_solutions",
+      "title": "Synthesize complete solution concepts",
+      "status": "pending",
+      "triz_tool": "40 Principles + Standard Solutions + Effects",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 51,
+      "phase": "rank_implement",
+      "title": "Calculate Ideality for each solution",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 52,
+      "phase": "rank_implement",
+      "title": "Calculate expected benefits per solution",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 53,
+      "phase": "rank_implement",
+      "title": "Calculate expected costs per solution",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 54,
+      "phase": "rank_implement",
+      "title": "Calculate expected harms per solution",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 55,
+      "phase": "rank_implement",
+      "title": "Create Ideality Plot",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 56,
+      "phase": "rank_implement",
+      "title": "Categorize solutions (Implement/Improve/Research/Park)",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 57,
+      "phase": "rank_implement",
+      "title": "Select top 3 solutions",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 58,
+      "phase": "rank_implement",
+      "title": "Research implementation requirements",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 59,
+      "phase": "rank_implement",
+      "title": "Create implementation timeline",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    },
+    {
+      "step_number": 60,
+      "phase": "rank_implement",
+      "title": "Generate final synthesis with evidence",
+      "status": "pending",
+      "triz_tool": "Ideality Plot + Implementation",
+      "findings": {},
+      "validation_result": null
+    }
+  ]
+}
