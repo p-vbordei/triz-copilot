@@ -1,6 +1,7 @@
 """
 Deep Research Agent for TRIZ Co-Pilot
 Performs multi-stage, multi-source research to generate genius-level solutions.
+Enhanced with CLI subprocess for 10x research capacity.
 """
 
 import logging
@@ -11,10 +12,29 @@ import numpy as np
 
 from .services.vector_service import get_vector_service, SearchResult
 from .services.embedding_service import get_embedding_service
+from .services.cli_executor import get_cli_executor, CLIExecutor
 from .knowledge_base import load_principles_from_file, load_contradiction_matrix
 from .models import TRIZToolResponse
 
 logger = logging.getLogger(__name__)
+
+# Research configuration - dramatically increased limits when using subprocess
+RESEARCH_CONFIG = {
+    "with_subprocess": {
+        "max_findings": 500,  # 10x increase
+        "chunk_size": 16000,  # Full chunks
+        "search_limit_per_query": 50,  # 10x increase
+        "max_queries": 15,
+        "materials_search_limit": 50,  # Increased for comprehensive materials analysis
+    },
+    "without_subprocess": {
+        "max_findings": 50,
+        "chunk_size": 2000,
+        "search_limit_per_query": 5,
+        "max_queries": 10,
+        "materials_search_limit": 10,
+    },
+}
 
 
 @dataclass
@@ -66,6 +86,14 @@ class DeepResearchAgent:
         self.principles = load_principles_from_file()
         self.matrix = load_contradiction_matrix()
 
+        # CLI executor for subprocess-based analysis
+        self.cli_executor = get_cli_executor()
+        self.use_subprocess = self.cli_executor.is_available()
+
+        # Select configuration based on subprocess availability
+        config_key = "with_subprocess" if self.use_subprocess else "without_subprocess"
+        self.config = RESEARCH_CONFIG[config_key]
+
         # Available collections for search
         self.collections = {
             "principles": "triz_principles",
@@ -75,7 +103,11 @@ class DeepResearchAgent:
             "contradictions": "triz_contradictions",
         }
 
-        logger.info("DeepResearchAgent initialized")
+        logger.info(
+            f"DeepResearchAgent initialized "
+            f"(subprocess: {self.use_subprocess}, "
+            f"max_findings: {self.config['max_findings']})"
+        )
 
     def research_problem(self, problem_description: str) -> ResearchReport:
         """
@@ -398,13 +430,14 @@ class DeepResearchAgent:
         # Sort by priority
         queries.sort(key=lambda q: q.priority, reverse=True)
 
-        return queries[:15]  # Limit to top 15 queries
+        return queries[: self.config["max_queries"]]
 
     def _multi_source_search(
         self, research_plan: List[ResearchQuery], problem: str
     ) -> List[ResearchFinding]:
         """
         Execute multiple searches across different collections in parallel.
+        Enhanced with dynamic limits based on subprocess availability.
         """
         findings = []
 
@@ -413,8 +446,9 @@ class DeepResearchAgent:
             logger.warning("Vector service not available, using fallback")
             return self._fallback_research(problem)
 
-        # Execute each query
-        for query in research_plan[:10]:  # Limit to top 10 to avoid overload
+        # Execute each query (increased limit when using subprocess)
+        max_queries = self.config["max_queries"]
+        for query in research_plan[:max_queries]:
             try:
                 # Generate embedding for query
                 query_embedding = self.embedding_service.generate_embedding(
@@ -429,8 +463,11 @@ class DeepResearchAgent:
                     if collection not in self.collections.values():
                         continue
 
-                    # Use higher limit for materials_knowledge to find better matches
-                    search_limit = 10 if collection == "materials_knowledge" else 5
+                    # Use dynamic limits based on configuration
+                    if collection == "materials_knowledge":
+                        search_limit = self.config["materials_search_limit"]
+                    else:
+                        search_limit = self.config["search_limit_per_query"]
 
                     results = self.vector_service.search(
                         collection_name=collection,
@@ -471,9 +508,10 @@ class DeepResearchAgent:
         # Sort by relevance
         findings.sort(key=lambda f: f.relevance_score, reverse=True)
 
-        return findings[
-            :50
-        ]  # Return top 50 findings (increased for comprehensive material searches)
+        # Return findings based on configuration (50 or 500)
+        max_findings = self.config["max_findings"]
+        logger.info(f"Returning top {max_findings} findings from {len(findings)} total")
+        return findings[:max_findings]
 
     def _deep_contradiction_analysis(
         self, problem: str, findings: List[ResearchFinding]
@@ -1178,6 +1216,7 @@ class DeepResearchAgent:
     ) -> List[ResearchFinding]:
         """
         Perform deep analysis of materials from books.
+        Enhanced with CLI subprocess for comprehensive analysis.
 
         This goes beyond semantic search to actually READ and ANALYZE
         the book content about materials.
@@ -1195,10 +1234,19 @@ class DeepResearchAgent:
             logger.warning("No materials findings to analyze deeply")
             return []
 
+        # Use subprocess for deep analysis if available
+        if self.use_subprocess and len(materials_findings) > 5:
+            logger.info(
+                f"Using CLI subprocess to analyze {len(materials_findings)} materials findings..."
+            )
+            return self._subprocess_materials_analysis(materials_findings, problem)
+
+        # Fallback: regex-based analysis (original method)
         logger.info(f"Deep analyzing {len(materials_findings)} materials findings...")
 
         # Extract specific materials, properties, and comparisons from content
-        for finding in materials_findings[:10]:  # Analyze top 10 materials findings
+        analysis_limit = 10 if not self.use_subprocess else 50
+        for finding in materials_findings[:analysis_limit]:
             content = str(finding.content)
 
             # Extract material names mentioned
@@ -1319,6 +1367,204 @@ class DeepResearchAgent:
                 continue
 
         logger.info(f"Generated {len(deep_findings)} deep materials analyses")
+        return deep_findings
+
+    def _subprocess_materials_analysis(
+        self, materials_findings: List[ResearchFinding], problem: str
+    ) -> List[ResearchFinding]:
+        """
+        Use CLI subprocess to analyze materials findings.
+        This allows processing 50-500 findings vs 10 with regex.
+        """
+        deep_findings = []
+
+        # Prepare findings for subprocess (use full content up to chunk limit)
+        chunk_size = self.config["chunk_size"]
+        findings_text = []
+
+        for idx, finding in enumerate(materials_findings):
+            content = str(finding.content)
+            # Truncate to chunk size but keep full chunks
+            content_excerpt = content[:chunk_size]
+            findings_text.append(
+                f"=== FINDING {idx+1} ===\n"
+                f"Source: {finding.source}\n"
+                f"Relevance: {finding.relevance_score:.3f}\n\n"
+                f"{content_excerpt}\n"
+            )
+
+        # Execute subprocess analysis
+        result = self.cli_executor.execute(
+            task_type="materials_deep_analysis",
+            count=len(materials_findings),
+            total_chars=sum(len(t) for t in findings_text),
+            findings="\n\n".join(findings_text),
+        )
+
+        if not result.success:
+            logger.warning(
+                f"CLI subprocess failed: {result.error}. Falling back to regex analysis."
+            )
+            # Fallback to regex analysis for first 10
+            return self._regex_materials_analysis(materials_findings[:10])
+
+        # Parse subprocess results into findings
+        data = result.data
+
+        # Create findings from materials
+        for material in data.get("materials", []):
+            analysis_text = f"MATERIAL: {material['name']}\n\n"
+            if material.get("density"):
+                analysis_text += f"Density: {material['density']}\n"
+            if material.get("strength"):
+                analysis_text += f"Strength: {material['strength']}\n"
+            if material.get("formability"):
+                analysis_text += f"Formability: {material['formability']}\n"
+            if material.get("properties"):
+                analysis_text += f"Key Properties: {', '.join(material['properties'])}\n"
+
+            deep_findings.append(
+                ResearchFinding(
+                    source=f"SUBPROCESS_MATERIALS_ANALYSIS",
+                    content=analysis_text,
+                    relevance_score=0.9,
+                    metadata={"analysis_type": "subprocess_material", "material": material},
+                )
+            )
+
+        # Create findings from comparisons
+        for comparison in data.get("comparisons", []):
+            comp_text = (
+                f"COMPARISON: {comparison['material_a']} vs {comparison['material_b']}\n"
+                f"Criterion: {comparison['criterion']}\n"
+                f"Winner: {comparison['winner']}\n"
+                f"Confidence: {comparison['confidence']}\n"
+            )
+            deep_findings.append(
+                ResearchFinding(
+                    source=f"SUBPROCESS_COMPARISON",
+                    content=comp_text,
+                    relevance_score=comparison["confidence"],
+                    metadata={
+                        "analysis_type": "subprocess_comparison",
+                        "comparison": comparison,
+                    },
+                )
+            )
+
+        # Create findings from recommendations
+        for rec in data.get("recommendations", []):
+            rec_text = (
+                f"RECOMMENDATION: {rec['material']}\n"
+                f"Use Case: {rec['use_case']}\n"
+                f"Pros: {', '.join(rec['pros'])}\n"
+                f"Cons: {', '.join(rec['cons'])}\n"
+                f"Score: {rec['score']}\n"
+            )
+            deep_findings.append(
+                ResearchFinding(
+                    source=f"SUBPROCESS_RECOMMENDATION",
+                    content=rec_text,
+                    relevance_score=rec["score"],
+                    metadata={
+                        "analysis_type": "subprocess_recommendation",
+                        "recommendation": rec,
+                    },
+                )
+            )
+
+        # Add key insights as a single finding
+        if data.get("key_insights"):
+            insights_text = "KEY MATERIALS INSIGHTS:\n\n" + "\n".join(
+                f"• {insight}" for insight in data["key_insights"]
+            )
+            deep_findings.append(
+                ResearchFinding(
+                    source=f"SUBPROCESS_INSIGHTS",
+                    content=insights_text,
+                    relevance_score=0.95,
+                    metadata={
+                        "analysis_type": "subprocess_insights",
+                        "insights": data["key_insights"],
+                    },
+                )
+            )
+
+        logger.info(
+            f"CLI subprocess analyzed {len(materials_findings)} findings "
+            f"→ {len(deep_findings)} structured insights"
+        )
+        return deep_findings
+
+    def _regex_materials_analysis(
+        self, materials_findings: List[ResearchFinding]
+    ) -> List[ResearchFinding]:
+        """
+        Fallback regex-based materials analysis (original method).
+        Used when CLI subprocess is not available.
+        """
+        deep_findings = []
+
+        for finding in materials_findings[:10]:
+            content = str(finding.content)
+
+            # Extract material names mentioned
+            material_patterns = [
+                r"(?:aluminum|aluminium|magnesium|titanium|steel|carbon fiber|CFRP|polymer|composite|alloy)\s+(?:alloy|sheet|composite)?",
+                r"(?:AZ31|6061|7075|Ti-6Al-4V|CFRP|GFRP)",
+            ]
+
+            materials_found = []
+            for pattern in material_patterns:
+                matches = re.findall(pattern, content, re.IGNORECASE)
+                materials_found.extend(matches)
+
+            # Extract density/weight information
+            density_pattern = r"density.*?(\d+\.?\d*)\s*(?:g/cm|kg/m)"
+            densities = re.findall(density_pattern, content, re.IGNORECASE)
+
+            # Extract strength/modulus information
+            strength_pattern = r"(?:strength|modulus|stiffness).*?(\d+\.?\d*)\s*(?:MPa|GPa)"
+            strengths = re.findall(strength_pattern, content, re.IGNORECASE)
+
+            # Create enriched finding with extracted data
+            if materials_found or densities or strengths:
+                analysis_content = f"REGEX MATERIALS ANALYSIS:\n\n"
+                analysis_content += f"Source: {finding.source}\n\n"
+
+                if materials_found:
+                    unique_materials = list(set([m.strip() for m in materials_found[:5]]))
+                    analysis_content += (
+                        f"Materials identified: {', '.join(unique_materials)}\n\n"
+                    )
+
+                if densities:
+                    analysis_content += (
+                        f"Density values found: {', '.join(densities[:3])} g/cm³\n\n"
+                    )
+
+                if strengths:
+                    analysis_content += (
+                        f"Strength values found: {', '.join(strengths[:3])} MPa/GPa\n\n"
+                    )
+
+                analysis_content += f"Context:\n{content[:1000]}"
+
+                deep_finding = ResearchFinding(
+                    source=f"REGEX_ANALYZED_{finding.source}",
+                    content=analysis_content,
+                    relevance_score=finding.relevance_score * 1.3,
+                    metadata={
+                        **finding.metadata,
+                        "analysis_type": "regex_materials",
+                        "materials_found": materials_found[:5],
+                        "densities": densities[:3],
+                        "strengths": strengths[:3],
+                    },
+                    citations=finding.citations,
+                )
+                deep_findings.append(deep_finding)
+
         return deep_findings
 
 
