@@ -13,6 +13,7 @@ import numpy as np
 from .services.vector_service import get_vector_service, SearchResult
 from .services.embedding_service import get_embedding_service
 from .services.cli_executor import get_cli_executor, CLIExecutor
+from .services.research_persistence import get_research_persistence, ResearchPersistence
 from .knowledge_base import load_principles_from_file, load_contradiction_matrix
 from .models import TRIZToolResponse
 
@@ -79,8 +80,13 @@ class DeepResearchAgent:
     across all knowledge sources to generate deeply informed solutions.
     """
 
-    def __init__(self):
-        """Initialize the research agent"""
+    def __init__(self, session_id: Optional[str] = None):
+        """
+        Initialize the research agent.
+
+        Args:
+            session_id: Session ID for research persistence (auto-generated if None)
+        """
         self.vector_service = get_vector_service()
         self.embedding_service = get_embedding_service()
         self.principles = load_principles_from_file()
@@ -89,6 +95,9 @@ class DeepResearchAgent:
         # CLI executor for subprocess-based analysis
         self.cli_executor = get_cli_executor()
         self.use_subprocess = self.cli_executor.is_available()
+
+        # Research persistence - saves all findings to disk
+        self.persistence = get_research_persistence(session_id=session_id, reset=True)
 
         # Select configuration based on subprocess availability
         config_key = "with_subprocess" if self.use_subprocess else "without_subprocess"
@@ -106,12 +115,14 @@ class DeepResearchAgent:
         logger.info(
             f"DeepResearchAgent initialized "
             f"(subprocess: {self.use_subprocess}, "
-            f"max_findings: {self.config['max_findings']})"
+            f"max_findings: {self.config['max_findings']}, "
+            f"session: {self.persistence.session_id})"
         )
 
     def research_problem(self, problem_description: str) -> ResearchReport:
         """
         Main research orchestrator - performs deep multi-stage research.
+        NOW SAVES ALL FINDINGS TO DISK FOR CONTEXT RECOVERY.
 
         Args:
             problem_description: User's problem description
@@ -121,13 +132,41 @@ class DeepResearchAgent:
         """
         logger.info(f"Starting deep research for: {problem_description[:100]}...")
 
+        # Save problem statement to persistence
+        self.persistence.set_problem(problem_description)
+
         # Stage 1: Problem Understanding
         research_plan = self._generate_research_plan(problem_description)
         logger.info(f"Generated {len(research_plan)} research queries")
 
+        # Save research queries to persistence
+        for query in research_plan:
+            self.persistence.save_research_query(
+                {
+                    "query_text": query.query_text,
+                    "query_type": query.query_type,
+                    "priority": query.priority,
+                    "target_collections": query.target_collections,
+                }
+            )
+
         # Stage 2: Multi-Source Parallel Search
         findings = self._multi_source_search(research_plan, problem_description)
         logger.info(f"Collected {len(findings)} research findings")
+
+        # SAVE FINDINGS TO DISK (batch save for performance)
+        self.persistence.save_findings_batch(
+            [
+                {
+                    "source": f.source,
+                    "content": str(f.content)[:16000],  # Truncate at chunk size
+                    "relevance_score": f.relevance_score,
+                    "metadata": f.metadata,
+                    "citations": f.citations,
+                }
+                for f in findings
+            ]
+        )
 
         # Stage 2.5: Deep Material Analysis (if materials problem detected)
         if self._is_materials_problem(problem_description):
@@ -176,6 +215,15 @@ class DeepResearchAgent:
         # Stage 9: Calculate Confidence
         confidence = self._calculate_confidence(findings, principles, solutions)
 
+        # SAVE RESEARCH SUMMARY TO DISK
+        self.persistence.save_research_summary(
+            contradictions=contradictions,
+            principles=principles,
+            solutions=solutions,
+            confidence_score=confidence,
+            knowledge_gaps=gaps,
+        )
+
         # Create comprehensive report
         report = ResearchReport(
             problem_statement=problem_description,
@@ -189,7 +237,20 @@ class DeepResearchAgent:
             knowledge_gaps=gaps,
         )
 
+        # CREATE RECOVERY FILE for easy access
+        recovery_file = self.persistence.create_recovery_file()
         logger.info(f"Research complete. Confidence: {confidence:.2f}")
+        logger.info(f"📁 Research saved to: {self.persistence.get_session_path()}")
+        logger.info(f"📄 Recovery file: {recovery_file}")
+
+        # Print stats
+        stats = self.persistence.get_research_stats()
+        logger.info(
+            f"📊 Stats: {stats['total_findings']} findings, "
+            f"{stats['total_subprocess_calls']} subprocess calls, "
+            f"{stats['unique_sources']} unique sources"
+        )
+
         return report
 
     def _generate_research_plan(self, problem: str) -> List[ResearchQuery]:
@@ -1399,6 +1460,14 @@ class DeepResearchAgent:
             count=len(materials_findings),
             total_chars=sum(len(t) for t in findings_text),
             findings="\n\n".join(findings_text),
+        )
+
+        # SAVE SUBPROCESS RESULT TO DISK
+        self.persistence.save_subprocess_result(
+            task_type="materials_deep_analysis",
+            input_summary=f"{len(materials_findings)} materials findings from {len(set(f.source for f in materials_findings))} sources",
+            result=result.data if result.success else {"error": result.error},
+            execution_time=result.execution_time,
         )
 
         if not result.success:

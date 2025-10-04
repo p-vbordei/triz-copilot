@@ -10,6 +10,12 @@ from .analysis_service import get_analysis_service, TRIZAnalysisService
 from .cli_executor import get_cli_executor, CLIExecutor, CLIResult
 from .cli_config import get_cli_config, CLIConfig, is_cli_available
 from .cli_prompts import get_prompt
+from .research_persistence import (
+    get_research_persistence,
+    ResearchPersistence,
+    list_research_sessions,
+    load_session,
+)
 
 __all__ = [
     "get_vector_service",
@@ -26,4 +32,8 @@ __all__ = [
     "CLIConfig",
     "is_cli_available",
     "get_prompt",
+    "get_research_persistence",
+    "ResearchPersistence",
+    "list_research_sessions",
+    "load_session",
 ]
